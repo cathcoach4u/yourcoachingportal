@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1B3664" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.json" />
+  <title>Business Coach4U</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════════
+       Business Coach4U — design system v1.4
+       Brand: Inter Bold (headings), Montserrat (body)
+       Palette: #1B3664 primary | #5684C4 accent | #2D2D2D text | #DDDDDD divider
+       ═══════════════════════════════════════════════════════════════════════ */
+
+    /* ─── Tokens ──────────────────────────────────────────────────── */
+    :root {
+      --primary:        #1B3664;
+      --primary-dark:   #142849;
+      --accent:         #5684C4;
+      --accent-dark:    #4070b0;
+      --text:           #2D2D2D;
+      --text-muted:     #6C757D;
+      --text-light:     #ADB5BD;
+      --divider:        #DDDDDD;
+      --bg:             #F8F9FA;
+      --bg-card:        #FFFFFF;
+      --success:        #28A745;
+      --warning:        #FFC107;
+      --danger:         #DC3545;
+      --shadow-sm:      0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md:      0 4px 12px rgba(0,0,0,0.10);
+      --shadow-lg:      0 8px 24px rgba(0,0,0,0.14);
+      --radius:         8px;
+      --radius-lg:      12px;
+      --header-h:       60px;
+      --banner-h:       58px;
+      --font-head:      'Inter', 'Aptos', 'Calibri', sans-serif;
+      --font-body:      'Montserrat', 'Aptos', 'Calibri', sans-serif;
+    }
+
+    /* ─── Reset ───────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    button { cursor: pointer; font-family: inherit; }
+    input, textarea, select { font-family: inherit; }
+    textarea { resize: vertical; }
+    h1, h2, h3 { font-family: var(--font-head); font-weight: 700; }
+
+    /* ─── Sign Out Button ─────────────────────────────────────────── */
+    .sign-out-btn {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.5);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      min-height: 36px;
+      cursor: pointer;
+      transition: background 0.15s;
+      z-index: 260;
+    }
+    .sign-out-btn:hover { background: rgba(255,255,255,0.15); }
+
+    /* ─── Header ──────────────────────────────────────────────────── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 250;
+      background: var(--primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .header-inner {
+      max-width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 16px;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .brand-name {
+      font-family: var(--font-head);
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.3px;
+      flex: 1;
+    }
+    .version-badge {
+      font-family: var(--font-body);
+      font-size: 11px;
+      color: rgba(255,255,255,0.7);
+      font-weight: 600;
+      padding: 4px 8px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 4px;
+    }
+    .biz-switcher { display: flex; align-items: center; flex-shrink: 0; position: relative; }
+
+    .main-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      width: 100%;
+      justify-content: center;
+    }
+    .nav-tab {
+      background: rgba(255,255,255,0.22);
+      border: none;
+      color: #fff;
+      padding: 10px 18px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 28px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+      z-index: 201;
+    }
+    .nav-tab:hover, .nav-tab:focus {
+      background: rgba(255,255,255,0.32);
+      transform: translateY(-2px);
+      outline: none;
+    }
+    .nav-tab.active {
+      background: #fff;
+      color: var(--primary);
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    /* ─── Business Switcher ───────────────────────────────────────── */
+    .biz-switcher-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .biz-switcher-btn:hover { background: rgba(255,255,255,0.25); }
+    .biz-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .biz-arrow { font-size: 10px; opacity: 0.7; }
+    .biz-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      background: #fff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--divider);
+      min-width: 220px;
+      z-index: 400;
+      overflow: hidden;
+    }
+    .biz-dropdown.hidden { display: none; }
+    .biz-dropdown-list { padding: 6px 0; }
+    .biz-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .biz-dropdown-item:hover { background: #f0f4f8; }
+    .biz-dropdown-item.active { background: #e8f0fa; color: var(--primary); }
+    .biz-dropdown-footer { border-top: 1px solid var(--divider); padding: 6px 0; }
+    .biz-manage-btn {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 10px 16px;
+      text-align: left;
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .biz-manage-btn:hover { background: #f0f4f8; color: var(--text); }
+    .biz-color-swatches { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+    .biz-color-swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: border-color 0.15s, transform 0.1s;
+    }
+    .biz-color-swatch.selected { border-color: var(--primary); transform: scale(1.15); }
+    .biz-manage-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--divider);
+    }
+    .biz-manage-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .biz-manage-name { flex: 1; font-size: 14px; font-weight: 600; }
+    .biz-manage-tag {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--bg-card);
+      border: 1px solid var(--divider);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .biz-manage-edit {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .biz-manage-edit:hover { background: var(--bg-card); }
+
+    /* ─── Vision Banner ───────────────────────────────────────────── */
+    .vision-banner {
+      background: linear-gradient(135deg, #142849 0%, #1B3664 100%);
+      color: #fff;
+      min-height: var(--banner-h);
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      max-height: 200px;
+    }
+    .vision-banner.collapsed { max-height: 0; opacity: 0; }
+    .vision-banner-inner {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    .vision-col { flex: 1; padding: 0 16px; min-width: 0; }
+    .vision-col-split { display: flex; gap: 24px; }
+    .vision-divider { width: 1px; height: 36px; background: rgba(255,255,255,0.18); flex-shrink: 0; }
+    .vision-label {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 3px;
+    }
+    .vision-values { font-size: 12px; color: rgba(255,255,255,0.92); display: flex; flex-wrap: wrap; gap: 5px; }
+    .vision-value-pill {
+      background: rgba(255,255,255,0.15);
+      border-radius: 30px;
+      padding: 2px 9px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .vision-text { font-size: 12px; color: rgba(255,255,255,0.88); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vision-highlight { font-size: 16px; font-weight: 700; color: #fff; }
+    .vision-collapse-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: rgba(255,255,255,0.6);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-size: 11px;
+      flex-shrink: 0;
+      margin-left: 12px;
+      transition: background 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .vision-collapse-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    .vision-banner-collapsed { background: var(--primary); padding: 4px 24px; }
+    .vision-expand-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.65);
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: color 0.15s;
+    }
+    .vision-expand-btn:hover { color: #fff; }
+
+    /* ─── Sub-Nav ─────────────────────────────────────────────────── */
+    .sub-nav {
+      background: var(--primary-dark);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .sub-nav.hidden { display: none; }
+    .sub-nav-inner {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      gap: 2px;
+    }
+    .sub-tab {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      padding: 8px 18px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+      cursor: pointer;
+    }
+    .sub-tab:hover { color: rgba(255,255,255,0.9); }
+    .sub-tab.active { color: #fff; font-weight: 700; border-bottom-color: var(--accent); }
+
+    /* ─── Main Content ────────────────────────────────────────────── */
+    .main-content { max-width: 1600px; margin: 0 auto; padding: 28px 24px 60px; }
+    .panel { display: block; }
+    .panel.hidden { display: none; }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .panel-title {
+      font-family: var(--font-head);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      flex: 1;
+      min-width: 0;
+    }
+    .panel-subtitle { font-size: 14px; color: var(--text-muted); flex: 2; }
+    .panel-header-actions { display: flex; gap: 10px; align-items: center; }
+
+    /* ─── Cards ───────────────────────────────────────────────────── */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--divider);
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .card:hover { box-shadow: var(--shadow-md); }
+    .card-header {
+      background: var(--primary);
+      color: #fff;
+      padding: 10px 16px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .card-icon { font-size: 14px; opacity: 0.8; }
+    .card-body { padding: 16px; }
+    .card-hint { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.45; }
+
+    /* ─── VTO ─────────────────────────────────────────────────────── */
+    .vto-panel-header { padding: 8px 0 4px; margin-bottom: 28px; }
+    .vto-page-title {
+      font-family: var(--font-head);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1.25;
+      letter-spacing: -0.3px;
+    }
+    .vto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .vto-card-wide { grid-column: 1 / -1; }
+    .vto-field-group { display: flex; flex-direction: column; gap: 8px; }
+    .three-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+    /* ─── Buttons ─────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: none;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-accent:hover { background: var(--accent-dark); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #b02030; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--divider);
+    }
+    .btn-ghost:hover { background: var(--bg); color: var(--text); }
+    .btn-sm { padding: 5px 11px; font-size: 12px; }
+
+    /* ─── Form Fields ─────────────────────────────────────────────── */
+    .field-label {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+    .field-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    .field-label-row .field-label { margin-bottom: 0; }
+    .field-input {
+      display: block;
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--divider);
+      border-radius: 6px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg-card);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .field-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86,132,196,0.12);
+    }
+    .field-select {
+      display: block;
+      padding: 9px 32px 9px 12px;
+      border: 1.5px solid var(--divider);
+      border-radius: 6px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg-card);
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .field-select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(86,132,196,0.12);
+    }
+    .form-group { display: flex; flex-direction: column; gap: 0; margin-bottom: 14px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group-check { justify-content: flex-end; padding-bottom: 2px; }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text);
+      user-select: none;
+    }
+    .checkbox-label input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .mt-8 { margin-top: 8px; }
+
+    /* ─── Badges ──────────────────────────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 30px;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+    .badge-on-track    { background: #d4edda; color: #155724; }
+    .badge-off-track   { background: #f8d7da; color: #721c24; }
+    .badge-done        { background: #cce5ff; color: #004085; }
+    .badge-not-started { background: #fff3cd; color: #856404; }
+    .badge-open        { background: #e2e3e5; color: #383d41; }
+    .badge-ids         { background: #fff3cd; color: #856404; }
+    .badge-resolved    { background: #d4edda; color: #155724; }
+    .badge-high        { background: #f8d7da; color: #721c24; }
+    .badge-medium      { background: #fff3cd; color: #856404; }
+    .badge-low         { background: #e2e3e5; color: #383d41; }
+
+    /* ─── Team Alignment ──────────────────────────────────────────── */
+    .alignment-info-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+    .info-pill {
+      background: #EEF2FF;
+      color: #4338CA;
+      border-radius: 20px;
+      padding: 5px 13px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .alignment-warning {
+      background: #FFF3CD;
+      border: 1px solid #FFC107;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #856404;
+    }
+    .alignment-section {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+    .alignment-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--divider);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .alignment-section-title {
+      font-family: var(--font-head);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 3px;
+    }
+    .alignment-section-sub { font-size: 12px; color: var(--text-muted); }
+    .rating-legend { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
+    .legend-item { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; }
+    .legend-plus  { background: #D1FAE5; color: #065F46; }
+    .legend-pm    { background: #FEF3C7; color: #92400E; }
+    .legend-minus { background: #FEE2E2; color: #991B1B; }
+    .alignment-table-wrap { overflow-x: auto; padding: 0 0 4px; }
+    .alignment-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .alignment-table th {
+      background: #F8F9FA;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 10px 14px;
+      text-align: center;
+      border-bottom: 1px solid var(--divider);
+      white-space: nowrap;
+    }
+    .alignment-table th.col-name { text-align: left; min-width: 140px; }
+    .alignment-table td { padding: 0; border-bottom: 1px solid #F0F0F0; text-align: center; }
+    .alignment-table td.td-name { text-align: left; padding: 10px 14px; font-weight: 600; white-space: nowrap; }
+    .alignment-table tbody tr:last-child td { border-bottom: none; }
+    .alignment-table tbody tr:hover td { background: #FAFAFA; }
+    .rating-cell {
+      cursor: pointer;
+      width: 80px;
+      min-width: 60px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      transition: background 0.12s, transform 0.08s;
+      user-select: none;
+      border-right: 1px solid #F0F0F0;
+      position: relative;
+    }
+    .rating-cell:last-child { border-right: none; }
+    .rating-cell:hover { filter: brightness(0.93); transform: scale(1.06); z-index: 1; }
+    .rating-cell:active { transform: scale(0.97); }
+    .rating-none  { background: #F8F9FA; color: #CCC; }
+    .rating-plus  { background: #D1FAE5; color: #059669; }
+    .rating-pm    { background: #FEF3C7; color: #D97706; }
+    .rating-minus { background: #FEE2E2; color: #DC2626; }
+    .col-result { min-width: 110px; }
+    .result-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+    .result-yes     { background: #D1FAE5; color: #065F46; }
+    .result-no      { background: #FEE2E2; color: #991B1B; }
+    .result-partial { background: #FEF3C7; color: #92400E; }
+    .result-na      { background: #F3F4F6; color: #9CA3AF; }
+    .col-gwc { min-width: 110px; }
+    .gwc-th-label { font-size: 12px; font-weight: 700; color: var(--primary); text-transform: none; letter-spacing: 0; }
+    .gwc-th-sub   { font-size: 11px; color: var(--text-muted); text-transform: none; letter-spacing: 0; margin-top: 2px; }
+    .summary-legend { padding: 12px 20px 0; display: flex; flex-wrap: wrap; gap: 16px; }
+    .summary-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
+    .summary-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+    .summary-green  .summary-dot { background: #10B981; }
+    .summary-yellow .summary-dot { background: #F59E0B; }
+    .summary-red    .summary-dot { background: #EF4444; }
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; padding: 20px; }
+    .summary-card { border-radius: 12px; padding: 18px 16px; display: flex; flex-direction: column; gap: 8px; transition: transform 0.15s; }
+    .summary-card:hover { transform: translateY(-2px); }
+    .summary-card-name { font-size: 16px; font-weight: 700; }
+    .summary-card-seat { font-size: 11px; opacity: 0.75; }
+    .sc-green  { background: linear-gradient(135deg,#D1FAE5,#A7F3D0); color: #064E3B; }
+    .sc-yellow { background: linear-gradient(135deg,#FEF3C7,#FDE68A); color: #78350F; }
+    .sc-red    { background: linear-gradient(135deg,#FEE2E2,#FECACA); color: #7F1D1D; }
+    .sc-grey   { background: linear-gradient(135deg,#F3F4F6,#E5E7EB); color: #374151; }
+
+    /* ─── Accountability Chart ────────────────────────────────────── */
+    .org-chart-container { overflow-x: auto; padding-bottom: 20px; }
+    .org-tree { display: flex; flex-direction: column; align-items: center; }
+    .seat-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--divider);
+      padding: 0;
+      width: 200px;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.15s;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .seat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .seat-card-header { background: var(--primary); color: #fff; padding: 10px 14px; }
+    .seat-card-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+    .seat-card-person { font-size: 12px; opacity: 0.75; }
+    .seat-card-body { padding: 10px 14px; }
+    .seat-card-responsibilities { list-style: none; font-size: 11px; color: var(--text-muted); line-height: 1.8; }
+    .seat-card-responsibilities li::before { content: '• '; color: var(--accent); }
+
+    /* ─── Rocks ───────────────────────────────────────────────────── */
+    .rocks-progress-container {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      margin-bottom: 20px;
+      border: 1px solid var(--divider);
+      box-shadow: var(--shadow-sm);
+    }
+    .rocks-progress-label { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
+    .progress-track { background: var(--divider); border-radius: 30px; height: 8px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--success)); border-radius: 30px; transition: width 0.4s ease; }
+    .rocks-board { display: flex; flex-direction: column; gap: 20px; }
+    .rocks-group { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--divider); box-shadow: var(--shadow-sm); overflow: hidden; }
+    .rocks-group-header {
+      background: #f0f4f8;
+      padding: 10px 18px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--divider);
+    }
+    .rocks-group-count { background: var(--primary); color: #fff; border-radius: 30px; padding: 1px 8px; font-size: 11px; }
+    .rock-list { padding: 8px 0; }
+    .rock-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 18px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .rock-item:last-child { border-bottom: none; }
+    .rock-item:hover { background: #f8f9fa; }
+    .rock-item-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; font-weight: 700; }
+    .rock-icon-on-track    { background: #d4edda; color: #155724; }
+    .rock-icon-off-track   { background: #f8d7da; color: #721c24; }
+    .rock-icon-done        { background: #cce5ff; color: #004085; }
+    .rock-icon-not-started { background: #fff3cd; color: #856404; }
+    .rock-item-body { flex: 1; min-width: 0; }
+    .rock-item-desc { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rock-item-meta { font-size: 12px; color: var(--text-muted); }
+
+    /* ─── Scorecard ───────────────────────────────────────────────── */
+    .scorecard-wrapper { overflow-x: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--divider); }
+    .scorecard-table { border-collapse: collapse; width: 100%; background: var(--bg-card); font-size: 14px; min-width: 900px; }
+    .scorecard-table th {
+      background: var(--primary);
+      color: #fff;
+      padding: 10px;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    .scorecard-table th.col-metric { text-align: left; min-width: 180px; padding-left: 16px; }
+    .scorecard-table td { padding: 8px 10px; border-bottom: 1px solid #f0f0f0; border-right: 1px solid #f0f0f0; text-align: center; vertical-align: middle; }
+    .scorecard-table td.cell-metric { text-align: left; font-weight: 700; padding-left: 16px; color: var(--text); font-size: 14px; min-width: 180px; }
+    .scorecard-table td.cell-goal  { font-weight: 700; color: var(--text-muted); }
+    .scorecard-table td.cell-owner { font-size: 12px; color: var(--text-muted); }
+    .scorecard-table tbody tr:last-child td { border-bottom: none; }
+    .scorecard-table tbody tr:hover td { background-color: #f5f8ff; }
+    .scorecard-cell { cursor: pointer; border-radius: 4px; min-width: 52px; min-height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; transition: filter 0.1s; }
+    .scorecard-cell:hover { filter: brightness(0.93); }
+    .cell-green  { background: #d4edda; color: #155724; }
+    .cell-red    { background: #f8d7da; color: #721c24; }
+    .cell-empty  { background: #f8f9fa; color: var(--text-light); }
+    .cell-active { outline: 3px solid var(--accent); outline-offset: 1px; }
+    .cell-popover {
+      position: fixed;
+      z-index: 500;
+      background: var(--bg-card);
+      border: 1.5px solid var(--accent);
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      padding: 10px;
+      min-width: 160px;
+    }
+    .cell-popover.hidden { display: none; }
+    .cell-popover-inner { display: flex; align-items: center; gap: 7px; }
+    .cell-popover-input { flex: 1; border: 1.5px solid var(--divider); border-radius: 5px; padding: 7px 10px; font-size: 14px; font-weight: 600; width: 90px; }
+    .cell-popover-input:focus { outline: none; border-color: var(--accent); }
+    .cell-popover-btns { display: flex; gap: 5px; }
+
+    /* ─── L10 Meeting ─────────────────────────────────────────────── */
+    .l10-layout { display: grid; grid-template-columns: 260px 1fr; gap: 20px; align-items: start; }
+    .meetings-sidebar { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--divider); box-shadow: var(--shadow-sm); overflow: hidden; }
+    .sidebar-heading { background: var(--primary); color: rgba(255,255,255,0.75); font-family: var(--font-body); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 10px 16px; }
+    .meetings-list { padding: 8px 0; max-height: 550px; overflow-y: auto; }
+    .meeting-list-item { padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #f0f0f0; transition: background 0.15s; }
+    .meeting-list-item:last-child { border-bottom: none; }
+    .meeting-list-item:hover { background: #f0f4f8; }
+    .meeting-list-item.active { background: #e8f0fa; border-left: 3px solid var(--accent); }
+    .meeting-list-date { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .meeting-list-meta { font-size: 11px; color: var(--text-muted); display: flex; gap: 8px; align-items: center; }
+    .meeting-detail { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--divider); box-shadow: var(--shadow-sm); min-height: 500px; }
+    .meeting-detail-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 400px; gap: 12px; color: var(--text-muted); }
+    .empty-icon { font-size: 32px; color: var(--divider); }
+    .meeting-detail-header { padding: 20px 24px 14px; border-bottom: 1px solid var(--divider); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .meeting-detail-title { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--primary); flex: 1; }
+
+    /* ─── Kanban / Issues ─────────────────────────────────────────── */
+    .kanban-board { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: start; }
+    .kanban-col { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--divider); box-shadow: var(--shadow-sm); overflow: hidden; min-height: 300px; }
+    .kanban-col-header { padding: 12px 16px; border-bottom: 1px solid var(--divider); display: flex; align-items: center; justify-content: space-between; background: #f0f4f8; }
+    .kanban-col-title { font-family: var(--font-body); font-size: 14px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
+    .kanban-col-count { background: var(--primary); color: #fff; border-radius: 30px; padding: 1px 9px; font-size: 11px; font-weight: 700; }
+    .kanban-cards { padding: 10px; display: flex; flex-direction: column; gap: 8px; min-height: 60px; }
+    .issue-card { background: var(--bg-card); border: 1px solid var(--divider); border-radius: var(--radius); padding: 12px 14px; cursor: pointer; transition: box-shadow 0.15s, transform 0.12s; border-left: 4px solid var(--divider); }
+    .issue-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .issue-card.priority-high   { border-left-color: var(--danger); }
+    .issue-card.priority-medium { border-left-color: var(--warning); }
+    .issue-card.priority-low    { border-left-color: var(--text-light); }
+    .issue-card-desc { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; line-height: 1.4; }
+    .issue-card-meta { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+    .issue-card-owner { font-size: 11px; color: var(--text-muted); background: var(--bg); padding: 2px 8px; border-radius: 20px; border: 1px solid var(--divider); }
+
+    /* ─── Modals ──────────────────────────────────────────────────── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,20,60,0.55); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; backdrop-filter: blur(3px); }
+    .modal-overlay.hidden { display: none; }
+    .modal { background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; animation: modal-in 0.18s ease; }
+    .modal-wide { max-width: 640px; }
+    @keyframes modal-in {
+      from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .modal-header { padding: 18px 22px 14px; border-bottom: 1px solid var(--divider); display: flex; align-items: center; justify-content: space-between; }
+    .modal-title { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--primary); }
+    .modal-close { background: none; border: none; font-size: 18px; color: var(--text-muted); padding: 4px 8px; border-radius: 5px; line-height: 1; transition: background 0.15s; }
+    .modal-close:hover { background: var(--bg); color: var(--text); }
+    .modal-body { padding: 20px 22px; }
+    .modal-footer { padding: 14px 22px 18px; border-top: 1px solid var(--divider); display: flex; gap: 10px; justify-content: flex-end; align-items: center; }
+    .modal-footer .btn-danger { margin-right: auto; }
+
+    /* ─── Toast ───────────────────────────────────────────────────── */
+    .toast { position: fixed; bottom: 28px; right: 28px; background: var(--primary-dark); color: #fff; padding: 12px 22px; border-radius: 8px; font-family: var(--font-body); font-size: 14px; font-weight: 500; box-shadow: var(--shadow-lg); z-index: 2000; opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.hidden { display: none; }
+    .toast.toast-success { background: var(--success); }
+    .toast.toast-error   { background: var(--danger); }
+
+    /* ─── Misc ────────────────────────────────────────────────────── */
+    .hidden { display: none !important; }
+    .text-muted { color: var(--text-muted); }
+    .text-center { text-align: center; }
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--text-muted); }
+    .empty-state h3 { font-family: var(--font-head); font-size: 24px; color: var(--primary); margin-bottom: 8px; }
+    .empty-state p { color: var(--text-muted); max-width: 400px; margin: 0 auto; line-height: 1.5; }
+
+    /* ─── Scrollbar ───────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #c5cdd8; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #a0aab4; }
+
+    /* ─── Responsive ──────────────────────────────────────────────── */
+    @media (max-width: 960px) {
+      .vto-grid { grid-template-columns: 1fr; }
+      .vto-card-wide { grid-column: 1; }
+      .kanban-board { grid-template-columns: 1fr; }
+      .l10-layout { grid-template-columns: 1fr; }
+      .three-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .header-inner { padding: 8px 12px; gap: 8px; }
+      .brand-name { font-size: 18px; }
+      .main-nav { gap: 6px; justify-content: center; width: 100%; padding-top: 4px; }
+      .nav-tab { padding: 10px 12px; min-height: 44px; font-size: 12px; border-radius: 6px; }
+      .sign-out-btn { top: 8px; right: 8px; font-size: 12px; padding: 5px 10px; }
+    }
+    @media (max-width: 390px) {
+      .main-nav { gap: 4px; }
+      .nav-tab { padding: 10px 8px; min-height: 44px; font-size: 12px; flex: 1; min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═════════════════════════════════════════════════════ AUTH GATE -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const supabase = createClient(
+      'https://eekefsuaefgpqmjdyniy.supabase.co',
+      'sb_publishable_pcXHwQVMpvEojb4K3afEMw_RMvgZM-Y'
+    );
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      window.location.href = 'login.html';
+    } else {
+      const { data: profile } = await supabase
+        .from('users')
+        .select('membership_status')
+        .eq('id', session.user.id)
+        .single();
+
+      if (!profile || profile.membership_status !== 'active') {
+        window.location.href = 'inactive.html';
+      }
+    }
+
+    // Expose for app.js to use
+    window.supabase = supabase;
+    window.session = session;
+
+    // Sign out function
+    window.signOut = async () => {
+      await supabase.auth.signOut();
+      window.location.href = 'login.html';
+    };
+  </script>
+
+  <!-- ════════════════════════════════════════════════════════ HEADER -->
+  <header class="site-header" id="site-header" style="position:relative;">
+    <button class="sign-out-btn" onclick="window.signOut()">Sign Out</button>
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-name">Business Coach4U</span>
+        <span class="version-badge">v1.0.0</span>
+      </div>
+
+      <div class="biz-switcher" id="biz-switcher">
+        <button class="biz-switcher-btn" id="biz-switcher-btn">
+          <span class="biz-dot" id="biz-dot"></span>
+          <span class="biz-name" id="biz-name-display">Loading...</span>
+          <span class="biz-arrow">&#9662;</span>
+        </button>
+        <div class="biz-dropdown hidden" id="biz-dropdown">
+          <div class="biz-dropdown-list" id="biz-dropdown-list"></div>
+          <div class="biz-dropdown-footer">
+            <button class="biz-manage-btn" id="biz-manage-btn">&#9881; Manage Businesses</button>
+          </div>
+        </div>
+      </div>
+
+      <nav class="main-nav" id="main-nav">
+        <button class="nav-tab active" data-hub="strategic">Strategic</button>
+        <button class="nav-tab" data-hub="operations">Operations</button>
+        <button class="nav-tab" data-hub="team">Team</button>
+        <button class="nav-tab" data-hub="growth">Growth</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════════════════════════════ SUB-NAV -->
+  <div class="sub-nav hidden" id="sub-nav">
+    <div class="sub-nav-inner" id="sub-nav-tabs"></div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════ VISION BANNER -->
+  <div class="vision-banner" id="vision-banner">
+    <div class="vision-banner-inner">
+      <div class="vision-col">
+        <span class="vision-label">Core Values</span>
+        <div class="vision-values" id="banner-values">&#8212;</div>
+      </div>
+      <div class="vision-divider"></div>
+      <div class="vision-col">
+        <span class="vision-label">10-Year Target</span>
+        <div class="vision-text" id="banner-10yr">&#8212;</div>
+      </div>
+      <div class="vision-divider"></div>
+      <div class="vision-col vision-col-split">
+        <div>
+          <span class="vision-label">1-Year Revenue</span>
+          <div class="vision-text vision-highlight" id="banner-revenue">&#8212;</div>
+        </div>
+        <div>
+          <span class="vision-label">1-Year Profit</span>
+          <div class="vision-text vision-highlight" id="banner-profit">&#8212;</div>
+        </div>
+      </div>
+      <button class="vision-collapse-btn" id="vision-collapse-btn" title="Collapse">&#9650;</button>
+    </div>
+  </div>
+  <div class="vision-banner-collapsed" id="vision-banner-collapsed" style="display:none;">
+    <button class="vision-expand-btn" id="vision-expand-btn">&#9660; Vision</button>
+  </div>
+
+  <!-- ════════════════════════════════════════════════ MAIN CONTENT -->
+  <main class="main-content" id="main-content">
+
+    <!-- ──────────────────────────────────────────── VTO PANEL -->
+    <div class="panel" id="vto-panel">
+      <div id="group-overview-content" class="hidden"></div>
+      <div id="vto-form-content">
+        <div class="panel-header vto-panel-header">
+          <h1 class="vto-page-title">Your company's one-page strategic plan</h1>
+        </div>
+        <div class="vto-grid">
+          <div class="vto-section card">
+            <div class="card-header"><span class="card-icon">&#9733;</span> Core Values</div>
+            <div class="card-body">
+              <p class="card-hint">The 3 to 5 fundamental beliefs that guide how your company operates</p>
+              <div class="vto-field-group" id="vto-core-values"></div>
+            </div>
+          </div>
+
+          <div class="vto-section card">
+            <div class="card-header"><span class="card-icon">&#9678;</span> Core Focus</div>
+            <div class="card-body">
+              <label class="field-label">Purpose / Cause / Passion</label>
+              <p class="card-hint">Why your company exists and what problem you solve</p>
+              <textarea class="field-input vto-field" data-section="core_focus" data-key="purpose" rows="2" placeholder="Why does your company exist?"></textarea>
+              <label class="field-label mt-8">Niche</label>
+              <p class="card-hint">What you do better than anyone else</p>
+              <textarea class="field-input vto-field" data-section="core_focus" data-key="niche" rows="2" placeholder="What is your unique niche?"></textarea>
+            </div>
+          </div>
+
+          <div class="vto-section card">
+            <div class="card-header"><span class="card-icon">&#9673;</span> 10-Year Target</div>
+            <div class="card-body">
+              <p class="card-hint">Your big, audacious long-term vision</p>
+              <textarea class="field-input vto-field" data-section="ten_year" data-key="target" rows="3" placeholder="Where will you be in 10 years?"></textarea>
+            </div>
+          </div>
+
+          <div class="vto-section card">
+            <div class="card-header"><span class="card-icon">&#9672;</span> Marketing Strategy</div>
+            <div class="card-body">
+              <p class="card-hint">How we go to market</p>
+              <label class="field-label">Target Market</label>
+              <textarea class="field-input vto-field" data-section="marketing" data-key="target_market" rows="2" placeholder="Who is your ideal client?"></textarea>
+              <label class="field-label mt-8">Uniques (3 Differentiators)</label>
+              <textarea class="field-input vto-field" data-section="marketing" data-key="uniques" rows="3" placeholder="What makes you unique?"></textarea>
+              <label class="field-label mt-8">Proven Process</label>
+              <textarea class="field-input vto-field" data-section="marketing" data-key="proven_process" rows="2" placeholder="Your signature process..."></textarea>
+              <label class="field-label mt-8">Guarantee</label>
+              <input type="text" class="field-input vto-field" data-section="marketing" data-key="guarantee" placeholder="Your guarantee..." />
+            </div>
+          </div>
+
+          <div class="vto-section card vto-card-wide">
+            <div class="card-header"><span class="card-icon">&#9635;</span> 3-Year Picture</div>
+            <div class="card-body">
+              <p class="card-hint">What success looks like 3 years from now</p>
+              <div class="three-grid">
+                <div>
+                  <label class="field-label">Target Date</label>
+                  <input type="text" class="field-input vto-field" data-section="three_year" data-key="date" placeholder="e.g. March 2029" />
+                </div>
+                <div>
+                  <label class="field-label">Revenue</label>
+                  <input type="text" class="field-input vto-field" data-section="three_year" data-key="revenue" placeholder="e.g. $1.5M" />
+                </div>
+                <div>
+                  <label class="field-label">Profit</label>
+                  <input type="text" class="field-input vto-field" data-section="three_year" data-key="profit" placeholder="e.g. $450K" />
+                </div>
+              </div>
+              <label class="field-label mt-8">What does it look like?</label>
+              <textarea class="field-input vto-field" data-section="three_year" data-key="looks_like" rows="3" placeholder="Describe your business in 3 years..."></textarea>
+            </div>
+          </div>
+
+          <div class="vto-section card vto-card-wide">
+            <div class="card-header"><span class="card-icon">&#9655;</span> 1-Year Plan</div>
+            <div class="card-body">
+              <p class="card-hint">Top priorities for the next 12 months</p>
+              <div class="three-grid">
+                <div>
+                  <label class="field-label">Target Date</label>
+                  <input type="text" class="field-input vto-field" data-section="one_year" data-key="date" placeholder="e.g. Dec 2026" />
+                </div>
+                <div>
+                  <label class="field-label">Revenue Goal</label>
+                  <input type="text" class="field-input vto-field" data-section="one_year" data-key="revenue" placeholder="e.g. $600K" />
+                </div>
+                <div>
+                  <label class="field-label">Profit Goal</label>
+                  <input type="text" class="field-input vto-field" data-section="one_year" data-key="profit" placeholder="e.g. $150K" />
+                </div>
+              </div>
+              <label class="field-label mt-8">What must be true?</label>
+              <textarea class="field-input vto-field" data-section="one_year" data-key="goals" rows="3" placeholder="3 to 7 measurable goals for the year..."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ────────────────────────────────────── ACCOUNTABILITY PANEL -->
+    <div class="panel hidden" id="accountability-panel">
+      <div class="panel-header">
+        <h1 class="panel-title">Accountability Chart</h1>
+        <p class="panel-subtitle">Your organisational structure, who is accountable for what</p>
+        <button class="btn btn-primary" id="add-seat-btn">+ Add Seat</button>
+      </div>
+      <div class="org-chart-container" id="org-chart"></div>
+    </div>
+
+    <!-- ──────────────────────────────────────────── ROCKS PANEL -->
+    <div class="panel hidden" id="rocks-panel">
+      <div class="panel-header">
+        <h1 class="panel-title">Goals</h1>
+        <p class="panel-subtitle">Your 3 to 7 most important priorities this quarter</p>
+        <div class="panel-header-actions">
+          <select class="field-select" id="quarter-select">
+            <option value="Q1 2026">Q1 2026</option>
+            <option value="Q2 2026" selected>Q2 2026</option>
+            <option value="Q3 2026">Q3 2026</option>
+            <option value="Q4 2026">Q4 2026</option>
+            <option value="Q1 2027">Q1 2027</option>
+          </select>
+          <button class="btn btn-primary" id="add-rock-btn">+ Add Goal</button>
+        </div>
+      </div>
+      <div id="rocks-progress-bar-container" class="rocks-progress-container">
+        <div class="rocks-progress-label">
+          <span id="rocks-progress-text">0 of 0 priorities complete</span>
+          <span id="rocks-progress-pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="rocks-progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <div id="rocks-board"></div>
+    </div>
+
+    <!-- ────────────────────────────────────────── SCORECARD PANEL -->
+    <div class="panel hidden" id="scorecard-panel">
+      <div class="panel-header">
+        <h1 class="panel-title">Metrics</h1>
+        <p class="panel-subtitle">Weekly measurables, your company's pulse</p>
+        <button class="btn btn-primary" id="add-metric-btn">+ Add Metric</button>
+      </div>
+      <div class="scorecard-wrapper">
+        <table class="scorecard-table" id="scorecard-table">
+          <thead><tr id="scorecard-header-row"></tr></thead>
+          <tbody id="scorecard-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────── L10 PANEL -->
+    <div class="panel hidden" id="l10-panel">
+      <div class="panel-header">
+        <h1 class="panel-title">Meeting</h1>
+        <p class="panel-subtitle">Your structured weekly team meeting</p>
+        <button class="btn btn-primary" id="new-meeting-btn">+ New Meeting</button>
+      </div>
+      <div class="l10-layout">
+        <aside class="meetings-sidebar" id="meetings-sidebar">
+          <div class="sidebar-heading">Past Meetings</div>
+          <div id="meetings-list"></div>
+        </aside>
+        <div class="meeting-detail" id="meeting-detail">
+          <div class="meeting-detail-empty" id="meeting-detail-empty">
+            <div class="empty-icon">&#9672;</div>
+            <p>Select a meeting or create a new one</p>
+          </div>
+          <div id="meeting-detail-content" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────── ISSUES PANEL -->
+    <div class="panel hidden" id="issues-panel">
+      <div class="panel-header">
+        <h1 class="panel-title">Issues</h1>
+        <p class="panel-subtitle">Identify, Discuss, Solve, your company's issues</p>
+        <div class="panel-header-actions">
+          <select class="field-select" id="issues-owner-filter">
+            <option value="">All Owners</option>
+          </select>
+          <button class="btn btn-primary" id="add-issue-btn">+ Add Issue</button>
+        </div>
+      </div>
+      <div class="kanban-board" id="issues-board">
+        <div class="kanban-col" id="col-open">
+          <div class="kanban-col-header">
+            <span class="kanban-col-title">Open</span>
+            <span class="kanban-col-count" id="count-open">0</span>
+          </div>
+          <div class="kanban-cards" id="cards-open" data-status="open"></div>
+        </div>
+        <div class="kanban-col" id="col-ids">
+          <div class="kanban-col-header">
+            <span class="kanban-col-title">In IDS</span>
+            <span class="kanban-col-count" id="count-ids">0</span>
+          </div>
+          <div class="kanban-cards" id="cards-ids" data-status="ids_in_progress"></div>
+        </div>
+        <div class="kanban-col" id="col-resolved">
+          <div class="kanban-col-header">
+            <span class="kanban-col-title">Resolved</span>
+            <span class="kanban-col-count" id="count-resolved">0</span>
+          </div>
+          <div class="kanban-cards" id="cards-resolved" data-status="resolved"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────────── TEAM ALIGNMENT PANEL -->
+    <div class="panel hidden" id="alignment-panel">
+      <div class="panel-header">
+        <div>
+          <h1 class="panel-title">Team Alignment</h1>
+          <p class="panel-subtitle">Right Person, Right Seat, quarterly people evaluation</p>
+        </div>
+        <button class="btn btn-primary" id="add-member-btn">+ Add Person</button>
+      </div>
+      <div class="alignment-info-bar">
+        <span class="info-pill">Leadership team use only</span>
+        <span class="info-pill">Review quarterly or when issues arise</span>
+        <span class="info-pill">Sensitive, used for objective people decisions</span>
+      </div>
+      <div class="alignment-warning hidden" id="alignment-no-values">
+        <strong>No Core Values defined yet.</strong>
+        Go to <a href="#" id="go-to-vto-link">Vision and Strategy</a> and add your Core Values first.
+      </div>
+      <div class="alignment-section" id="section-values">
+        <div class="alignment-section-header">
+          <div>
+            <h2 class="alignment-section-title">Section 1, Right Person</h2>
+            <p class="alignment-section-sub">Does this person share and demonstrate our Core Values?</p>
+          </div>
+          <div class="rating-legend">
+            <span class="legend-item legend-plus">Always</span>
+            <span class="legend-item legend-pm">Sometimes</span>
+            <span class="legend-item legend-minus">Rarely</span>
+          </div>
+        </div>
+        <div class="alignment-table-wrap">
+          <table class="alignment-table" id="values-table">
+            <thead><tr id="values-header-row"></tr></thead>
+            <tbody id="values-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="alignment-section" id="section-gwc">
+        <div class="alignment-section-header">
+          <div>
+            <h2 class="alignment-section-title">Section 2, Right Seat (GWC)</h2>
+            <p class="alignment-section-sub">Does this person Get it, Want it, and have the Capacity to do their role?</p>
+          </div>
+          <div class="rating-legend">
+            <span class="legend-item legend-plus">Yes</span>
+            <span class="legend-item legend-pm">Partially</span>
+            <span class="legend-item legend-minus">No</span>
+          </div>
+        </div>
+        <div class="alignment-table-wrap">
+          <table class="alignment-table" id="gwc-table">
+            <thead>
+              <tr>
+                <th class="col-name">Team Member</th>
+                <th class="col-gwc"><div class="gwc-th-label">Get It</div><div class="gwc-th-sub">Understands the role</div></th>
+                <th class="col-gwc"><div class="gwc-th-label">Want It</div><div class="gwc-th-sub">Motivated to do it</div></th>
+                <th class="col-gwc"><div class="gwc-th-label">Capacity</div><div class="gwc-th-sub">Capable and available</div></th>
+                <th class="col-result">Right Seat?</th>
+              </tr>
+            </thead>
+            <tbody id="gwc-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="alignment-section" id="section-summary">
+        <div class="alignment-section-header">
+          <div>
+            <h2 class="alignment-section-title">Section 3, Team Alignment Summary</h2>
+            <p class="alignment-section-sub">Overall status for each team member</p>
+          </div>
+        </div>
+        <div class="summary-legend">
+          <div class="summary-legend-item summary-green"><span class="summary-dot"></span> Right Person and Right Seat, keep, develop, promote</div>
+          <div class="summary-legend-item summary-yellow"><span class="summary-dot"></span> Right Person or Seat issue, action needed</div>
+          <div class="summary-legend-item summary-red"><span class="summary-dot"></span> Wrong Person and Wrong Seat, immediate attention required</div>
+        </div>
+        <div class="summary-grid" id="summary-grid"></div>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────── GROWTH PANEL -->
+    <div class="panel hidden" id="growth-panel">
+      <div class="panel-header">
+        <h1 class="panel-title">GrowthHub</h1>
+        <p class="panel-subtitle">Individual development plans, weekly check-ins, and reflection logs</p>
+      </div>
+      <div class="empty-state">
+        <div class="empty-icon">&#9651;</div>
+        <h3>Coming Soon</h3>
+        <p>GrowthHub will help you track individual development plans, run weekly check-ins, and maintain reflection logs for your team.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ════════════════════════════════════════════════════════ MODALS -->
+
+  <!-- Seat Modal -->
+  <div class="modal-overlay hidden" id="seat-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="seat-modal-title">Add Seat</h3>
+        <button class="modal-close" id="seat-modal-close">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="seat-id" />
+        <div class="form-row">
+          <div class="form-group">
+            <label class="field-label">Seat Title *</label>
+            <input type="text" class="field-input" id="seat-title" placeholder="e.g. Visionary" />
+          </div>
+          <div class="form-group">
+            <label class="field-label">Person in Seat</label>
+            <input type="text" class="field-input" id="seat-person" placeholder="Name" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Reports To (Parent Seat)</label>
+          <select class="field-select" id="seat-parent"><option value="">None (Top Level)</option></select>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Responsibilities (one per line)</label>
+          <textarea class="field-input" id="seat-responsibilities" rows="5" placeholder="Enter responsibilities, one per line"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="seat-modal-cancel">Cancel</button>
+        <button class="btn btn-danger hidden" id="seat-modal-delete">Delete Seat</button>
+        <button class="btn btn-primary" id="seat-modal-save">Save Seat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Goal Modal -->
+  <div class="modal-overlay hidden" id="rock-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="rock-modal-title">Add Priority</h3>
+        <button class="modal-close" id="rock-modal-close">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="rock-id" />
+        <div class="form-group">
+          <label class="field-label">Priority Description *</label>
+          <textarea class="field-input" id="rock-description" rows="3" placeholder="What does this priority accomplish?"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="field-label">Owner</label>
+            <input type="text" class="field-input" id="rock-owner" placeholder="Who owns this?" />
+          </div>
+          <div class="form-group">
+            <label class="field-label">Status</label>
+            <select class="field-select" id="rock-status">
+              <option value="not_started">Not Started</option>
+              <option value="on_track">On Track</option>
+              <option value="off_track">Off Track</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="field-label">Quarter</label>
+            <select class="field-select" id="rock-quarter">
+              <option value="Q1 2026">Q1 2026</option>
+              <option value="Q2 2026" selected>Q2 2026</option>
+              <option value="Q3 2026">Q3 2026</option>
+              <option value="Q4 2026">Q4 2026</option>
+              <option value="Q1 2027">Q1 2027</option>
+            </select>
+          </div>
+          <div class="form-group form-group-check">
+            <label class="checkbox-label">
+              <input type="checkbox" id="rock-company" />
+              <span>Company Priority</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="rock-modal-cancel">Cancel</button>
+        <button class="btn btn-danger hidden" id="rock-modal-delete">Delete Priority</button>
+        <button class="btn btn-primary" id="rock-modal-save">Save Priority</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metric Modal -->
+  <div class="modal-overlay hidden" id="metric-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Metric</h3>
+        <button class="modal-close" id="metric-modal-close">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="metric-id" />
+        <div class="form-row">
+          <div class="form-group">
+            <label class="field-label">Metric Name *</label>
+            <input type="text" class="field-input" id="metric-name" placeholder="e.g. New Leads" />
+          </div>
+          <div class="form-group">
+            <label class="field-label">Owner</label>
+            <input type="text" class="field-input" id="metric-owner" placeholder="Name" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="field-label">Weekly Goal</label>
+            <input type="text" class="field-input" id="metric-goal" placeholder="e.g. 5" />
+          </div>
+          <div class="form-group">
+            <label class="field-label">Type</label>
+            <select class="field-select" id="metric-type">
+              <option value="number">Number</option>
+              <option value="currency">Currency ($)</option>
+              <option value="percentage">Percentage (%)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="metric-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="metric-modal-save">Save Metric</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Issue Modal -->
+  <div class="modal-overlay hidden" id="issue-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="issue-modal-title">Add Issue</h3>
+        <button class="modal-close" id="issue-modal-close">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="issue-id" />
+        <div class="form-group">
+          <label class="field-label">Issue Description *</label>
+          <textarea class="field-input" id="issue-description" rows="3" placeholder="Describe the issue clearly..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="field-label">Owner</label>
+            <input type="text" class="field-input" id="issue-owner" placeholder="Who raised this?" />
+          </div>
+          <div class="form-group">
+            <label class="field-label">Priority</label>
+            <select class="field-select" id="issue-priority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" id="issue-solution-group" style="display:none;">
+          <label class="field-label">Solution (required to resolve)</label>
+          <textarea class="field-input" id="issue-solution" rows="3" placeholder="How was this solved?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Status</label>
+          <select class="field-select" id="issue-status">
+            <option value="open">Open</option>
+            <option value="ids_in_progress">In IDS</option>
+            <option value="resolved">Resolved</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="issue-modal-cancel">Cancel</button>
+        <button class="btn btn-danger hidden" id="issue-modal-delete">Delete Issue</button>
+        <button class="btn btn-primary" id="issue-modal-save">Save Issue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Meeting Modal -->
+  <div class="modal-overlay hidden" id="meeting-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">New Weekly Meeting</h3>
+        <button class="modal-close" id="meeting-modal-close">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="field-label">Meeting Date *</label>
+            <input type="date" class="field-input" id="meeting-date" />
+          </div>
+          <div class="form-group">
+            <label class="field-label">Quarter</label>
+            <select class="field-select" id="meeting-quarter">
+              <option value="Q1 2026">Q1 2026</option>
+              <option value="Q2 2026" selected>Q2 2026</option>
+              <option value="Q3 2026">Q3 2026</option>
+              <option value="Q4 2026">Q4 2026</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="meeting-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="meeting-modal-save">Create Meeting</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scorecard Cell Edit Popover -->
+  <div class="cell-popover hidden" id="cell-popover">
+    <div class="cell-popover-inner">
+      <input type="number" class="cell-popover-input" id="cell-popover-input" placeholder="Value" step="any" />
+      <div class="cell-popover-btns">
+        <button class="btn btn-sm btn-ghost" id="cell-popover-cancel">&#10005;</button>
+        <button class="btn btn-sm btn-primary" id="cell-popover-save">&#10003;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast hidden" id="toast"></div>
+
+  <!-- Team Member Modal -->
+  <div class="modal-overlay hidden" id="member-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="member-modal-title">Add Team Member</h3>
+        <button class="modal-close" id="member-modal-close">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="member-id" />
+        <div class="form-row">
+          <div class="form-group">
+            <label class="field-label">Name *</label>
+            <input type="text" class="field-input" id="member-name" placeholder="Full name" />
+          </div>
+          <div class="form-group">
+            <label class="field-label">Seat / Role</label>
+            <select class="field-select" id="member-seat">
+              <option value="">No seat assigned</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="member-modal-cancel">Cancel</button>
+        <button class="btn btn-danger hidden" id="member-modal-delete">Remove</button>
+        <button class="btn btn-primary" id="member-modal-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manage Businesses Modal -->
+  <div class="modal-overlay hidden" id="biz-manage-modal">
+    <div class="modal modal-wide">
+      <div class="modal-header">
+        <h3 class="modal-title">Manage Businesses</h3>
+        <button class="modal-close" id="biz-manage-modal-close">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
+          The holding company sits at the top. Sub-businesses run beneath it, each with their own strategy, goals, scorecard, and issues that roll up to the group view.
+        </p>
+        <div id="biz-manage-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+        <button class="btn btn-primary" id="biz-add-new-btn">+ Add Sub-Business</button>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="biz-manage-modal-close2">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Business Modal -->
+  <div class="modal-overlay hidden" id="biz-edit-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="biz-edit-modal-title">Add Sub-Business</h3>
+        <button class="modal-close" id="biz-edit-modal-close">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="biz-edit-id" />
+        <div class="form-group">
+          <label class="field-label">Business Name *</label>
+          <input type="text" class="field-input" id="biz-edit-name" placeholder="e.g. Coaching Division" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Colour</label>
+          <div class="biz-color-swatches" id="biz-color-swatches"></div>
+          <input type="hidden" id="biz-edit-color" value="#1B3664" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="biz-edit-cancel">Cancel</button>
+        <button class="btn btn-danger hidden" id="biz-edit-delete">Delete Business</button>
+        <button class="btn btn-primary" id="biz-edit-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════ APP LOGIC -->
+  <script src="js/app.js"></script>
+
+  <!-- ════════════════════════════════════════════════════════ SERVICE WORKER -->
+  <script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+  </script>
+
+</body>
+</html>
