@@ -29,7 +29,7 @@ Single-page hub that signs a Coach4U client in and shows the coaching tools (sub
 
 ### Tables this page reads
 
-- `portals` — one row per coaching tool. Columns used: `slug`, `name`, `description`, `display_order`, `coming_soon` (bool, filtered to `false`).
+- `portals` — one row per coaching tool. Columns used: `slug`, `name`, `description`, `url`, `display_order`, `coming_soon` (bool, filtered to `false`). The `url` is what the Open button opens; null means "not built yet" and the button falls back to `#`.
 - `client_access` — grants. Columns used: `user_id`, `portal_slug`. The page reads rows for the signed-in user and treats every matching `portal_slug` as unlocked.
 
 A portal appears as **active** if its slug is present in `client_access` for the user. Otherwise it renders as **locked**.
@@ -40,23 +40,23 @@ A portal appears as **active** if its slug is present in `client_access` for the
 
 ---
 
-## Portal slug → URL/icon map
+## Portal slug → icon map
 
-Edit `PORTAL_MAP` in `index.html` when adding a new sub-portal. The keys must match the `slug` column in the `portals` table. Current entries:
+Only icons live in code now (the `ICONS` object in `index.html`). The Open URL comes from the `portals.url` column in Supabase, so adding a new portal usually doesn't need a code change — just an `insert` into `portals`. Add an entry to `ICONS` if you want a non-default emoji for the new slug; otherwise it falls back to 🔧.
 
-| Slug | URL | Icon |
-|---|---|---|
-| `business` | `https://cathcoach4u.github.io/Coach4uapp-strategy/business/` | 💼 |
-| `team` | `https://cathcoach4u.github.io/coach4Uapp-teamcoach4U/` | 👥 |
-| `marketing` | `https://cathcoach4u.github.io/Coach4U-Growth/` | 📈 |
-| `life` | `https://cathcoach4u.github.io/coach4Uapp-dashboard/personal/` | 🌱 |
-| `relationship` | `https://cathcoach4u.github.io/Coach4Uapp-relationships/` | ❤️ |
-| `thrivehq` | `https://cathcoach4u.github.io/coach4Uapp-thrivehq/` | ⚡ |
-| `career` | `#` (not yet built) | 🎯 |
-| `strengths` | `#` (not yet built) | 💪 |
-| `it` | `#` (not yet built) | 💻 |
+Current `ICONS` keys:
 
-A slug missing from the map still renders, but with a fallback 🔧 icon and `#` Open link. Always add the map entry when adding a portal row.
+| Slug | Icon |
+|---|---|
+| `business` | 💼 |
+| `team` | 👥 |
+| `marketing` | 📈 |
+| `life` | 🌱 |
+| `relationship` | ❤️ |
+| `thrivehq` | ⚡ |
+| `career` | 🎯 |
+| `strengths` | 💪 |
+| `it` | 💻 |
 
 ---
 

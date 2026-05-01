@@ -115,7 +115,6 @@
     .portal-card.locked .card-icon { background: #f0f0f0; }
     .portal-card.locked .card-name { color: #999; }
     .locked-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #bbb; margin-top: auto; }
-    .no-portals { color: #aaa; font-size: 14px; padding: 20px 0; }
     footer {
       text-align: center; padding: 20px 16px; font-size: 12px; color: #bbb;
       border-top: 1px solid #eee; background: white;
@@ -206,16 +205,11 @@
 
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
 
-    const PORTAL_MAP = {
-      'business':      { url: 'https://cathcoach4u.github.io/Coach4uapp-strategy/business/', icon: '💼' },
-      'team':          { url: 'https://cathcoach4u.github.io/coach4Uapp-teamcoach4U/',       icon: '👥' },
-      'marketing':     { url: 'https://cathcoach4u.github.io/Coach4U-Growth/',               icon: '📈' },
-      'life':          { url: 'https://cathcoach4u.github.io/coach4Uapp-dashboard/personal/', icon: '🌱' },
-      'relationship':  { url: 'https://cathcoach4u.github.io/Coach4Uapp-relationships/',     icon: '❤️' },
-      'thrivehq':      { url: 'https://cathcoach4u.github.io/coach4Uapp-thrivehq/',          icon: '⚡' },
-      'career':        { url: '#', icon: '🎯' },
-      'strengths':     { url: '#', icon: '💪' },
-      'it':            { url: '#', icon: '💻' },
+    // Icons by slug — only thing still in code
+    const ICONS = {
+      'business': '💼', 'team': '👥', 'marketing': '📈',
+      'life': '🌱', 'relationship': '❤️', 'thrivehq': '⚡',
+      'career': '🎯', 'strengths': '💪', 'it': '💻',
     }
 
     async function login() {
@@ -232,9 +226,7 @@
       }
     }
 
-    async function logout() {
-      await sb.auth.signOut()
-    }
+    async function logout() { await sb.auth.signOut() }
 
     async function sendReset() {
       const email = document.getElementById('forgotEmail').value.trim()
@@ -289,24 +281,22 @@
 
     function renderPortals(portals, containerId, isLocked) {
       const container = document.getElementById(containerId)
-      if (!portals.length) { container.innerHTML = '<div class="no-portals">None available yet.</div>'; return }
+      if (!portals.length) { container.innerHTML = '<div style="color:#aaa;font-size:14px">None available yet.</div>'; return }
       container.innerHTML = portals.map(p => {
-        const meta = PORTAL_MAP[p.slug] || {}
-        const icon = meta.icon || '🔧'
-        const desc = p.description || ''
+        const icon = ICONS[p.slug] || '🔧'
         if (isLocked) return `
           <div class="portal-card locked">
             <div class="card-icon">${icon}</div>
             <div class="card-name">${p.name}</div>
-            <div class="card-desc">${desc}</div>
+            <div class="card-desc">${p.description || ''}</div>
             <div class="locked-label">Contact your coach to unlock</div>
           </div>`
         return `
           <div class="portal-card">
             <div class="card-icon">${icon}</div>
             <div class="card-name">${p.name}</div>
-            <div class="card-desc">${desc}</div>
-            <button class="btn-open" onclick="window.open('${meta.url || '#'}','_blank')">Open</button>
+            <div class="card-desc">${p.description || ''}</div>
+            <button class="btn-open" onclick="window.open('${p.url || '#'}','_blank')">Open</button>
           </div>`
       }).join('')
     }
