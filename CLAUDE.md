@@ -75,6 +75,10 @@ A slug missing from the map still renders, but with a fallback 🔧 icon and `#`
 ```
 yourcoachingportal/
 ├── index.html        login + portal hub, all logic inline
+├── manifest.json     PWA manifest
+├── sw.js             service worker (offline shell, ignores Supabase calls)
+├── icon.svg          PWA / apple-touch icon
+├── migrations/       one-off SQL run in the Supabase SQL editor (numbered, idempotent)
 ├── CLAUDE.md         this file
 ├── CHANGELOG.md
 └── README.md
