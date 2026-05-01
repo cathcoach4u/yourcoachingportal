@@ -114,6 +114,7 @@ Run in numerical order in the Supabase **SQL Editor** (Dashboard → project `ee
 | `002_add_portal_url.sql` | Adds the `portals.url` column and seeds it for the six built portals. |
 | `003_create_client_strengths.sql` | Creates `client_strengths` (user_id, rank, theme) with RLS so each client reads only their own rows. Used by the strengths sub-portal. |
 | `004_set_strengths_url.sql` | Points the `strengths` portal at its live site (`https://cathcoach4u.github.io/yourstrengthscoach/`). |
+| `005_update_portal_urls_v2.sql` | Repoints business, team, marketing, relationship, thrivehq at their renamed sub-portal repos (`yourbusinesscoach`, `yourteamcoach`, etc.). |
 
 Add new migrations as `NNN_what_it_does.sql`, numbered next, idempotent (use `if not exists`, `on conflict do nothing`, conditional DDL blocks).
 
