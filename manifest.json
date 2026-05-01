@@ -1,0 +1,19 @@
+{
+  "name": "Your Coaching Portal",
+  "short_name": "Coach Portal",
+  "description": "Your personalised Coach4U coaching tools",
+  "start_url": "/yourcoachingportal/",
+  "scope": "/yourcoachingportal/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#003366",
+  "background_color": "#f5f7fa",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

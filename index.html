@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Your Coaching Portal — Coach4U</title>
+  <link rel="manifest" href="/yourcoachingportal/manifest.json">
+  <meta name="theme-color" content="#003366">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Coach Portal">
+  <link rel="apple-touch-icon" href="/yourcoachingportal/icon.svg">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,7 +23,6 @@
       display: flex; justify-content: space-between; align-items: center;
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
-    .header-left { }
     .header-title { font-size: 18px; font-weight: 700; }
     .header-sub { font-size: 11px; opacity: 0.6; margin-top: 2px; }
     .header-right { display: flex; align-items: center; gap: 12px; }
@@ -28,8 +33,6 @@
       font-size: 13px; font-family: inherit; font-weight: 500;
     }
     .logout-btn:hover { background: rgba(255,255,255,0.25); }
-
-    /* Login */
     .login-wrap {
       flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 16px;
     }
@@ -38,12 +41,13 @@
       box-shadow: 0 4px 24px rgba(0,0,0,0.1); width: 100%; max-width: 400px;
     }
     .login-logo {
-      width: 52px; height: 52px; background: #003366; border-radius: 12px;
+      width: 52px; height: 52px; background: #0D9488; border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 22px; font-weight: 800; color: white; margin-bottom: 20px;
+      font-size: 22px; font-weight: 800; color: white; font-style: italic;
+      margin-bottom: 20px;
     }
     .login-box h2 { font-size: 22px; color: #003366; margin-bottom: 6px; }
-    .login-box .login-sub { font-size: 13px; color: #999; margin-bottom: 28px; }
+    .login-sub { font-size: 13px; color: #999; margin-bottom: 28px; }
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; }
     .form-group input {
@@ -60,7 +64,7 @@
     .btn-primary:disabled { background: #aaa; cursor: not-allowed; }
     .forgot-link {
       display: block; text-align: right; font-size: 12px; color: #0D9488;
-      margin-top: -8px; margin-bottom: 16px; cursor: pointer; text-decoration: none;
+      margin-top: -8px; margin-bottom: 16px; cursor: pointer;
     }
     .forgot-link:hover { text-decoration: underline; }
     .msg { font-size: 13px; margin-top: 14px; text-align: center; line-height: 1.5; padding: 10px; border-radius: 6px; }
@@ -68,8 +72,6 @@
     .msg.success { color: #0D9488; background: #e6f4f1; }
     .back-link { display: block; text-align: center; margin-top: 16px; font-size: 13px; color: #0D9488; cursor: pointer; }
     .back-link:hover { text-decoration: underline; }
-
-    /* Portal view */
     .portal-content { flex: 1; padding: 24px 16px; max-width: 1100px; margin: 0 auto; width: 100%; }
     .welcome-banner {
       background: linear-gradient(135deg, #003366 0%, #005599 100%);
@@ -87,49 +89,38 @@
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 14px;
     }
-
-    /* Active portal card */
     .portal-card {
       background: white; border: 2px solid #0D9488; border-radius: 12px;
       padding: 18px 16px; display: flex; flex-direction: column;
       box-shadow: 0 2px 8px rgba(13,148,136,0.12); transition: all 0.25s;
     }
     .portal-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(13,148,136,0.2); }
-    .portal-card .card-icon {
+    .card-icon {
       width: 40px; height: 40px; border-radius: 10px; background: #e6f4f1;
       display: flex; align-items: center; justify-content: center;
       font-size: 20px; margin-bottom: 12px;
     }
-    .portal-card .card-name { font-size: 15px; font-weight: 700; color: #003366; margin-bottom: 6px; }
-    .portal-card .card-desc { font-size: 12px; color: #777; flex-grow: 1; line-height: 1.45; margin-bottom: 14px; }
+    .card-name { font-size: 15px; font-weight: 700; color: #003366; margin-bottom: 6px; }
+    .card-desc { font-size: 12px; color: #777; flex-grow: 1; line-height: 1.45; margin-bottom: 14px; }
     .btn-open {
       background: #0D9488; color: white; padding: 9px 14px; border: none;
       border-radius: 6px; font-size: 13px; font-weight: 700; font-family: inherit;
       cursor: pointer; transition: background 0.2s; align-self: flex-start; margin-top: auto;
     }
     .btn-open:hover { background: #0F766E; }
-
-    /* Locked portal card */
     .portal-card.locked {
-      border-color: #e0e0e0; background: #fafafa;
-      box-shadow: none; opacity: 0.65;
+      border-color: #e0e0e0; background: #fafafa; box-shadow: none; opacity: 0.65;
     }
     .portal-card.locked:hover { transform: none; box-shadow: none; }
     .portal-card.locked .card-icon { background: #f0f0f0; }
     .portal-card.locked .card-name { color: #999; }
-    .locked-label {
-      font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.4px; color: #bbb; margin-top: auto;
-    }
-
+    .locked-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #bbb; margin-top: auto; }
     .no-portals { color: #aaa; font-size: 14px; padding: 20px 0; }
-
     footer {
       text-align: center; padding: 20px 16px; font-size: 12px; color: #bbb;
       border-top: 1px solid #eee; background: white;
     }
     footer a { color: #0D9488; text-decoration: none; }
-
     @media (max-width: 480px) {
       .login-box { padding: 28px 20px; }
       .welcome-banner h1 { font-size: 18px; }
@@ -141,9 +132,8 @@
   </style>
 </head>
 <body>
-
   <header>
-    <div class="header-left">
+    <div>
       <div class="header-title">Your Coaching Portal</div>
       <div class="header-sub">Coach4U — Strengths-Based Coaching</div>
     </div>
@@ -153,12 +143,11 @@
     </div>
   </header>
 
-  <!-- Login screen -->
   <div id="loginWrap" class="login-wrap" style="display:none">
     <div class="login-box">
-      <div class="login-logo">C4</div>
+      <div class="login-logo">4U</div>
+      <h2>Welcome back</h2>
       <p class="login-sub">Sign in to access your coaching tools</p>
-
       <div id="loginForm">
         <div class="form-group">
           <label>Email</label>
@@ -173,7 +162,6 @@
         <button class="btn-primary" id="loginBtn" onclick="login()">Sign In</button>
         <div class="msg error" id="loginError" style="display:none"></div>
       </div>
-
       <div id="forgotForm" style="display:none">
         <div class="form-group">
           <label>Your email address</label>
@@ -187,19 +175,16 @@
     </div>
   </div>
 
-  <!-- Portal view -->
   <div id="portalWrap" style="display:none">
     <div class="portal-content">
       <div class="welcome-banner">
         <h1 id="welcomeHeading">Welcome back</h1>
         <p>Your personalised coaching tools are ready below. Reach out to your coach to unlock additional portals.</p>
       </div>
-
       <div class="section-wrap" id="activeSection">
         <div class="section-heading">Your Tools</div>
         <div class="cards-grid" id="activePortals"></div>
       </div>
-
       <div class="section-wrap" id="lockedSection">
         <div class="section-heading">Also Available</div>
         <div class="cards-grid" id="lockedPortals"></div>
@@ -222,7 +207,6 @@
 
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
 
-    // Map portal slugs to live URLs and icons
     const PORTAL_MAP = {
       'business-coach':     { url: 'https://cathcoach4u.github.io/Coach4uapp-strategy/business/',  icon: '💼' },
       'team-coach':         { url: 'https://cathcoach4u.github.io/coach4Uapp-teamcoach4U/',         icon: '👥' },
@@ -232,7 +216,6 @@
       'thrivehq':           { url: 'https://cathcoach4u.github.io/coach4Uapp-thrivehq/',            icon: '⚡' },
     }
 
-    // Auth helpers
     async function login() {
       const email    = document.getElementById('loginEmail').value.trim()
       const password = document.getElementById('loginPassword').value
@@ -245,7 +228,6 @@
         errEl.textContent = error.message; errEl.style.display = 'block'
         btn.disabled = false; btn.textContent = 'Sign In'
       }
-      // session change handled by onAuthStateChange
     }
 
     async function logout() {
@@ -253,17 +235,13 @@
     }
 
     async function sendReset() {
-      const email  = document.getElementById('forgotEmail').value.trim()
-      const msgEl  = document.getElementById('forgotMsg')
-      const btn    = document.getElementById('resetBtn')
+      const email = document.getElementById('forgotEmail').value.trim()
+      const msgEl = document.getElementById('forgotMsg')
+      const btn   = document.getElementById('resetBtn')
       if (!email) { showMsg(msgEl, 'Please enter your email.', 'error'); return }
       btn.disabled = true; btn.textContent = 'Sending…'
       const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: RESET_REDIRECT })
-      if (error) {
-        showMsg(msgEl, error.message, 'error')
-      } else {
-        showMsg(msgEl, 'Reset link sent — check your inbox.', 'success')
-      }
+      showMsg(msgEl, error ? error.message : 'Reset link sent — check your inbox.', error ? 'error' : 'success')
       btn.disabled = false; btn.textContent = 'Send Reset Link'
     }
 
@@ -280,18 +258,14 @@
     }
 
     function showMsg(el, text, type) {
-      el.textContent = text
-      el.className = 'msg ' + type
-      el.style.display = 'block'
+      el.textContent = text; el.className = 'msg ' + type; el.style.display = 'block'
     }
 
-    // Portal rendering
     async function loadPortal(user) {
       document.getElementById('loadingWrap').style.display = 'none'
       document.getElementById('loginWrap').style.display   = 'none'
       document.getElementById('portalWrap').style.display  = 'block'
       document.getElementById('logoutBtn').style.display   = 'block'
-
       const displayName = user.user_metadata?.name || user.email.split('@')[0]
       document.getElementById('headerName').textContent     = displayName
       document.getElementById('welcomeHeading').textContent = `Welcome, ${displayName}`
@@ -300,7 +274,6 @@
         sb.from('portals').select('*').eq('coming_soon', false).order('display_order'),
         sb.from('client_access').select('portal_slug').eq('user_id', user.id)
       ])
-
       const portals = portalsRes.data || []
       const granted = new Set((accessRes.data || []).map(r => r.portal_slug))
       const active  = portals.filter(p => granted.has(p.slug))
@@ -308,42 +281,34 @@
 
       renderPortals(active, 'activePortals', false)
       renderPortals(locked, 'lockedPortals', true)
-
       document.getElementById('activeSection').style.display = active.length ? 'block' : 'none'
       document.getElementById('lockedSection').style.display = locked.length ? 'block' : 'none'
     }
 
     function renderPortals(portals, containerId, isLocked) {
       const container = document.getElementById(containerId)
-      if (!portals.length) {
-        container.innerHTML = '<div class="no-portals">None available yet.</div>'
-        return
-      }
+      if (!portals.length) { container.innerHTML = '<div class="no-portals">None available yet.</div>'; return }
       container.innerHTML = portals.map(p => {
         const meta = PORTAL_MAP[p.slug] || {}
         const icon = meta.icon || '🔧'
         const desc = p.description || ''
-        if (isLocked) {
-          return `
-            <div class="portal-card locked">
-              <div class="card-icon">${icon}</div>
-              <div class="card-name">${p.name}</div>
-              <div class="card-desc">${desc}</div>
-              <div class="locked-label">Contact your coach to unlock</div>
-            </div>`
-        }
-        const url = meta.url || '#'
+        if (isLocked) return `
+          <div class="portal-card locked">
+            <div class="card-icon">${icon}</div>
+            <div class="card-name">${p.name}</div>
+            <div class="card-desc">${desc}</div>
+            <div class="locked-label">Contact your coach to unlock</div>
+          </div>`
         return `
           <div class="portal-card">
             <div class="card-icon">${icon}</div>
             <div class="card-name">${p.name}</div>
             <div class="card-desc">${desc}</div>
-            <button class="btn-open" onclick="window.open('${url}','_blank')">Open</button>
+            <button class="btn-open" onclick="window.open('${meta.url || '#'}','_blank')">Open</button>
           </div>`
       }).join('')
     }
 
-    // Auth state
     sb.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
         loadPortal(session.user)
@@ -356,7 +321,6 @@
       }
     })
 
-    // Check existing session on load
     sb.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         loadPortal(session.user)
@@ -365,6 +329,10 @@
         document.getElementById('loginWrap').style.display   = 'flex'
       }
     })
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/yourcoachingportal/sw.js')
+    }
   </script>
 </body>
 </html>
