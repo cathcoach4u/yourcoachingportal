@@ -82,6 +82,14 @@
       color: #003366; margin: 0 0 14px; padding-bottom: 6px; border-bottom: 2px solid #0D9488;
     }
     .section-wrap { margin-bottom: 32px; }
+    .strengths-grid {
+      background: white; border-radius: 12px; padding: 18px 22px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .strength-item { display: flex; align-items: baseline; font-size: 14px; color: #003366; }
+    .strength-rank { font-weight: 700; color: #0D9488; min-width: 28px; }
+    .strength-theme { font-weight: 500; }
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -122,6 +130,7 @@
       .login-box { padding: 28px 20px; }
       .welcome-banner h1 { font-size: 18px; }
       .cards-grid { grid-template-columns: 1fr 1fr; }
+      .strengths-grid { grid-template-columns: 1fr; gap: 8px; }
     }
     @media (max-width: 360px) {
       .cards-grid { grid-template-columns: 1fr; }
@@ -174,6 +183,10 @@
       <div class="welcome-banner">
         <h1 id="welcomeHeading"></h1>
         <p>Your personalised coaching tools are ready below. Reach out to your coach to unlock additional portals.</p>
+      </div>
+      <div class="section-wrap" id="strengthsSection" style="display:none">
+        <div class="section-heading">Your Top Strengths</div>
+        <div class="strengths-grid" id="strengthsList"></div>
       </div>
       <div class="section-wrap" id="activeSection">
         <div class="section-heading">Your Tools</div>
@@ -259,9 +272,10 @@
       const displayName = user.user_metadata?.name || user.email.split('@')[0]
       document.getElementById('welcomeHeading').textContent = `Welcome, ${displayName}`
 
-      const [portalsRes, accessRes] = await Promise.all([
+      const [portalsRes, accessRes, strengthsRes] = await Promise.all([
         sb.from('portals').select('*').eq('coming_soon', false).order('display_order'),
-        sb.from('client_access').select('portal_slug').eq('user_id', user.id)
+        sb.from('client_access').select('portal_slug').eq('user_id', user.id),
+        sb.from('client_strengths').select('rank, theme').eq('user_id', user.id).order('rank').limit(10)
       ])
       const portals = portalsRes.data || []
       const granted = new Set((accessRes.data || []).map(r => r.portal_slug))
@@ -270,8 +284,20 @@
 
       renderPortals(active, 'activePortals', false)
       renderPortals(locked, 'lockedPortals', true)
+      renderStrengths(strengthsRes.data || [])
       document.getElementById('activeSection').style.display = active.length ? 'block' : 'none'
       document.getElementById('lockedSection').style.display = locked.length ? 'block' : 'none'
+    }
+
+    function renderStrengths(themes) {
+      const section = document.getElementById('strengthsSection')
+      if (!themes.length) { section.style.display = 'none'; return }
+      document.getElementById('strengthsList').innerHTML = themes.map(t => `
+        <div class="strength-item">
+          <span class="strength-rank">${t.rank}.</span>
+          <span class="strength-theme">${t.theme}</span>
+        </div>`).join('')
+      section.style.display = 'block'
     }
 
     function renderPortals(portals, containerId, isLocked) {
