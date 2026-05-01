@@ -307,10 +307,9 @@
       const displayName = user.user_metadata?.name || user.email.split('@')[0]
       document.getElementById('welcomeHeading').textContent = `Welcome, ${displayName}`
 
-      const [portalsRes, accessRes, strengths] = await Promise.all([
+      const [portalsRes, accessRes] = await Promise.all([
         sb.from('portals').select('*').eq('coming_soon', false).order('display_order'),
-        sb.from('client_access').select('portal_slug').eq('user_id', user.id),
-        fetchStrengths(session)
+        sb.from('client_access').select('portal_slug').eq('user_id', user.id)
       ])
       const portals = portalsRes.data || []
       const granted = new Set((accessRes.data || []).map(r => r.portal_slug))
@@ -319,16 +318,21 @@
 
       renderPortals(active, 'activePortals', false)
       renderPortals(locked, 'lockedPortals', true)
-      renderStrengths(strengths)
       document.getElementById('activeSection').style.display = active.length ? 'block' : 'none'
       document.getElementById('lockedSection').style.display = locked.length ? 'block' : 'none'
+
+      fetchStrengths(session).then(renderStrengths)
     }
 
     async function fetchStrengths(session) {
       try {
+        const ctrl = new AbortController()
+        const timer = setTimeout(() => ctrl.abort(), 8000)
         const res = await fetch(STRENGTHS_ENDPOINT, {
-          headers: { Authorization: `Bearer ${session.access_token}` }
+          headers: { Authorization: `Bearer ${session.access_token}` },
+          signal: ctrl.signal
         })
+        clearTimeout(timer)
         if (!res.ok) return []
         const data = await res.json()
         return Array.isArray(data.strengths) ? data.strengths : []
