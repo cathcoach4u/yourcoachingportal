@@ -26,7 +26,6 @@
     .header-title { font-size: 18px; font-weight: 700; }
     .header-sub { font-size: 11px; opacity: 0.6; margin-top: 2px; }
     .header-right { display: flex; align-items: center; gap: 12px; }
-    .welcome-name { font-size: 13px; opacity: 0.85; }
     .logout-btn {
       background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
       color: white; padding: 6px 14px; border-radius: 6px; cursor: pointer;
@@ -137,7 +136,6 @@
       <div class="header-sub">Coach4U — Strengths-Based Coaching</div>
     </div>
     <div class="header-right">
-      <span class="welcome-name" id="headerName"></span>
       <button class="logout-btn" id="logoutBtn" style="display:none" onclick="logout()">Sign Out</button>
     </div>
   </header>
@@ -261,7 +259,6 @@
       document.getElementById('portalWrap').style.display  = 'block'
       document.getElementById('logoutBtn').style.display   = 'block'
       const displayName = user.user_metadata?.name || user.email.split('@')[0]
-      document.getElementById('headerName').textContent     = displayName
       document.getElementById('welcomeHeading').textContent = `Welcome, ${displayName}`
 
       const [portalsRes, accessRes] = await Promise.all([
@@ -308,7 +305,6 @@
         document.getElementById('loadingWrap').style.display = 'none'
         document.getElementById('portalWrap').style.display  = 'none'
         document.getElementById('logoutBtn').style.display   = 'none'
-        document.getElementById('headerName').textContent    = ''
         document.getElementById('loginWrap').style.display   = 'flex'
       }
     })
