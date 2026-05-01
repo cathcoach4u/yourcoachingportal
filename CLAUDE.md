@@ -131,6 +131,12 @@ To revoke, delete the row.
 
 ---
 
+## Admin tooling lives elsewhere
+
+This repo is the **client-facing** portal only. The coach-side admin (granting `client_access`, populating `client_strengths`, etc.) is built in a separate repo and writes to the same Supabase project. **Don't add admin UI here** unless I explicitly ask — the only writes this page performs are via Supabase auth (sign-in, password reset).
+
+---
+
 ## Working with Claude (session protocol)
 
 This project is small and I drive it directly on `main`. The protocol below should be followed in every new session unless I say otherwise.
