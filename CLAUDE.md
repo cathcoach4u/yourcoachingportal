@@ -1,170 +1,104 @@
-# Business Coach4U — Claude Code Guide
+# Your Coaching Portal — Claude Code Guide
 
-> **Design system version: 1.4**
-> This file is self-contained. Do not link to or depend on any other Coach4U repo at runtime.
-
----
-
-## App-Specific Notes
-
-- **Purpose:** EOS-style business operating system for Coach4U clients. Vision/Traction Organiser, Accountability Chart, Goals (Rocks), Scorecard (Metrics), Weekly Meetings, Issues, Team Alignment.
-- **Multi-business:** Single user owns multiple businesses. Holding company sits at the top, sub-businesses roll up.
-- **Status:** Auth scaffolding live. All panel logic (`js/app.js`) is to be built in the next phase.
-- **AI Coach:** Removed in v1.0. Can be re-added later as an optional sidebar.
+Single-page hub that signs a Coach4U client in and shows the coaching tools (sub-portals) they have access to. Each tool is its own GitHub Pages site; this repo only does login + landing.
 
 ---
 
-## Coach4U Brand Standard (locked)
+## What this app is
 
-**Fonts**
-- Headings: Inter Bold
-- Body: Montserrat Regular
-- Fallback chain: Inter / Montserrat → Aptos → Calibri → sans-serif
-
-**Colours**
-- Dark blue `#1B3664` — titles, headings, primary buttons
-- Light blue `#5684C4` — accents, links, highlights
-- Dark grey `#2D2D2D` — body text
-- Light grey `#DDDDDD` — dividers
-- App background `#F8F9FA` — light grey for the dense multi-panel app
-- Card background `#FFFFFF` — white
-
-**Tone**
-- Warm, professional, clear
-- Strengths-based, not clinical
-- Australian English
-- No exclamation marks, no em-dashes
+- **Purpose:** One front door for Coach4U clients. After sign-in, the page lists the client's active coaching portals (with an Open button) and any locked portals (with a "Contact your coach to unlock" label).
+- **Sub-portals** live in their own repos and are linked out via `target="_blank"`. The mapping from slug to URL/icon is hardcoded in `index.html` under `PORTAL_MAP`.
+- **No app data lives here.** Everything except auth + portal lookup happens in the sub-portal apps.
 
 ---
 
-## Supabase Project
+## Stack
+
+- Static `index.html` hosted on GitHub Pages
+- Supabase for auth and the portal/access tables
+- Supabase JS UMD build loaded from jsDelivr (no ES modules, no bundler)
+
+---
+
+## Supabase project
 
 | | |
 |---|---|
 | URL | `https://eekefsuaefgpqmjdyniy.supabase.co` |
-| Anon Key | `sb_publishable_pcXHwQVMpvEojb4K3afEMw_RMvgZM-Y` |
+| Anon key | `sb_publishable_pcXHwQVMpvEojb4K3afEMw_RMvgZM-Y` |
+
+### Tables this page reads
+
+- `portals` — one row per coaching tool. Columns used: `slug`, `name`, `description`, `display_order`, `coming_soon` (bool, filtered to `false`).
+- `client_access` — grants. Columns used: `user_id`, `portal_slug`. The page reads rows for the signed-in user and treats every matching `portal_slug` as unlocked.
+
+A portal appears as **active** if its slug is present in `client_access` for the user. Otherwise it renders as **locked**.
+
+### Reset password redirect
+
+`RESET_REDIRECT` in `index.html` points at the dashboard repo's `auth.html`. Update it there if the auth handler ever moves.
 
 ---
 
-## Critical Rules
+## Portal slug → URL/icon map
 
-**Supabase init for ES modules — always inline.** GitHub Pages does not reliably load external `.js` modules. Always initialise Supabase inline in a `<script type="module">` block on every page that needs it. Classic `<script src="...">` tags (non-module) are fine to load externally — only ES modules have the loading issue.
+Edit `PORTAL_MAP` in `index.html` when adding a new sub-portal. The keys must match the `slug` column in the `portals` table. Current entries:
 
-**Reset password redirect.** Use `window.location.href` (not `window.location.origin`) when building the `redirectTo` URL. Using `origin` drops the path and breaks Supabase's redirect matching.
+| Slug | URL | Icon |
+|---|---|---|
+| `business-coach` | `https://cathcoach4u.github.io/Coach4uapp-strategy/business/` | 💼 |
+| `team-coach` | `https://cathcoach4u.github.io/coach4Uapp-teamcoach4U/` | 👥 |
+| `marketing-coach` | `https://cathcoach4u.github.io/Coach4U-Growth/` | 📈 |
+| `life-coach` | `https://cathcoach4u.github.io/coach4Uapp-dashboard/personal/` | 🌱 |
+| `relationship-coach` | `https://cathcoach4u.github.io/Coach4Uapp-relationships/` | ❤️ |
+| `thrivehq` | `https://cathcoach4u.github.io/coach4Uapp-thrivehq/` | ⚡ |
 
-**Membership gating.** Every page except `login.html`, `forgot-password.html`, `reset-password.html`, and `inactive.html` must verify `users.membership_status = 'active'` after confirming a session. Redirect to `inactive.html` if not.
-
-**Login subtitle wording locked.** "Sign in to access your account." Do not change.
-
----
-
-## Login Page Spec — locked v1.4
-
-| Element | Value |
-|---|---|
-| Background | `linear-gradient(135deg, #1B3664 0%, #5684C4 100%)` |
-| Card | White, max 420px wide, 16px radius, 36px 32px padding |
-| App name (h1) | Inter Bold, 36px, `#1B3664`, centred |
-| Title | Inter Bold, 22px, `#1B3664`, centred — "Welcome back" |
-| Subtitle | Montserrat 400, 15px, `#6C757D`, centred — "Sign in to access your account." |
-| Labels | Montserrat 600, 14px, `#2D2D2D` |
-| Inputs | Montserrat 400, 15px, border `#DDDDDD`, focus `#5684C4`, 8px radius |
-| Button | Montserrat 600, 16px, white on `#1B3664`, 8px radius, full width |
-| Forgot password link | Montserrat 500, 14px, `#5684C4` |
+A slug missing from the map still renders, but with a fallback 🔧 icon and `#` Open link. Always add the map entry when adding a portal row.
 
 ---
 
-## File Structure
+## Brand
+
+- Header / primary buttons / titles: navy `#003366`
+- Accent (active card border, links, secondary buttons): teal `#0D9488`, hover `#0F766E`
+- App background `#f5f7fa`, cards white
+- Font stack: Aptos then system sans
+- Tone: warm, professional, Australian English. No exclamation marks, no em-dashes.
+
+---
+
+## File structure
 
 ```
-business-coach4u/
-├── index.html               main app, auth gate inline at top
-├── login.html               sign in
-├── forgot-password.html     reset request
-├── reset-password.html      set new password
-├── inactive.html            shown if membership_status != 'active'
-├── manifest.json            PWA manifest
-├── sw.js                    service worker
-├── js/
-│   └── app.js               panel logic (to be built)
-├── migrations/
-│   └── 001_create_users_table.sql
-├── icons/
-│   ├── icon-192.png         (to add)
-│   └── icon-512.png         (to add)
-├── CLAUDE.md                this file
-└── CHANGELOG.md
+yourcoachingportal/
+├── index.html        login + portal hub, all logic inline
+├── CLAUDE.md         this file
+├── CHANGELOG.md
+└── README.md
 ```
+
+Everything is in one file by design. Don't split into modules unless there's a real reason — GitHub Pages serves ES modules unreliably for this account.
 
 ---
 
-## Sign Out — Standard Placement
+## Granting access (SQL)
 
-Top-right of the header on every authenticated page. Already wired in `index.html`:
-
-```html
-<button class="sign-out-btn" onclick="window.signOut()">Sign Out</button>
-```
-
-`window.signOut` is defined in the auth gate at the top of `index.html`.
-
----
-
-## Add a New Member (SQL)
-
-Run in the Supabase SQL editor after the user has signed up:
+After a client signs up via the login screen, grant them access to one or more portals:
 
 ```sql
-INSERT INTO users (id, email, membership_status)
-SELECT id, email, 'active'
-FROM auth.users
-WHERE LOWER(email) = LOWER('email@here.com');
+INSERT INTO client_access (user_id, portal_slug)
+SELECT u.id, 'business-coach'
+FROM auth.users u
+WHERE LOWER(u.email) = LOWER('client@example.com');
 ```
+
+To revoke, delete the row.
 
 ---
 
-## Version Control
-
-### Git workflow
+## Version control
 
 - `main` is the only long-lived branch
-- Commit directly for small fixes; branch for larger work
-- Every push to `main` triggers GitHub Pages deploy
-
-### Commit message format
-
-```
-<type>: <short summary>
-```
-
-Types: `feat` `fix` `style` `docs` `data` `chore`
-
-### Service worker cache busting
-
-Every meaningful deploy: bump `'business-coach4u-v1'` → `v2` in `sw.js`.
-
-### Rollback
-
-```bash
-git revert HEAD
-git push origin main
-```
-
----
-
-## Next Phase — Building `js/app.js`
-
-When ready to build the panel logic, hand Claude Code each panel one at a time. Suggested order:
-
-1. **Business switcher** — load businesses, switch active business, persist selection
-2. **Panel switching** — clicking nav tabs shows/hides panels
-3. **VTO** — load and save Vision/Traction Organiser fields per business
-4. **Accountability Chart** — render org tree, seat CRUD
-5. **Goals (Rocks)** — quarterly priorities CRUD, progress calculation
-6. **Scorecard (Metrics)** — metric CRUD, weekly cell editing
-7. **Issues** — kanban CRUD, status moves
-8. **Weekly Meetings** — meeting CRUD, agenda accordion, todo/headline tracking
-9. **Team Alignment** — rating cells, GWC scoring, summary calculation
-10. **Vision banner** — populate from VTO data, collapse/expand
-
-Each panel will need its own Supabase migration (e.g. `002_create_businesses_table.sql`, `003_create_vto_table.sql` etc.). Build the migration, run it, then build the panel logic.
+- Push to `main` triggers GitHub Pages deploy
+- Commit prefixes: `feat` `fix` `style` `docs` `data` `chore`
+- Rollback: `git revert HEAD && git push origin main`

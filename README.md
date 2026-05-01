@@ -1,37 +1,27 @@
-# Business Coach4U
+# Your Coaching Portal
 
-EOS-style business operating system for Coach4U clients.
-
-Vision/Traction Organiser, Accountability Chart, Goals, Scorecard, Weekly Meetings, Issues, Team Alignment.
+Single-page hub for Coach4U clients. After signing in, the page lists the coaching tools (sub-portals) the client has access to and links out to each one.
 
 ## Stack
 
-- Static HTML/CSS/JS hosted on GitHub Pages
-- Supabase for auth, membership, and data
-- PWA-installable
+- Static `index.html` hosted on GitHub Pages
+- Supabase for auth and the `portals` / `client_access` tables
+- Supabase JS UMD build via jsDelivr — no bundler, no modules
 
-## Getting started
+## How it works
 
-1. Run `migrations/001_create_users_table.sql` in the Supabase SQL editor
-2. Sign up via `login.html` (or use Supabase dashboard to create the user)
-3. Activate the membership:
-   ```sql
-   INSERT INTO users (id, email, membership_status)
-   SELECT id, email, 'active'
-   FROM auth.users
-   WHERE LOWER(email) = LOWER('your@email.com');
-   ```
-4. Sign in at `login.html` and you'll land in the app
+1. Client lands on `index.html` and signs in (or requests a reset link).
+2. The page queries `portals` (where `coming_soon = false`) and `client_access` for the current user.
+3. Portals whose slug appears in `client_access` render as active (Open button); the rest render as locked.
+4. The slug → URL/icon map lives in `PORTAL_MAP` inside `index.html`.
 
-## Status
+## Granting a client access
 
-- ✅ Auth scaffolding complete (login, forgot password, reset, inactive, membership gating)
-- ✅ Full HTML structure for all panels (VTO, Accountability, Goals, Scorecard, Meetings, Issues, Alignment)
-- ✅ BrandLock v1.4 styling applied
-- ⏳ Panel logic (`js/app.js`) — to be built next
+```sql
+INSERT INTO client_access (user_id, portal_slug)
+SELECT u.id, 'business-coach'
+FROM auth.users u
+WHERE LOWER(u.email) = LOWER('client@example.com');
+```
 
-See `CLAUDE.md` for the full design system and build guide.
-
-## Brand
-
-This app uses the locked Coach4U design system v1.4. Do not modify colours, fonts, or login spec without updating `CLAUDE.md` and bumping the design system version.
+See `CLAUDE.md` for the full guide, including the current portal slug map and the Supabase project details.
