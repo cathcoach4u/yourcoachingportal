@@ -207,12 +207,15 @@
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
 
     const PORTAL_MAP = {
-      'business-coach':     { url: 'https://cathcoach4u.github.io/Coach4uapp-strategy/business/',  icon: '💼' },
-      'team-coach':         { url: 'https://cathcoach4u.github.io/coach4Uapp-teamcoach4U/',         icon: '👥' },
-      'marketing-coach':    { url: 'https://cathcoach4u.github.io/Coach4U-Growth/',                 icon: '📈' },
-      'life-coach':         { url: 'https://cathcoach4u.github.io/coach4Uapp-dashboard/personal/',  icon: '🌱' },
-      'relationship-coach': { url: 'https://cathcoach4u.github.io/Coach4Uapp-relationships/',       icon: '❤️' },
-      'thrivehq':           { url: 'https://cathcoach4u.github.io/coach4Uapp-thrivehq/',            icon: '⚡' },
+      'business':      { url: 'https://cathcoach4u.github.io/Coach4uapp-strategy/business/', icon: '💼' },
+      'team':          { url: 'https://cathcoach4u.github.io/coach4Uapp-teamcoach4U/',       icon: '👥' },
+      'marketing':     { url: 'https://cathcoach4u.github.io/Coach4U-Growth/',               icon: '📈' },
+      'life':          { url: 'https://cathcoach4u.github.io/coach4Uapp-dashboard/personal/', icon: '🌱' },
+      'relationship':  { url: 'https://cathcoach4u.github.io/Coach4Uapp-relationships/',     icon: '❤️' },
+      'thrivehq':      { url: 'https://cathcoach4u.github.io/coach4Uapp-thrivehq/',          icon: '⚡' },
+      'career':        { url: '#', icon: '🎯' },
+      'strengths':     { url: '#', icon: '💪' },
+      'it':            { url: '#', icon: '💻' },
     }
 
     async function login() {

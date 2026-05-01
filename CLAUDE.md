@@ -46,12 +46,15 @@ Edit `PORTAL_MAP` in `index.html` when adding a new sub-portal. The keys must ma
 
 | Slug | URL | Icon |
 |---|---|---|
-| `business-coach` | `https://cathcoach4u.github.io/Coach4uapp-strategy/business/` | 💼 |
-| `team-coach` | `https://cathcoach4u.github.io/coach4Uapp-teamcoach4U/` | 👥 |
-| `marketing-coach` | `https://cathcoach4u.github.io/Coach4U-Growth/` | 📈 |
-| `life-coach` | `https://cathcoach4u.github.io/coach4Uapp-dashboard/personal/` | 🌱 |
-| `relationship-coach` | `https://cathcoach4u.github.io/Coach4Uapp-relationships/` | ❤️ |
+| `business` | `https://cathcoach4u.github.io/Coach4uapp-strategy/business/` | 💼 |
+| `team` | `https://cathcoach4u.github.io/coach4Uapp-teamcoach4U/` | 👥 |
+| `marketing` | `https://cathcoach4u.github.io/Coach4U-Growth/` | 📈 |
+| `life` | `https://cathcoach4u.github.io/coach4Uapp-dashboard/personal/` | 🌱 |
+| `relationship` | `https://cathcoach4u.github.io/Coach4Uapp-relationships/` | ❤️ |
 | `thrivehq` | `https://cathcoach4u.github.io/coach4Uapp-thrivehq/` | ⚡ |
+| `career` | `#` (not yet built) | 🎯 |
+| `strengths` | `#` (not yet built) | 💪 |
+| `it` | `#` (not yet built) | 💻 |
 
 A slug missing from the map still renders, but with a fallback 🔧 icon and `#` Open link. Always add the map entry when adding a portal row.
 
