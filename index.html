@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Your Coaching Portal — Coach4U</title>
-  <link rel="manifest" href="/yourcoachingportal/manifest.json">
+  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#003366">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Coach Portal">
-  <link rel="apple-touch-icon" href="/yourcoachingportal/icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -146,7 +146,6 @@
   <div id="loginWrap" class="login-wrap" style="display:none">
     <div class="login-box">
       <div class="login-logo">4U</div>
-      <h2>Welcome back</h2>
       <p class="login-sub">Sign in to access your coaching tools</p>
       <div id="loginForm">
         <div class="form-group">
@@ -178,7 +177,7 @@
   <div id="portalWrap" style="display:none">
     <div class="portal-content">
       <div class="welcome-banner">
-        <h1 id="welcomeHeading">Welcome back</h1>
+        <h1 id="welcomeHeading"></h1>
         <p>Your personalised coaching tools are ready below. Reach out to your coach to unlock additional portals.</p>
       </div>
       <div class="section-wrap" id="activeSection">
@@ -331,7 +330,7 @@
     })
 
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/yourcoachingportal/sw.js')
+      navigator.serviceWorker.register('sw.js')
     }
   </script>
 </body>

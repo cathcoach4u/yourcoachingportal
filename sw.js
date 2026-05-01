@@ -1,7 +1,7 @@
 const CACHE = 'coaching-portal-v1'
 const ASSETS = [
-  '/yourcoachingportal/',
-  '/yourcoachingportal/index.html'
+  './',
+  './index.html'
 ]
 
 self.addEventListener('install', e => {
