@@ -112,6 +112,7 @@ Run in numerical order in the Supabase **SQL Editor** (Dashboard → project `ee
 |---|---|
 | `001_shorten_slugs_and_add_placeholders.sql` | Renames `<name>-coach` slugs to `<name>` in `portals` and `client_access`; seeds `career`, `strengths`, `it` placeholder rows. |
 | `002_add_portal_url.sql` | Adds the `portals.url` column and seeds it for the six built portals. |
+| `003_create_client_strengths.sql` | Creates `client_strengths` (user_id, rank, theme) with RLS so each client reads only their own rows. Used by the strengths sub-portal. |
 
 Add new migrations as `NNN_what_it_does.sql`, numbered next, idempotent (use `if not exists`, `on conflict do nothing`, conditional DDL blocks).
 
