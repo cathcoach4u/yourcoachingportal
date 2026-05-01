@@ -83,13 +83,25 @@
     }
     .section-wrap { margin-bottom: 32px; }
     .strengths-grid {
-      background: white; border-radius: 12px; padding: 18px 22px;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px 28px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: grid; grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(5, auto); grid-auto-flow: column;
+      gap: 8px 14px;
     }
-    .strength-item { display: flex; align-items: baseline; font-size: 14px; color: #003366; }
-    .strength-rank { font-weight: 700; color: #0D9488; min-width: 28px; }
-    .strength-theme { font-weight: 500; }
+    .strength-card {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 14px; border-radius: 8px; color: white;
+    }
+    .strength-rank {
+      font-size: 22px; font-weight: 800; min-width: 28px;
+      text-align: center; line-height: 1;
+    }
+    .strength-info { flex: 1; min-width: 0; }
+    .strength-name { font-size: 15px; font-weight: 700; line-height: 1.2; }
+    .strength-domain { font-size: 11px; opacity: 0.9; margin-top: 2px; }
+    .strength-card.domain-executing    { background: #7B2D8B; }
+    .strength-card.domain-influencing  { background: #E8622A; }
+    .strength-card.domain-relationship { background: #1F96D3; }
+    .strength-card.domain-strategic    { background: #2EAF6E; }
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -130,7 +142,7 @@
       .login-box { padding: 28px 20px; }
       .welcome-banner h1 { font-size: 18px; }
       .cards-grid { grid-template-columns: 1fr 1fr; }
-      .strengths-grid { grid-template-columns: 1fr; gap: 8px; }
+      .strengths-grid { grid-template-columns: 1fr; grid-auto-flow: row; gap: 8px; }
     }
     @media (max-width: 360px) {
       .cards-grid { grid-template-columns: 1fr; }
@@ -185,7 +197,7 @@
         <p>Your personalised coaching tools are ready below. Reach out to your coach to unlock additional portals.</p>
       </div>
       <div class="section-wrap" id="strengthsSection" style="display:none">
-        <div class="section-heading">Your Top Strengths</div>
+        <div class="section-heading">Your CliftonStrengths Top 10</div>
         <div class="strengths-grid" id="strengthsList"></div>
       </div>
       <div class="section-wrap" id="activeSection">
@@ -219,6 +231,28 @@
       'business': '💼', 'team': '👥', 'marketing': '📈',
       'life': '🌱', 'relationship': '❤️', 'thrivehq': '⚡',
       'career': '🎯', 'strengths': '💪', 'it': '💻',
+    }
+
+    const STRENGTHS_ENDPOINT = `${SUPABASE_URL}/functions/v1/get-strengths`
+
+    const DOMAIN_BY_THEME = {
+      'Achiever':'executing','Arranger':'executing','Belief':'executing',
+      'Consistency':'executing','Deliberative':'executing','Discipline':'executing',
+      'Focus':'executing','Responsibility':'executing','Restorative':'executing',
+      'Activator':'influencing','Command':'influencing','Communication':'influencing',
+      'Competition':'influencing','Maximizer':'influencing','Self-Assurance':'influencing',
+      'Significance':'influencing','Woo':'influencing',
+      'Adaptability':'relationship','Connectedness':'relationship','Developer':'relationship',
+      'Empathy':'relationship','Harmony':'relationship','Includer':'relationship',
+      'Individualization':'relationship','Positivity':'relationship','Relator':'relationship',
+      'Analytical':'strategic','Context':'strategic','Futuristic':'strategic',
+      'Ideation':'strategic','Input':'strategic','Intellection':'strategic',
+      'Learner':'strategic','Strategic':'strategic',
+    }
+
+    const DOMAIN_LABEL = {
+      executing: 'Executing', influencing: 'Influencing',
+      relationship: 'Relationship', strategic: 'Strategic',
     }
 
     async function login() {
@@ -264,7 +298,8 @@
       el.textContent = text; el.className = 'msg ' + type; el.style.display = 'block'
     }
 
-    async function loadPortal(user) {
+    async function loadPortal(session) {
+      const user = session.user
       document.getElementById('loadingWrap').style.display = 'none'
       document.getElementById('loginWrap').style.display   = 'none'
       document.getElementById('portalWrap').style.display  = 'block'
@@ -272,10 +307,10 @@
       const displayName = user.user_metadata?.name || user.email.split('@')[0]
       document.getElementById('welcomeHeading').textContent = `Welcome, ${displayName}`
 
-      const [portalsRes, accessRes, strengthsRes] = await Promise.all([
+      const [portalsRes, accessRes, strengths] = await Promise.all([
         sb.from('portals').select('*').eq('coming_soon', false).order('display_order'),
         sb.from('client_access').select('portal_slug').eq('user_id', user.id),
-        sb.from('client_strengths').select('rank, theme').eq('user_id', user.id).order('rank').limit(10)
+        fetchStrengths(session)
       ])
       const portals = portalsRes.data || []
       const granted = new Set((accessRes.data || []).map(r => r.portal_slug))
@@ -284,19 +319,38 @@
 
       renderPortals(active, 'activePortals', false)
       renderPortals(locked, 'lockedPortals', true)
-      renderStrengths(strengthsRes.data || [])
+      renderStrengths(strengths)
       document.getElementById('activeSection').style.display = active.length ? 'block' : 'none'
       document.getElementById('lockedSection').style.display = locked.length ? 'block' : 'none'
+    }
+
+    async function fetchStrengths(session) {
+      try {
+        const res = await fetch(STRENGTHS_ENDPOINT, {
+          headers: { Authorization: `Bearer ${session.access_token}` }
+        })
+        if (!res.ok) return []
+        const data = await res.json()
+        return Array.isArray(data.strengths) ? data.strengths : []
+      } catch {
+        return []
+      }
     }
 
     function renderStrengths(themes) {
       const section = document.getElementById('strengthsSection')
       if (!themes.length) { section.style.display = 'none'; return }
-      document.getElementById('strengthsList').innerHTML = themes.map(t => `
-        <div class="strength-item">
-          <span class="strength-rank">${t.rank}.</span>
-          <span class="strength-theme">${t.theme}</span>
-        </div>`).join('')
+      document.getElementById('strengthsList').innerHTML = themes.slice(0, 10).map((theme, i) => {
+        const domain = DOMAIN_BY_THEME[theme] || 'strategic'
+        return `
+          <div class="strength-card domain-${domain}">
+            <span class="strength-rank">${i + 1}</span>
+            <div class="strength-info">
+              <div class="strength-name">${theme}</div>
+              <div class="strength-domain">${DOMAIN_LABEL[domain]}</div>
+            </div>
+          </div>`
+      }).join('')
       section.style.display = 'block'
     }
 
@@ -324,7 +378,7 @@
 
     sb.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        loadPortal(session.user)
+        loadPortal(session)
       } else if (event === 'SIGNED_OUT') {
         document.getElementById('loadingWrap').style.display = 'none'
         document.getElementById('portalWrap').style.display  = 'none'
@@ -335,7 +389,7 @@
 
     sb.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        loadPortal(session.user)
+        loadPortal(session)
       } else {
         document.getElementById('loadingWrap').style.display = 'none'
         document.getElementById('loginWrap').style.display   = 'flex'
