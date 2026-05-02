@@ -5,13 +5,13 @@ Single-page hub that signs a Coach4U client in and shows the coaching tools (sub
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.5` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.10` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
 ## Purpose
 
-- **One front door for Coach4U clients.** After sign-in, the dashboard shows two side-by-side hub cards (Strengths Hub, Global Resources) and the Your Tools panel. Active portals have an Open button; locked ones say "Contact your coach to unlock".
+- **One front door for Coach4U clients.** After sign-in, the dashboard shows two side-by-side hub cards (**Your Strengths Hub**, **Your Access to Global Resources**) and the **Your Tools** panel. Active portals have an Open button; locked ones say "Contact your coach to unlock".
 - **Sub-portals** live in their own repos and open in a new tab.
 - **Strengths Hub and Global Resources** are dedicated pages within this repo (`strengths.html`, `resources.html`) — built to grow over time.
 - **No app data lives here.** Auth + portal lookup happen here; everything else lives in the sub-portal apps.
@@ -131,21 +131,34 @@ These have been deliberately removed or set. Don't change unless asked.
 The portal content area (`#portalWrap`) renders these in order after the welcome banner:
 
 1. **Hub cards row** (`.hub-cards-row`) — two side-by-side anchor links (`<a class="hub-card">`):
-   - **Strengths Hub** → `strengths.html` (💪)
-   - **Global Resources** → `resources.html` (🌐)
+   - **Your Strengths Hub** → `strengths.html` (💪)
+   - **Your Access to Global Resources** → `resources.html` (🌐)
 2. **Your Tools** (`#activeSection`) — collapsible toggle, **expanded by default** (chevron starts `.open`). Sub-label shows active portal count, e.g. "3 active portals". Content: active portal cards (`#activePortals`) then a tucked "Also Available" sub-section (`#lockedSection`) for locked portals.
 
 Toggle function: `toggleSection(bodyId, chevronId)` — flips `display` and toggles the `.open` class on the chevron.
 
+`loadPortal()` filters out `slug === 'coaching-portal'` defensively (the hub itself shouldn't appear as a sub-portal tile inside itself).
+
 ### Strengths Hub and Global Resources pages
 
-Each is a self-contained HTML file with its own `<style>` and `<script>` — same Aptos / navy / teal styling as the portal, with a header that has a "← Back" link, the page title, and a Sign Out button.
+Each is a self-contained HTML file with its own `<style>` and `<script>` — `strengths.html` and `resources.html` use the portal's Aptos / navy / teal system; tools under `resources/` use their own Inter / Montserrat / `#1B3664` design system (consistent across all resources). Each has a header with a "← Back" link.
 
-- **`strengths.html`** — fetches CliftonStrengths via the Edge Function and renders the 10-card grid. Owns the `DOMAIN_BY_THEME`, `DOMAIN_LABEL`, `STRENGTHS_ENDPOINT`, `fetchStrengths`, `renderStrengths` (these are NOT in `index.html` any more).
-- **`resources.html`** — listing page for client-facing tools. Each tool is an `<a class="resource-card">` linking into the `resources/` subdirectory.
-- **`resources/<tool>.html`** — individual tool pages (e.g. `resources/feelings-chart.html`). May have their own design system; add a `← Back to Resources` link near the top that points to `../resources.html`.
+- **`strengths.html`** — Strengths Hub. Layout in render order: page banner → Domain Mix grid (4 cards counting how many of the user's top 10 sit in each Gallup domain, with theme names listed inside each) → Top 10 grid → two collapsible reports ("What each theme means", "What you bring") that iterate over the user's 10 themes. Owns `DOMAIN_BY_THEME`, `DOMAIN_LABEL`, `STRENGTHS_ENDPOINT`, `fetchStrengths`, `renderStrengths`, `renderDomainMix`, `renderReports`, and the `THEME_INFO` object covering all 34 themes (description + brings per theme). These are NOT in `index.html` any more.
+- **`resources.html`** — listing page for client-facing tools. Each tool is an `<a class="resource-card">` linking into the `resources/` subdirectory. Auth-gated.
+- **`resources/<tool>.html`** — individual tool pages. Three currently:
+  - **`feelings-chart.html`** — 4-step (Core → Layer → Nuance → Reflect) feelings naming wizard with multi-select at every step.
+  - **`smart-goal.html`** — 5-step SMART goal builder. Final card stitches inputs into one paragraph (`I will [S] by [T]. This is achievable because [A]. I will measure progress by [M]. This matters to me because [R].`) with a Copy button, plus a five-letter breakdown and three reflect prompts.
+  - **`issue-clarifier.html`** — 5-step issue clarifier (Scope pills → Facts → Impact → Underneath → Real issue with two template hints). Summary shows the journey from scope to core in a 5-row card with the real issue highlighted in the navy gradient banner. Includes 3 reflect prompts and a 1–10 confidence rating against the first small step.
 
-All three auth-gate via `sb.auth.getSession()` on load and redirect to `./` if no session. Shared session via `localStorage` (same Supabase project) means the user does not re-login.
+`strengths.html` and `resources.html` auth-gate via `sb.auth.getSession()` and redirect to `./` if no session. Tools under `resources/` are self-contained content (no Supabase calls) and don't auth-gate — public access via direct URL is fine. Shared session via `localStorage` (same Supabase project) means the user does not re-login when navigating between gated pages.
+
+### Adding a new resource
+
+1. Create `resources/<slug>.html`. Either match the existing Inter/Montserrat design system for visual consistency, or use a different one if the tool warrants it. Add a `← Back to Resources` link at the top pointing to `../resources.html`.
+2. Add a matching `<a class="resource-card">` to `resources.html` (icon, title, description, link arrow).
+3. Update `sw.js` `ASSETS` list to include the new file path.
+4. Bump `sw.js` `CACHE` version (e.g. `coaching-portal-v5`) so old caches clear on next visit.
+5. Bump `VERSION` in `index.html` and push to `main`.
 
 ---
 
@@ -153,16 +166,18 @@ All three auth-gate via `sb.auth.getSession()` on load and redirect to `./` if n
 
 ```
 yourcoachingportal/
-├── index.html              login + dashboard (hub cards + Your Tools toggle)
-├── strengths.html          Strengths Hub — CliftonStrengths Top 10 page
-├── resources.html          Global Resources hub — lists client-facing tools
+├── index.html                login + dashboard (hub cards + Your Tools toggle)
+├── strengths.html            Strengths Hub (domain mix + Top 10 + 2 reports)
+├── resources.html            Global Resources hub — lists client-facing tools
 ├── resources/
-│   └── feelings-chart.html Four-step feelings chart (own design system)
-├── manifest.json           PWA manifest (start_url and scope are "./" — path-agnostic)
-├── sw.js                   service worker (caches all HTML pages, ignores Supabase calls)
-├── icon.svg                PWA / apple-touch icon (4U on teal #0D9488, 512×512)
-├── migrations/             one-off SQL run in the Supabase SQL editor (numbered, idempotent)
-├── CLAUDE.md               this file
+│   ├── feelings-chart.html   4-step feelings chart
+│   ├── smart-goal.html       5-step SMART goal builder
+│   └── issue-clarifier.html  5-step issue clarifier
+├── manifest.json             PWA manifest (start_url and scope are "./" — path-agnostic)
+├── sw.js                     service worker (caches all HTML pages, ignores Supabase calls)
+├── icon.svg                  PWA / apple-touch icon (4U on teal #0D9488, 512×512)
+├── migrations/               one-off SQL run in the Supabase SQL editor (numbered, idempotent)
+├── CLAUDE.md                 this file
 ├── CHANGELOG.md
 └── README.md
 ```

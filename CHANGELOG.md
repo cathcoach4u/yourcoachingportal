@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-05-02 (v10)
+
+- feat: Issue Clarifier — third Global Resource (`resources/issue-clarifier.html`). Five-step wizard (Scope pills → Facts → Impact → Underneath → Real issue with two template hints) plus a journey-summary card, three reflect prompts, and a 1–10 confidence rating against the first small step.
+
+## 2026-05-02 (v9)
+
+- feat: SMART Goal Builder — second Global Resource (`resources/smart-goal.html`). Five-step wizard (S → M → A → R → T) ending with the goal stitched into one natural-reading paragraph (Copy button), a five-letter breakdown, and three reflect prompts.
+
+## 2026-05-02 (v8)
+
+- feat: Strengths Hub gets a Domain Mix grid (4 cards counting Top 10 themes per Gallup domain), plus two collapsible reports — "What each theme means" and "What you bring" — with plain-English descriptions for all 34 themes (`THEME_INFO` in `strengths.html`).
+- style: stripped two stray em-dashes from `strengths.html` (page title and banner copy) — reinforces the no-em-dashes brand rule.
+
+## 2026-05-02 (v7)
+
+- fix: defensively filter out `slug === 'coaching-portal'` in `loadPortal()` so the hub never appears as a sub-portal tile inside itself.
+
+## 2026-05-02 (v6)
+
+- style: dashboard hub card headings renamed — "Strengths Hub" → "Your Strengths Hub", "Global Resources" → "Your Access to Global Resources".
+
 ## 2026-05-02 (v5)
 
 - feat: Strengths Hub and Global Resources are now dedicated pages (`strengths.html`, `resources.html`) — dashboard hub cards link to them
