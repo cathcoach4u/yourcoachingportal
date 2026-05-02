@@ -91,20 +91,20 @@
     .toggle-chevron { font-size: 14px; color: #0D9488; transition: transform 0.25s; display: inline-block; }
     .toggle-chevron.open { transform: rotate(180deg); }
     .section-body { padding-top: 16px; }
-    .hub-cards-row {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 8px;
+    .free-resources-row {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px;
     }
-    .hub-card {
+    .free-resource-card {
       background: white; border: 2px solid #eee; border-radius: 10px;
       padding: 20px 18px; font-family: inherit; text-align: left;
       display: flex; flex-direction: column; gap: 6px;
       text-decoration: none; color: inherit;
       box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     }
-    .hub-card:hover { border-color: #0D9488; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(13,148,136,0.15); }
-    .hub-card-icon { font-size: 24px; line-height: 1; margin-bottom: 2px; }
-    .hub-card-label { font-size: 15px; font-weight: 700; color: #003366; }
-    .hub-card-sub { font-size: 11px; color: #999; }
+    .free-resource-card:hover { border-color: #0D9488; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(13,148,136,0.15); }
+    .free-resource-icon { font-size: 24px; line-height: 1; margin-bottom: 2px; }
+    .free-resource-label { font-size: 15px; font-weight: 700; color: #003366; }
+    .free-resource-sub { font-size: 11px; color: #999; line-height: 1.4; }
     .locked-subheading {
       font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
       color: #bbb; margin: 20px 0 12px; padding-top: 16px; border-top: 1px solid #eee;
@@ -157,12 +157,11 @@
       .login-box { padding: 28px 20px; }
       .welcome-banner h1 { font-size: 18px; }
       .cards-grid { grid-template-columns: 1fr 1fr; }
-      .hub-cards-row { gap: 10px; }
-      .hub-card { padding: 16px 14px; }
+      .free-resources-row { grid-template-columns: 1fr; gap: 10px; }
+      .free-resource-card { padding: 16px 14px; }
     }
     @media (max-width: 360px) {
       .cards-grid { grid-template-columns: 1fr; }
-      .hub-cards-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -213,16 +212,21 @@
         <h1 id="welcomeHeading"></h1>
         <p>Your personalised coaching tools are ready below. Reach out to your coach to unlock additional portals.</p>
       </div>
-      <div class="hub-cards-row">
-        <a class="hub-card" href="strengths.html">
-          <span class="hub-card-icon">💪</span>
-          <span class="hub-card-label">Your Strengths Hub</span>
-          <span class="hub-card-sub">Your CliftonStrengths themes</span>
+      <div class="free-resources-row">
+        <a class="free-resource-card" href="resources/feelings-chart.html">
+          <span class="free-resource-icon">💗</span>
+          <span class="free-resource-label">Feelings Chart</span>
+          <span class="free-resource-sub">Name what you feel, step by step</span>
         </a>
-        <a class="hub-card" href="resources.html">
-          <span class="hub-card-icon">🌐</span>
-          <span class="hub-card-label">Your Access to Global Resources</span>
-          <span class="hub-card-sub">Tools and links for clients</span>
+        <a class="free-resource-card" href="resources/smart-goal.html">
+          <span class="free-resource-icon">🎯</span>
+          <span class="free-resource-label">SMART Goal Builder</span>
+          <span class="free-resource-sub">Shape a goal you can act on</span>
+        </a>
+        <a class="free-resource-card" href="resources/issue-clarifier.html">
+          <span class="free-resource-icon">🧭</span>
+          <span class="free-resource-label">Issue Clarifier</span>
+          <span class="free-resource-sub">Find the core issue and a next step</span>
         </a>
       </div>
 
@@ -262,7 +266,7 @@
   </footer>
 
   <script>
-    const VERSION = '2026-05-02.11'
+    const VERSION = '2026-05-02.12'
     document.getElementById('versionText').textContent = VERSION
 
     async function hardRefresh() {
@@ -291,6 +295,7 @@
       'business': '💼', 'team': '👥', 'marketing': '📈',
       'life': '🌱', 'relationship': '❤️', 'thrivehq': '⚡',
       'career': '🎯', 'strengths': '💪', 'it': '💻',
+      'coach4u-tools': '💪',
     }
 
     function toggleSection(bodyId, chevronId) {
