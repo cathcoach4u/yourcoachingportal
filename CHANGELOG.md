@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-05-02
+
+- feat: CliftonStrengths Top 10 panel — fetches from Supabase Edge Function `get-strengths` (cross-project lookup); decoupled from portal render so a 404/timeout never blocks tiles
+- style: strengths cards — white bg, 4px left border in Gallup domain colour (Executing #7B2D8B, Influencing #E8622A, Relationship #1F96D3, Strategic #2EAF6E), small domain dot, teal rank, navy theme name
+- style: collapsible dashboard sections — Your Strengths (collapsed by default) and Your Tools (expanded, shows active portal count); locked portals tucked inside Your Tools as "Also Available"
+- fix: removed `coaching-portal` row from `portals` table (was appearing as its own tile)
+- fix: stripped angle-bracket artefacts from all portal URLs in Supabase (`<https://...>` → `https://...`)
+- fix: portal render decoupled from strengths fetch — `fetchStrengths` fires async after tiles render
+- feat: version stamp + Hard Refresh link in footer (unregisters SW, clears caches, reloads)
+- docs: rewrote `CLAUDE.md` — added Edge Function details, domain colours, confirmed portal URLs, collapsible layout invariants, paste artefact list, and full session protocol
+
 ## 2026-05-01
 
 - chore: repurposed repo from Business Coach4U EOS app to Your Coaching Portal hub
