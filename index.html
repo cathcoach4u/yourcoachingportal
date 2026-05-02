@@ -77,11 +77,24 @@
     }
     .welcome-banner h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
     .welcome-banner p { font-size: 13px; opacity: 0.8; line-height: 1.5; }
-    .section-heading {
-      font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
-      color: #003366; margin: 0 0 14px; padding-bottom: 6px; border-bottom: 2px solid #0D9488;
+    .section-wrap { margin-bottom: 16px; }
+    .section-toggle {
+      width: 100%; display: flex; justify-content: space-between; align-items: center;
+      background: white; border: none; border-radius: 10px; padding: 16px 20px;
+      cursor: pointer; font-family: inherit; text-align: left;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: box-shadow 0.2s;
     }
-    .section-wrap { margin-bottom: 32px; }
+    .section-toggle:hover { box-shadow: 0 3px 10px rgba(13,148,136,0.15); }
+    .section-toggle-inner { display: flex; align-items: center; gap: 10px; }
+    .section-toggle-label { font-size: 16px; font-weight: 700; color: #003366; }
+    .section-toggle-sub { font-size: 12px; color: #999; margin-top: 2px; }
+    .toggle-chevron { font-size: 14px; color: #0D9488; transition: transform 0.25s; display: inline-block; }
+    .toggle-chevron.open { transform: rotate(180deg); }
+    .section-body { padding-top: 16px; }
+    .locked-subheading {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+      color: #bbb; margin: 20px 0 12px; padding-top: 16px; border-top: 1px solid #eee;
+    }
     .strengths-grid {
       display: grid; grid-template-columns: 1fr 1fr;
       grid-template-rows: repeat(5, auto); grid-auto-flow: column;
@@ -222,16 +235,38 @@
         <p>Your personalised coaching tools are ready below. Reach out to your coach to unlock additional portals.</p>
       </div>
       <div class="section-wrap" id="strengthsSection" style="display:none">
-        <div class="section-heading">Your CliftonStrengths Top 10</div>
-        <div class="strengths-grid" id="strengthsList"></div>
+        <button class="section-toggle" onclick="toggleSection('strengthsBody','strengthsChevron')">
+          <div class="section-toggle-inner">
+            <span style="font-size:20px">💪</span>
+            <div>
+              <div class="section-toggle-label">Your Strengths</div>
+              <div class="section-toggle-sub">CliftonStrengths Top 10</div>
+            </div>
+          </div>
+          <span class="toggle-chevron" id="strengthsChevron">▼</span>
+        </button>
+        <div class="section-body" id="strengthsBody" style="display:none">
+          <div class="strengths-grid" id="strengthsList"></div>
+        </div>
       </div>
       <div class="section-wrap" id="activeSection">
-        <div class="section-heading">Your Tools</div>
-        <div class="cards-grid" id="activePortals"></div>
-      </div>
-      <div class="section-wrap" id="lockedSection">
-        <div class="section-heading">Also Available</div>
-        <div class="cards-grid" id="lockedPortals"></div>
+        <button class="section-toggle" onclick="toggleSection('toolsBody','toolsChevron')">
+          <div class="section-toggle-inner">
+            <span style="font-size:20px">🔧</span>
+            <div>
+              <div class="section-toggle-label">Your Tools</div>
+              <div class="section-toggle-sub" id="toolsSubLabel">Your active coaching portals</div>
+            </div>
+          </div>
+          <span class="toggle-chevron open" id="toolsChevron">▼</span>
+        </button>
+        <div class="section-body" id="toolsBody">
+          <div class="cards-grid" id="activePortals"></div>
+          <div id="lockedSection" style="display:none">
+            <div class="locked-subheading">Also Available</div>
+            <div class="cards-grid" id="lockedPortals"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -250,7 +285,7 @@
   </footer>
 
   <script>
-    const VERSION = '2026-05-02.2'
+    const VERSION = '2026-05-02.3'
     document.getElementById('versionText').textContent = VERSION
 
     async function hardRefresh() {
@@ -301,6 +336,14 @@
     const DOMAIN_LABEL = {
       executing: 'Executing', influencing: 'Influencing',
       relationship: 'Relationship', strategic: 'Strategic',
+    }
+
+    function toggleSection(bodyId, chevronId) {
+      const body = document.getElementById(bodyId)
+      const chevron = document.getElementById(chevronId)
+      const isOpen = body.style.display !== 'none'
+      body.style.display = isOpen ? 'none' : 'block'
+      if (chevron) chevron.classList.toggle('open', !isOpen)
     }
 
     async function login() {
@@ -366,8 +409,12 @@
 
       renderPortals(active, 'activePortals', false)
       renderPortals(locked, 'lockedPortals', true)
-      document.getElementById('activeSection').style.display = active.length ? 'block' : 'none'
+      document.getElementById('activeSection').style.display = 'block'
       document.getElementById('lockedSection').style.display = locked.length ? 'block' : 'none'
+      const toolsLabel = document.getElementById('toolsSubLabel')
+      if (toolsLabel) toolsLabel.textContent = active.length
+        ? `${active.length} active portal${active.length !== 1 ? 's' : ''}`
+        : 'Your active coaching portals'
 
       fetchStrengths(session).then(renderStrengths)
     }
