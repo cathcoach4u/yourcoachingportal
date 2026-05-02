@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Feelings Chart | Coach4U</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --c4u-dark-blue: #1B3664;
+    --c4u-light-blue: #5684C4;
+    --c4u-dark-grey: #2D2D2D;
+    --c4u-light-grey: #DDDDDD;
+    --c4u-bg: #ffffff;
+    --c4u-soft: #F5F7FB;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 2px rgba(27, 54, 100, 0.06);
+    --shadow-md: 0 4px 16px rgba(27, 54, 100, 0.08);
+  }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--c4u-bg);
+    color: var(--c4u-dark-grey);
+    min-height: 100vh;
+    padding: 32px 20px 60px;
+    font-size: 1.1rem;
+    line-height: 1.5;
+  }
+
+  .container { max-width: 880px; margin: 0 auto; }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 24px;
+    color: var(--c4u-light-blue);
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: var(--c4u-dark-blue); }
+
+  header { text-align: center; margin-bottom: 36px; }
+  header h1 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: var(--c4u-dark-blue);
+    font-size: 2rem;
+    letter-spacing: -0.5px;
+  }
+  header p {
+    color: var(--c4u-dark-grey);
+    margin-top: 8px;
+    font-size: 1rem;
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .progress {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .progress-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: var(--c4u-light-grey);
+    font-weight: 600;
+  }
+  .progress-step .num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--c4u-light-grey);
+    color: white;
+    display: grid; place-items: center;
+    font-size: 0.8rem;
+    transition: all 0.25s;
+  }
+  .progress-step.active { color: var(--c4u-dark-blue); }
+  .progress-step.active .num { background: var(--c4u-dark-blue); }
+  .progress-step.done .num { background: var(--c4u-light-blue); color: white; }
+  .progress-step.done { color: var(--c4u-light-blue); }
+  .progress-divider { width: 24px; height: 1px; background: var(--c4u-light-grey); }
+
+  .card {
+    background: white;
+    border: 1px solid var(--c4u-light-grey);
+    border-radius: var(--radius-lg);
+    padding: 32px 28px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+  }
+
+  .step-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--c4u-light-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .step-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: var(--c4u-dark-blue);
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+
+  .step-prompt { color: var(--c4u-dark-grey); font-size: 1rem; margin-bottom: 8px; }
+
+  .step-hint {
+    color: var(--c4u-light-blue);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin-bottom: 24px;
+  }
+
+  .core-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 640px) {
+    .core-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .core-tile {
+    background: white;
+    border: 2px solid var(--c4u-light-grey);
+    border-radius: var(--radius-md);
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: var(--c4u-dark-blue);
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+  }
+  .core-tile:hover {
+    border-color: var(--c4u-light-blue);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .core-tile.selected {
+    background: var(--c4u-dark-blue);
+    border-color: var(--c4u-dark-blue);
+    color: white;
+  }
+  .core-tile.selected::after {
+    content: "✓";
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  .core-tile .emoji { font-size: 1.8rem; line-height: 1; }
+
+  /* Sub-feelings layout: grouped sections when multiple cores */
+  .sub-section { margin-bottom: 24px; }
+  .sub-section:last-child { margin-bottom: 0; }
+  .sub-section-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: var(--c4u-dark-blue);
+    font-size: 1rem;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--c4u-light-grey);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sub-section-title .emoji { font-size: 1.1rem; }
+
+  .sub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+
+  .sub-tile {
+    background: var(--c4u-soft);
+    border: 1.5px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 14px 30px 14px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    color: var(--c4u-dark-grey);
+    font-size: 0.95rem;
+    position: relative;
+  }
+  .sub-tile:hover {
+    border-color: var(--c4u-light-blue);
+    background: white;
+  }
+  .sub-tile.selected {
+    background: var(--c4u-light-blue);
+    border-color: var(--c4u-light-blue);
+    color: white;
+    font-weight: 600;
+  }
+  .sub-tile.selected::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .nuance-section { margin-bottom: 24px; }
+  .nuance-section:last-child { margin-bottom: 0; }
+  .nuance-section-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: var(--c4u-dark-blue);
+    font-size: 1rem;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--c4u-light-grey);
+  }
+
+  .nuance-list { display: flex; flex-direction: column; gap: 8px; }
+  .nuance-item {
+    background: var(--c4u-soft);
+    border: 1.5px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 12px 40px 12px 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    position: relative;
+  }
+  .nuance-item:hover {
+    border-color: var(--c4u-light-blue);
+    background: white;
+  }
+  .nuance-item.selected {
+    background: white;
+    border-color: var(--c4u-dark-blue);
+    box-shadow: var(--shadow-sm);
+  }
+  .nuance-item.selected::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--c4u-dark-blue);
+  }
+  .nuance-item .word {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: var(--c4u-dark-blue);
+    flex-shrink: 0;
+    min-width: 120px;
+  }
+  .nuance-item .desc { color: var(--c4u-dark-grey); font-size: 0.9rem; }
+
+  /* "None of these fit" link */
+  .none-fit-link {
+    margin-top: 20px;
+    padding: 14px 18px;
+    background: transparent;
+    border: 1.5px dashed var(--c4u-light-grey);
+    border-radius: var(--radius-sm);
+    color: var(--c4u-dark-grey);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .none-fit-link:hover {
+    border-color: var(--c4u-light-blue);
+    color: var(--c4u-dark-blue);
+    background: var(--c4u-soft);
+  }
+  .none-fit-link .arrow {
+    color: var(--c4u-light-blue);
+    font-weight: 700;
+  }
+
+  /* Redirect panel shown when "None of these fit" is clicked */
+  .redirect-panel {
+    margin-top: 20px;
+    padding: 20px;
+    background: var(--c4u-soft);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--c4u-light-grey);
+  }
+  .redirect-panel p {
+    font-size: 0.95rem;
+    color: var(--c4u-dark-grey);
+    margin-bottom: 14px;
+  }
+  .redirect-panel p strong {
+    font-family: 'Inter', sans-serif;
+    color: var(--c4u-dark-blue);
+    font-weight: 600;
+  }
+  .redirect-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .summary-banner {
+    background: linear-gradient(135deg, #1B3664 0%, #5684C4 100%);
+    color: white;
+    padding: 24px;
+    border-radius: var(--radius-md);
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .summary-banner .label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.85;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .summary-banner .feeling-words {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: -0.3px;
+    line-height: 1.4;
+  }
+  .summary-banner .feeling-words .sep {
+    opacity: 0.5;
+    margin: 0 10px;
+    font-weight: 400;
+  }
+  .summary-banner .path {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    margin-top: 12px;
+    line-height: 1.6;
+  }
+
+  .reflect-prompts { display: flex; flex-direction: column; gap: 16px; }
+  .reflect-prompts label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: var(--c4u-dark-blue);
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .reflect-prompts textarea {
+    width: 100%;
+    border: 1.5px solid var(--c4u-light-grey);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    color: var(--c4u-dark-grey);
+    resize: vertical;
+    min-height: 70px;
+    transition: border-color 0.15s;
+  }
+  .reflect-prompts textarea:focus {
+    outline: none;
+    border-color: var(--c4u-light-blue);
+  }
+
+  .button-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: var(--c4u-dark-blue); color: white; }
+  .btn-primary:hover { background: #14284d; }
+  .btn-primary:disabled { background: var(--c4u-light-grey); cursor: not-allowed; }
+  .btn-secondary {
+    background: white;
+    color: var(--c4u-dark-blue);
+    border: 1.5px solid var(--c4u-light-grey);
+  }
+  .btn-secondary:hover { border-color: var(--c4u-dark-blue); }
+
+  footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 9pt;
+    color: var(--c4u-dark-grey);
+  }
+  footer a { color: var(--c4u-light-blue); text-decoration: none; }
+  footer a:hover { color: var(--c4u-dark-blue); }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <a class="back-link" href="../resources.html">← Back to Resources</a>
+
+  <header>
+    <h1>Feelings Chart</h1>
+    <p>Naming what we feel is the first step in understanding ourselves. Take your time.</p>
+  </header>
+
+  <div class="progress" id="progress">
+    <div class="progress-step active" data-step="1"><span class="num">1</span><span>Core</span></div>
+    <div class="progress-divider"></div>
+    <div class="progress-step" data-step="2"><span class="num">2</span><span>Layer</span></div>
+    <div class="progress-divider"></div>
+    <div class="progress-step" data-step="3"><span class="num">3</span><span>Nuance</span></div>
+    <div class="progress-divider"></div>
+    <div class="progress-step" data-step="4"><span class="num">4</span><span>Reflect</span></div>
+  </div>
+
+  <!-- ── STEP 1 ─────────────────────────── -->
+  <div class="card" id="step1">
+    <div class="step-label">Step 1 of 4</div>
+    <h2 class="step-title">Where do you start?</h2>
+    <p class="step-prompt">Choose the core feeling, or feelings, that fit closest to what is here for you right now. There is no wrong answer.</p>
+    <p class="step-hint">Pick one or more. Feelings often sit across more than one core.</p>
+    <div class="core-grid" id="coreGrid"></div>
+
+    <div class="redirect-panel hidden" id="redirect1">
+      <p><strong>That is okay.</strong> Sometimes none of these quite fit, and that is useful information in itself. You might be feeling something more subtle, or a mix that does not have a clear name yet.</p>
+      <p>You can pick the closest fit just to start somewhere, or take a moment to notice what is happening in your body and try again.</p>
+      <div class="redirect-options">
+        <button class="btn btn-secondary" onclick="closeRedirect(1)">Pick the closest fit</button>
+      </div>
+    </div>
+
+    <div class="button-row">
+      <span></span>
+      <button class="btn btn-primary" id="next1" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2 ─────────────────────────── -->
+  <div class="card hidden" id="step2">
+    <div class="step-label">Step 2 of 4</div>
+    <h2 class="step-title">Going a layer deeper</h2>
+    <p class="step-prompt" id="step2Prompt">Which of these sit closer to your experience?</p>
+    <p class="step-hint">Pick as many as fit. Feelings often layer together.</p>
+    <div id="subContainer"></div>
+
+    <div class="redirect-panel hidden" id="redirect2">
+      <p><strong>None of these landing?</strong> The starting feeling might not be quite right. Step back and try a different core, or sit with the closest fit and see what comes up next.</p>
+      <div class="redirect-options">
+        <button class="btn btn-secondary" onclick="goToStep(1)">Back to core feelings</button>
+        <button class="btn btn-secondary" onclick="closeRedirect(2)">Stay here and pick the closest</button>
+      </div>
+    </div>
+
+    <div class="button-row">
+      <button class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+      <button class="btn btn-primary" id="next2" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3 ─────────────────────────── -->
+  <div class="card hidden" id="step3">
+    <div class="step-label">Step 3 of 4</div>
+    <h2 class="step-title">The most precise words</h2>
+    <p class="step-prompt" id="step3Prompt">Each of these has a slightly different shade. Choose the words that name it best.</p>
+    <p class="step-hint">Pick as many as fit across the layers you chose.</p>
+    <div id="nuanceContainer"></div>
+
+    <div class="redirect-panel hidden" id="redirect3">
+      <p><strong>Nothing quite right?</strong> Sometimes the precise word does not land, even when the layer is close. You can step back to try different layers, or move forward with what is closest.</p>
+      <div class="redirect-options">
+        <button class="btn btn-secondary" onclick="goToStep(2)">Back to layers</button>
+        <button class="btn btn-secondary" onclick="closeRedirect(3)">Move on with the closest fit</button>
+      </div>
+    </div>
+
+    <div class="button-row">
+      <button class="btn btn-secondary" onclick="goToStep(2)">Back</button>
+      <button class="btn btn-primary" id="next3" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 4 ─────────────────────────── -->
+  <div class="card hidden" id="step4">
+    <div class="step-label">Step 4 of 4</div>
+    <h2 class="step-title">Sit with it for a moment</h2>
+
+    <div class="summary-banner">
+      <div class="label">Right now I feel</div>
+      <div class="feeling-words" id="finalWords">—</div>
+      <div class="path" id="finalPath"></div>
+    </div>
+
+    <div class="reflect-prompts">
+      <div>
+        <label>What might be underneath these feelings?</label>
+        <textarea id="reflect1" placeholder="A need, a thought, a memory…"></textarea>
+      </div>
+      <div>
+        <label>What would help right now?</label>
+        <textarea id="reflect2" placeholder="A small action, a person, a pause…"></textarea>
+      </div>
+      <div>
+        <label>What strength can I draw on?</label>
+        <textarea id="reflect3" placeholder="Something I know about myself…"></textarea>
+      </div>
+    </div>
+
+    <div class="button-row">
+      <button class="btn btn-secondary" onclick="goToStep(3)">Back</button>
+      <button class="btn btn-primary" onclick="startOver()">Start again</button>
+    </div>
+  </div>
+
+  <footer>
+    Strengths-Based Coaching and Counselling | <a href="https://www.coach4u.com.au" target="_blank">www.coach4u.com.au</a> | <a href="mailto:cath@coach4u.com.au">cath@coach4u.com.au</a> | 0402 313 337
+  </footer>
+
+</div>
+
+<script>
+const FEELINGS = [
+  {
+    label: "Joyful", emoji: "😊",
+    layers: [
+      { label: "Happy", nuances: [
+        { word: "Content", desc: "Quietly satisfied with where things are" },
+        { word: "Pleased", desc: "Mildly glad about something specific" },
+        { word: "Cheerful", desc: "Light-hearted and easy" },
+        { word: "Light", desc: "Free of weight, unburdened" },
+        { word: "Settled", desc: "At ease in this moment" }
+      ]},
+      { label: "Excited", nuances: [
+        { word: "Eager", desc: "Looking forward, leaning in" },
+        { word: "Energised", desc: "Fuelled up, ready to move" },
+        { word: "Elated", desc: "Lifted up, almost giddy" },
+        { word: "Thrilled", desc: "Buzzing with anticipation" },
+        { word: "Playful", desc: "Light, mischievous, ready to play" }
+      ]},
+      { label: "Proud", nuances: [
+        { word: "Accomplished", desc: "Pleased with what I have done" },
+        { word: "Confident", desc: "Trusting in myself" },
+        { word: "Recognised", desc: "Seen and valued by others" },
+        { word: "Capable", desc: "Up to what is being asked of me" },
+        { word: "Validated", desc: "What I did mattered" }
+      ]},
+      { label: "Grateful", nuances: [
+        { word: "Thankful", desc: "Aware of what I have been given" },
+        { word: "Appreciative", desc: "Noticing the goodness around me" },
+        { word: "Touched", desc: "Moved by kindness or care" },
+        { word: "Blessed", desc: "Aware of how much is good" },
+        { word: "Humbled", desc: "Receiving more than I expected" }
+      ]},
+      { label: "Hopeful", nuances: [
+        { word: "Optimistic", desc: "Expecting good ahead" },
+        { word: "Inspired", desc: "Sparked by an idea or possibility" },
+        { word: "Encouraged", desc: "Lifted by progress or support" },
+        { word: "Expectant", desc: "Looking ahead to something good" },
+        { word: "Reassured", desc: "Comforted that things will be okay" }
+      ]},
+      { label: "Peaceful", nuances: [
+        { word: "Calm", desc: "Body settled, mind quiet" },
+        { word: "Centred", desc: "Grounded in myself" },
+        { word: "Still", desc: "Unhurried, at rest" },
+        { word: "Relieved", desc: "Weight lifted, easier to breathe" },
+        { word: "Free", desc: "Unbound, open" }
+      ]}
+    ]
+  },
+  {
+    label: "Loving", emoji: "💛",
+    layers: [
+      { label: "Connected", nuances: [
+        { word: "Close", desc: "In tune with someone" },
+        { word: "Belonging", desc: "Part of something" },
+        { word: "Understood", desc: "Met where I am" },
+        { word: "Seen", desc: "Truly noticed" },
+        { word: "Bonded", desc: "Tied to them in something real" }
+      ]},
+      { label: "Tender", nuances: [
+        { word: "Affectionate", desc: "Soft and warm toward someone" },
+        { word: "Caring", desc: "Wanting their wellbeing" },
+        { word: "Devoted", desc: "Committed in a deep way" },
+        { word: "Soft", desc: "Walls down, heart open" },
+        { word: "Protective", desc: "Wanting to shield what matters" }
+      ]},
+      { label: "Safe", nuances: [
+        { word: "Trusting", desc: "Resting in someone's presence" },
+        { word: "Accepted", desc: "Welcomed as I am" },
+        { word: "Held", desc: "Carried, not alone" },
+        { word: "Secure", desc: "Anchored, not under threat" },
+        { word: "At home", desc: "Where I can be myself" }
+      ]},
+      { label: "Compassionate", nuances: [
+        { word: "Warm", desc: "Open-hearted toward another" },
+        { word: "Empathic", desc: "Feeling with them" },
+        { word: "Forgiving", desc: "Letting go of holding it against them" },
+        { word: "Kind", desc: "Wanting to ease their way" },
+        { word: "Generous", desc: "Giving, freely" }
+      ]},
+      { label: "Attracted", nuances: [
+        { word: "Drawn in", desc: "Pulled toward them" },
+        { word: "Fond", desc: "Holding them with care" },
+        { word: "Charmed", desc: "Delighted by who they are" },
+        { word: "Smitten", desc: "Caught up in someone" },
+        { word: "Infatuated", desc: "Captured, can't think of much else" }
+      ]}
+    ]
+  },
+  {
+    label: "Sad", emoji: "🌧",
+    layers: [
+      { label: "Hurt", nuances: [
+        { word: "Disappointed", desc: "What I hoped for did not happen" },
+        { word: "Wounded", desc: "Something landed and stung" },
+        { word: "Heartbroken", desc: "A deep tear, hard to hold" },
+        { word: "Betrayed", desc: "Trust has been broken" },
+        { word: "Let down", desc: "Someone did not show up the way I needed" },
+        { word: "Rejected", desc: "Pushed away when I reached out" }
+      ]},
+      { label: "Lonely", nuances: [
+        { word: "Isolated", desc: "Apart from others" },
+        { word: "Disconnected", desc: "With people but not met" },
+        { word: "Abandoned", desc: "Left, when I needed presence" },
+        { word: "Forgotten", desc: "As if I am not on anyone's mind" },
+        { word: "Excluded", desc: "On the outside of something" },
+        { word: "Invisible", desc: "Here, but not noticed" }
+      ]},
+      { label: "Hopeless", nuances: [
+        { word: "Discouraged", desc: "Energy for trying is low" },
+        { word: "Defeated", desc: "Out of ways forward" },
+        { word: "Empty", desc: "Hollow, nothing pulling me on" },
+        { word: "Powerless", desc: "Nothing I do will change this" },
+        { word: "Drained", desc: "Nothing left to give" },
+        { word: "Weary", desc: "Tired in a way sleep does not fix" }
+      ]},
+      { label: "Grieving", nuances: [
+        { word: "Missing", desc: "An ache for what is gone" },
+        { word: "Yearning", desc: "Reaching for what I cannot have now" },
+        { word: "Numb", desc: "Too much to feel, so I feel nothing" },
+        { word: "Mournful", desc: "Carrying a loss that has not lifted" },
+        { word: "Hollow", desc: "A space where something used to be" }
+      ]},
+      { label: "Regretful", nuances: [
+        { word: "Sorry", desc: "Wishing I had done it differently" },
+        { word: "Remorseful", desc: "Carrying the weight of harm caused" },
+        { word: "Wistful", desc: "Looking back with soft longing" },
+        { word: "Haunted", desc: "What happened won't leave me" },
+        { word: "Contrite", desc: "Wanting to make amends" }
+      ]},
+      { label: "Down", nuances: [
+        { word: "Heavy", desc: "Weighted, slow to move" },
+        { word: "Flat", desc: "No spark, going through motions" },
+        { word: "Gloomy", desc: "A grey filter over everything" },
+        { word: "Glum", desc: "Subdued, low energy" },
+        { word: "Bored", desc: "Disengaged, nothing landing" }
+      ]}
+    ]
+  },
+  {
+    label: "Angry", emoji: "🔥",
+    layers: [
+      { label: "Frustrated", nuances: [
+        { word: "Stuck", desc: "Trying but not getting through" },
+        { word: "Impatient", desc: "Wanting it now, not later" },
+        { word: "Exasperated", desc: "Worn down by repetition" },
+        { word: "Blocked", desc: "Something is in the way" },
+        { word: "Thwarted", desc: "Stopped from what I was going for" }
+      ]},
+      { label: "Irritated", nuances: [
+        { word: "Annoyed", desc: "Something is rubbing wrong" },
+        { word: "Agitated", desc: "Charged up, hard to settle" },
+        { word: "Edgy", desc: "On a short fuse" },
+        { word: "Snappy", desc: "Quick to react, low tolerance" },
+        { word: "Prickly", desc: "Easily set off" }
+      ]},
+      { label: "Resentful", nuances: [
+        { word: "Bitter", desc: "Holding onto a hurt that has not healed" },
+        { word: "Jealous", desc: "What they have, I want too" },
+        { word: "Wronged", desc: "I did not deserve this" },
+        { word: "Indignant", desc: "This is not fair" },
+        { word: "Spiteful", desc: "Wanting them to feel it too" }
+      ]},
+      { label: "Furious", nuances: [
+        { word: "Outraged", desc: "This crosses a line" },
+        { word: "Hostile", desc: "Pushing them away with force" },
+        { word: "Enraged", desc: "Boiling, hard to contain" },
+        { word: "Seething", desc: "Burning under the surface" },
+        { word: "Livid", desc: "Beyond words, full charge" }
+      ]},
+      { label: "Disgusted", nuances: [
+        { word: "Repulsed", desc: "Wanting to pull away" },
+        { word: "Contemptuous", desc: "Looking down on it" },
+        { word: "Appalled", desc: "Shocked by how wrong this is" },
+        { word: "Revolted", desc: "Gut turn against it" },
+        { word: "Disapproving", desc: "Not okay with this" }
+      ]}
+    ]
+  },
+  {
+    label: "Fearful", emoji: "🌊",
+    layers: [
+      { label: "Anxious", nuances: [
+        { word: "Worried", desc: "Mind running on what might happen" },
+        { word: "Restless", desc: "Body cannot settle" },
+        { word: "Apprehensive", desc: "Bracing for something" },
+        { word: "On edge", desc: "Watching for the next problem" },
+        { word: "Tense", desc: "Held tight in body and breath" },
+        { word: "Dread", desc: "Heaviness about what is coming" }
+      ]},
+      { label: "Overwhelmed", nuances: [
+        { word: "Flooded", desc: "Too much at once" },
+        { word: "Stretched", desc: "More demand than capacity" },
+        { word: "Frazzled", desc: "Pulled in every direction" },
+        { word: "Swamped", desc: "Buried under what is coming at me" },
+        { word: "Saturated", desc: "Full, no room to take in more" },
+        { word: "Maxed out", desc: "At the edge of what I can hold" }
+      ]},
+      { label: "Insecure", nuances: [
+        { word: "Doubtful", desc: "Unsure of myself" },
+        { word: "Vulnerable", desc: "Exposed, easily hurt" },
+        { word: "Inadequate", desc: "Not enough for what is being asked" },
+        { word: "Uncertain", desc: "Not sure what to trust" },
+        { word: "Self-doubting", desc: "Questioning whether I can" },
+        { word: "Unsteady", desc: "Ground feels shaky" }
+      ]},
+      { label: "Scared", nuances: [
+        { word: "Threatened", desc: "Something feels unsafe" },
+        { word: "Panicked", desc: "Body in alarm, hard to think" },
+        { word: "Helpless", desc: "Nothing I do will work" },
+        { word: "Terrified", desc: "Fear has taken over" },
+        { word: "Trapped", desc: "No way out I can see" },
+        { word: "Paralysed", desc: "Frozen, can't move" }
+      ]},
+      { label: "Cautious", nuances: [
+        { word: "Hesitant", desc: "Holding back, not sure" },
+        { word: "Wary", desc: "Watching, not yet trusting" },
+        { word: "Suspicious", desc: "Sensing something is off" },
+        { word: "Guarded", desc: "Walls up, protected" },
+        { word: "Reluctant", desc: "Not ready to step in" }
+      ]}
+    ]
+  },
+  {
+    label: "Ashamed", emoji: "🫥",
+    layers: [
+      { label: "Guilty", nuances: [
+        { word: "Regretful", desc: "I wish I had done it differently" },
+        { word: "Apologetic", desc: "Wanting to make it right" },
+        { word: "Remorseful", desc: "The harm sits heavy" },
+        { word: "Responsible", desc: "Aware that this is mine to own" },
+        { word: "Burdened", desc: "Carrying the weight of what I did" }
+      ]},
+      { label: "Embarrassed", nuances: [
+        { word: "Self-conscious", desc: "Aware of being seen" },
+        { word: "Mortified", desc: "Wishing I could disappear" },
+        { word: "Exposed", desc: "Caught with my guard down" },
+        { word: "Awkward", desc: "Out of place, not fitting" },
+        { word: "Foolish", desc: "Like I have made myself look silly" }
+      ]},
+      { label: "Inferior", nuances: [
+        { word: "Inadequate", desc: "Not measuring up" },
+        { word: "Worthless", desc: "Of no value" },
+        { word: "Small", desc: "Less than the people around me" },
+        { word: "Not enough", desc: "Falling short of what is needed" },
+        { word: "Defective", desc: "Something is wrong with me" }
+      ]},
+      { label: "Withdrawn", nuances: [
+        { word: "Hidden", desc: "Wanting to stay out of sight" },
+        { word: "Closed", desc: "Pulled in, doors shut" },
+        { word: "Isolated", desc: "Keeping myself apart" },
+        { word: "Quiet", desc: "Not wanting to take up space" },
+        { word: "Invisible", desc: "Hoping not to be noticed" }
+      ]}
+    ]
+  },
+  {
+    label: "Surprised", emoji: "✨",
+    layers: [
+      { label: "Curious", nuances: [
+        { word: "Intrigued", desc: "Wanting to know more" },
+        { word: "Wondering", desc: "Open and questioning" },
+        { word: "Engaged", desc: "Drawn in" },
+        { word: "Interested", desc: "Leaning toward it" },
+        { word: "Fascinated", desc: "Caught up in finding out" }
+      ]},
+      { label: "Confused", nuances: [
+        { word: "Puzzled", desc: "Pieces do not fit yet" },
+        { word: "Bewildered", desc: "Lost in it" },
+        { word: "Disoriented", desc: "Ground has shifted" },
+        { word: "Conflicted", desc: "Torn between two things" },
+        { word: "Unsettled", desc: "Knocked out of place" }
+      ]},
+      { label: "Amazed", nuances: [
+        { word: "Awe-struck", desc: "Held by something bigger" },
+        { word: "Astonished", desc: "Did not see this coming" },
+        { word: "Speechless", desc: "Beyond words" },
+        { word: "Wonder", desc: "Open to the mystery of it" },
+        { word: "Marvelling", desc: "Taking in something remarkable" }
+      ]},
+      { label: "Shocked", nuances: [
+        { word: "Stunned", desc: "Hit, frozen for a moment" },
+        { word: "Disbelieving", desc: "This cannot be real" },
+        { word: "Startled", desc: "Caught off guard" },
+        { word: "Rattled", desc: "Shaken, off balance" },
+        { word: "Floored", desc: "Knocked sideways by it" }
+      ]}
+    ]
+  }
+];
+
+// State now: coreIdxs is a Set (multi-select), layerKeys is Set keyed by "coreIdx-layerIdx",
+// nuanceKeys is Set keyed by "coreIdx-layerIdx-nuanceIdx"
+const state = {
+  step: 1,
+  coreIdxs: new Set(),
+  layerKeys: new Set(),
+  nuanceKeys: new Set()
+};
+
+// ── Step 1: Core feelings (multi-select) ─────────────────────────────
+function buildStep1() {
+  const grid = document.getElementById('coreGrid');
+  grid.innerHTML = '';
+  FEELINGS.forEach((f, i) => {
+    const tile = document.createElement('div');
+    tile.className = 'core-tile' + (state.coreIdxs.has(i) ? ' selected' : '');
+    tile.innerHTML = `<span class="emoji">${f.emoji}</span><span>${f.label}</span>`;
+    tile.addEventListener('click', () => {
+      if (state.coreIdxs.has(i)) {
+        state.coreIdxs.delete(i);
+        // Clear downstream selections tied to this core
+        Array.from(state.layerKeys).forEach(k => {
+          if (k.startsWith(i + '-')) state.layerKeys.delete(k);
+        });
+        Array.from(state.nuanceKeys).forEach(k => {
+          if (k.startsWith(i + '-')) state.nuanceKeys.delete(k);
+        });
+      } else {
+        state.coreIdxs.add(i);
+      }
+      buildStep1();
+      document.getElementById('next1').disabled = state.coreIdxs.size === 0;
+    });
+    grid.appendChild(tile);
+  });
+
+  // None of these fit link
+  if (!document.getElementById('noneFit1')) {
+    const link = document.createElement('button');
+    link.id = 'noneFit1';
+    link.className = 'none-fit-link';
+    link.innerHTML = '<span class="arrow">›</span> None of these quite fit';
+    link.onclick = () => toggleRedirect(1);
+    grid.parentNode.insertBefore(link, document.getElementById('redirect1'));
+  }
+}
+
+document.getElementById('next1').addEventListener('click', () => goToStep(2));
+
+// ── Step 2: Layer (multi-select, grouped by core) ────────────────────
+function buildStep2() {
+  const sortedCoreIdxs = Array.from(state.coreIdxs).sort((a, b) => a - b);
+  const isMultiCore = sortedCoreIdxs.length > 1;
+
+  // Update prompt
+  if (isMultiCore) {
+    const coreNames = sortedCoreIdxs.map(i => FEELINGS[i].label.toLowerCase()).join(' and ');
+    document.getElementById('step2Prompt').textContent =
+      `You started with ${coreNames}. Which of these sit closer to your experience?`;
+  } else {
+    const core = FEELINGS[sortedCoreIdxs[0]];
+    document.getElementById('step2Prompt').textContent =
+      `You started with ${core.label.toLowerCase()}. Which of these sit closer to your experience?`;
+  }
+
+  const container = document.getElementById('subContainer');
+  container.innerHTML = '';
+
+  sortedCoreIdxs.forEach(coreIdx => {
+    const core = FEELINGS[coreIdx];
+    const section = document.createElement('div');
+    section.className = 'sub-section';
+
+    if (isMultiCore) {
+      const title = document.createElement('div');
+      title.className = 'sub-section-title';
+      title.innerHTML = `<span class="emoji">${core.emoji}</span><span>Within ${core.label}</span>`;
+      section.appendChild(title);
+    }
+
+    const grid = document.createElement('div');
+    grid.className = 'sub-grid';
+
+    core.layers.forEach((layer, layerIdx) => {
+      const key = `${coreIdx}-${layerIdx}`;
+      const tile = document.createElement('div');
+      tile.className = 'sub-tile' + (state.layerKeys.has(key) ? ' selected' : '');
+      tile.textContent = layer.label;
+      tile.addEventListener('click', () => {
+        if (state.layerKeys.has(key)) {
+          state.layerKeys.delete(key);
+          // Clear nuances tied to this layer
+          Array.from(state.nuanceKeys).forEach(k => {
+            if (k.startsWith(key + '-')) state.nuanceKeys.delete(k);
+          });
+        } else {
+          state.layerKeys.add(key);
+        }
+        buildStep2();
+        document.getElementById('next2').disabled = state.layerKeys.size === 0;
+      });
+      grid.appendChild(tile);
+    });
+
+    section.appendChild(grid);
+    container.appendChild(section);
+  });
+
+  document.getElementById('next2').disabled = state.layerKeys.size === 0;
+}
+
+document.getElementById('next2').addEventListener('click', () => goToStep(3));
+
+// ── Step 3: Nuance (multi-select, grouped by layer) ──────────────────
+function buildStep3() {
+  const container = document.getElementById('nuanceContainer');
+  container.innerHTML = '';
+
+  // Sort selected layer keys by core then layer
+  const sortedLayerKeys = Array.from(state.layerKeys).sort((a, b) => {
+    const [aC, aL] = a.split('-').map(Number);
+    const [bC, bL] = b.split('-').map(Number);
+    return aC - bC || aL - bL;
+  });
+
+  const showHeaders = sortedLayerKeys.length > 1;
+
+  sortedLayerKeys.forEach(layerKey => {
+    const [coreIdx, layerIdx] = layerKey.split('-').map(Number);
+    const core = FEELINGS[coreIdx];
+    const layer = core.layers[layerIdx];
+
+    const section = document.createElement('div');
+    section.className = 'nuance-section';
+
+    if (showHeaders) {
+      const title = document.createElement('div');
+      title.className = 'nuance-section-title';
+      // If multiple cores selected, show core name for clarity
+      const hasMultipleCores = state.coreIdxs.size > 1;
+      title.textContent = hasMultipleCores
+        ? `Within ${layer.label} (${core.label})`
+        : `Within ${layer.label}`;
+      section.appendChild(title);
+    }
+
+    const list = document.createElement('div');
+    list.className = 'nuance-list';
+
+    layer.nuances.forEach((n, nIdx) => {
+      const key = `${coreIdx}-${layerIdx}-${nIdx}`;
+      const item = document.createElement('div');
+      item.className = 'nuance-item' + (state.nuanceKeys.has(key) ? ' selected' : '');
+      item.innerHTML = `<span class="word">${n.word}</span><span class="desc">${n.desc}</span>`;
+      item.addEventListener('click', () => {
+        if (state.nuanceKeys.has(key)) state.nuanceKeys.delete(key);
+        else state.nuanceKeys.add(key);
+        buildStep3();
+        document.getElementById('next3').disabled = state.nuanceKeys.size === 0;
+      });
+      list.appendChild(item);
+    });
+
+    section.appendChild(list);
+    container.appendChild(section);
+  });
+
+  document.getElementById('next3').disabled = state.nuanceKeys.size === 0;
+}
+
+document.getElementById('next3').addEventListener('click', () => goToStep(4));
+
+// ── Step 4: Reflect ───────────────────────────────────────────────────
+function buildStep4() {
+  // Collect selected nuances grouped by core, then by layer
+  const byCore = new Map();
+
+  Array.from(state.nuanceKeys).forEach(key => {
+    const [coreIdx, layerIdx, nIdx] = key.split('-').map(Number);
+    if (!byCore.has(coreIdx)) byCore.set(coreIdx, new Map());
+    const layerMap = byCore.get(coreIdx);
+    if (!layerMap.has(layerIdx)) layerMap.set(layerIdx, []);
+    layerMap.get(layerIdx).push(nIdx);
+  });
+
+  // Build flat list of words in order
+  const allWords = [];
+  Array.from(byCore.keys()).sort((a, b) => a - b).forEach(coreIdx => {
+    const layerMap = byCore.get(coreIdx);
+    Array.from(layerMap.keys()).sort((a, b) => a - b).forEach(layerIdx => {
+      layerMap.get(layerIdx).sort((a, b) => a - b).forEach(nIdx => {
+        allWords.push(FEELINGS[coreIdx].layers[layerIdx].nuances[nIdx].word);
+      });
+    });
+  });
+
+  document.getElementById('finalWords').innerHTML =
+    allWords.join('<span class="sep">·</span>');
+
+  // Build path: Core → Layer (words), Layer (words) | Core → Layer (words)
+  const pathSegments = [];
+  Array.from(byCore.keys()).sort((a, b) => a - b).forEach(coreIdx => {
+    const core = FEELINGS[coreIdx];
+    const layerMap = byCore.get(coreIdx);
+    const layerStrings = [];
+    Array.from(layerMap.keys()).sort((a, b) => a - b).forEach(layerIdx => {
+      const layer = core.layers[layerIdx];
+      const words = layerMap.get(layerIdx).sort((a, b) => a - b)
+        .map(nIdx => layer.nuances[nIdx].word);
+      layerStrings.push(`${layer.label} (${words.join(', ')})`);
+    });
+    pathSegments.push(`${core.label} → ${layerStrings.join(' · ')}`);
+  });
+  document.getElementById('finalPath').textContent = pathSegments.join('   |   ');
+}
+
+// ── Redirect panel toggling ───────────────────────────────────────────
+function toggleRedirect(stepNum) {
+  const panel = document.getElementById('redirect' + stepNum);
+  panel.classList.toggle('hidden');
+  if (!panel.classList.contains('hidden')) {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+function closeRedirect(stepNum) {
+  document.getElementById('redirect' + stepNum).classList.add('hidden');
+}
+
+// ── Step navigation ───────────────────────────────────────────────────
+function goToStep(n) {
+  state.step = n;
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('step' + i).classList.toggle('hidden', i !== n);
+    // Hide any open redirect panels when leaving a step
+    const panel = document.getElementById('redirect' + i);
+    if (panel) panel.classList.add('hidden');
+  }
+  document.querySelectorAll('.progress-step').forEach(el => {
+    const s = parseInt(el.dataset.step);
+    el.classList.remove('active', 'done');
+    if (s < n) el.classList.add('done');
+    else if (s === n) el.classList.add('active');
+  });
+  if (n === 1) buildStep1();
+  if (n === 2) buildStep2();
+  if (n === 3) buildStep3();
+  if (n === 4) buildStep4();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startOver() {
+  state.coreIdxs.clear();
+  state.layerKeys.clear();
+  state.nuanceKeys.clear();
+  document.getElementById('next1').disabled = true;
+  document.getElementById('reflect1').value = '';
+  document.getElementById('reflect2').value = '';
+  document.getElementById('reflect3').value = '';
+  goToStep(1);
+}
+
+// Add "None of these fit" buttons to steps 2 and 3
+function addNoneFitToStep(stepNum) {
+  const card = document.getElementById('step' + stepNum);
+  const containerId = stepNum === 2 ? 'subContainer' : 'nuanceContainer';
+  const linkId = 'noneFit' + stepNum;
+  if (document.getElementById(linkId)) return;
+  const link = document.createElement('button');
+  link.id = linkId;
+  link.className = 'none-fit-link';
+  link.innerHTML = '<span class="arrow">›</span> None of these quite fit';
+  link.onclick = () => toggleRedirect(stepNum);
+  const redirectPanel = document.getElementById('redirect' + stepNum);
+  redirectPanel.parentNode.insertBefore(link, redirectPanel);
+}
+
+addNoneFitToStep(2);
+addNoneFitToStep(3);
+
+buildStep1();
+</script>
+</body>
+</html>

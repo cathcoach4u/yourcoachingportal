@@ -5,14 +5,15 @@ Single-page hub that signs a Coach4U client in and shows the coaching tools (sub
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.3` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.5` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
 ## Purpose
 
-- **One front door for Coach4U clients.** After sign-in, the page shows two collapsible panels: Your Strengths and Your Tools. Active portals have an Open button; locked ones say "Contact your coach to unlock".
+- **One front door for Coach4U clients.** After sign-in, the dashboard shows two side-by-side hub cards (Strengths Hub, Global Resources) and the Your Tools panel. Active portals have an Open button; locked ones say "Contact your coach to unlock".
 - **Sub-portals** live in their own repos and open in a new tab.
+- **Strengths Hub and Global Resources** are dedicated pages within this repo (`strengths.html`, `resources.html`) — built to grow over time.
 - **No app data lives here.** Auth + portal lookup happen here; everything else lives in the sub-portal apps.
 - Installable as a PWA (manifest, service worker, apple-touch icon).
 
@@ -125,14 +126,26 @@ These have been deliberately removed or set. Don't change unless asked.
 - The Open button URL uses `${p.url || '#'}` to avoid `window.open('undefined')`.
 - Dashboard layout uses **collapsible panels** (see below) — do not revert to a flat always-visible card dump.
 
-### Dashboard layout — collapsible sections
+### Dashboard layout
 
-The portal content area (`#portalWrap`) has two toggle panels after the welcome banner:
+The portal content area (`#portalWrap`) renders these in order after the welcome banner:
 
-1. **Your Strengths** (`#strengthsSection`) — hidden until strengths data loads; collapsed by default. Header shows 💪 icon. Content is a 2-column strengths grid (`#strengthsList`).
-2. **Your Tools** (`#activeSection`) — always visible; **expanded by default** (chevron starts `.open`). Sub-label shows active portal count, e.g. "3 active portals". Content: active portal cards (`#activePortals`) then a tucked "Also Available" sub-section (`#lockedSection`) for locked portals.
+1. **Hub cards row** (`.hub-cards-row`) — two side-by-side anchor links (`<a class="hub-card">`):
+   - **Strengths Hub** → `strengths.html` (💪)
+   - **Global Resources** → `resources.html` (🌐)
+2. **Your Tools** (`#activeSection`) — collapsible toggle, **expanded by default** (chevron starts `.open`). Sub-label shows active portal count, e.g. "3 active portals". Content: active portal cards (`#activePortals`) then a tucked "Also Available" sub-section (`#lockedSection`) for locked portals.
 
 Toggle function: `toggleSection(bodyId, chevronId)` — flips `display` and toggles the `.open` class on the chevron.
+
+### Strengths Hub and Global Resources pages
+
+Each is a self-contained HTML file with its own `<style>` and `<script>` — same Aptos / navy / teal styling as the portal, with a header that has a "← Back" link, the page title, and a Sign Out button.
+
+- **`strengths.html`** — fetches CliftonStrengths via the Edge Function and renders the 10-card grid. Owns the `DOMAIN_BY_THEME`, `DOMAIN_LABEL`, `STRENGTHS_ENDPOINT`, `fetchStrengths`, `renderStrengths` (these are NOT in `index.html` any more).
+- **`resources.html`** — listing page for client-facing tools. Each tool is an `<a class="resource-card">` linking into the `resources/` subdirectory.
+- **`resources/<tool>.html`** — individual tool pages (e.g. `resources/feelings-chart.html`). May have their own design system; add a `← Back to Resources` link near the top that points to `../resources.html`.
+
+All three auth-gate via `sb.auth.getSession()` on load and redirect to `./` if no session. Shared session via `localStorage` (same Supabase project) means the user does not re-login.
 
 ---
 
@@ -140,17 +153,25 @@ Toggle function: `toggleSection(bodyId, chevronId)` — flips `display` and togg
 
 ```
 yourcoachingportal/
-├── index.html        login + portal hub, all logic inline
-├── manifest.json     PWA manifest (start_url and scope are "./" — path-agnostic)
-├── sw.js             service worker (caches index + root, ignores Supabase calls)
-├── icon.svg          PWA / apple-touch icon (4U on teal #0D9488, 512×512)
-├── migrations/       one-off SQL run in the Supabase SQL editor (numbered, idempotent)
-├── CLAUDE.md         this file
+├── index.html              login + dashboard (hub cards + Your Tools toggle)
+├── strengths.html          Strengths Hub — CliftonStrengths Top 10 page
+├── resources.html          Global Resources hub — lists client-facing tools
+├── resources/
+│   └── feelings-chart.html Four-step feelings chart (own design system)
+├── manifest.json           PWA manifest (start_url and scope are "./" — path-agnostic)
+├── sw.js                   service worker (caches all HTML pages, ignores Supabase calls)
+├── icon.svg                PWA / apple-touch icon (4U on teal #0D9488, 512×512)
+├── migrations/             one-off SQL run in the Supabase SQL editor (numbered, idempotent)
+├── CLAUDE.md               this file
 ├── CHANGELOG.md
 └── README.md
 ```
 
-Everything is in one file by design. Don't split into modules — GitHub Pages serves ES modules unreliably for this account.
+Each top-level HTML page has its own inline `<style>` and `<script>` — no shared CSS/JS file by design (no bundler, no ES modules — GitHub Pages serves ES modules unreliably for this account). When the same logic appears on more than one page (e.g. Supabase init, logout), accept the small duplication.
+
+When adding a new resource: drop a new HTML file under `resources/` and add a matching `<a class="resource-card">` to `resources.html`. The new file should auth-gate (redirect to `../` if no session) only if it needs the user identity; pure-content tools like the feelings chart can stay open since GitHub Pages is public anyway.
+
+After adding new HTML pages, update `sw.js` ASSETS list and bump the `CACHE` version (e.g. `coaching-portal-v3`) so old caches clear on next visit.
 
 ---
 
@@ -214,7 +235,8 @@ When I paste source from my chat or notes it often arrives with these. Always st
 - **Angle-bracketed identifiers:** `<user.id>` → `user.id`.
 - **Stray `>` after emojis:** `'💼>'` → `'💼'`.
 - **Footer anchor body:** `<a ...><coach4u.com.au></a>` → `<a ...>coach4u.com.au</a>`.
-- **Markdown link artefacts in code:** `[user.id](http://user.id)` → `user.id`.
+- **Markdown link artefacts in code:** `[user.id](http://user.id)` → `user.id`. Also affects any plain-word identifier with a dot, like `[link.id](http://link.id)`, `[arr.map](http://arr.map)`, `[obj.prop](http://obj.prop)`.
+- **Markdown link artefacts in text:** `[www.coach4u.com.au](http://www.coach4u.com.au)` → wrap in a real `<a href>` instead. Same with email addresses like `[cath@coach4u.com.au](mailto:cath@coach4u.com.au)` → `<a href="mailto:cath@coach4u.com.au">cath@coach4u.com.au</a>`.
 
 ### When a paste regresses prior fixes
 

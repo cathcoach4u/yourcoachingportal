@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-05-02 (v5)
+
+- feat: Strengths Hub and Global Resources are now dedicated pages (`strengths.html`, `resources.html`) — dashboard hub cards link to them
+- feat: first Global Resource — `resources/feelings-chart.html`, a four-step Core → Layer → Nuance → Reflect feelings chart
+- refactor: removed inline expandable hub sections from `index.html`; strengths fetch + domain colour map moved into `strengths.html`
+- chore: bumped service worker cache to `coaching-portal-v2`; added new HTML pages to ASSETS list
+- docs: CLAUDE.md updated for multi-page structure, paste artefact list expanded for markdown-link artefacts in plain text and identifiers with dots
+
 ## 2026-05-02
 
 - feat: CliftonStrengths Top 10 panel — fetches from Supabase Edge Function `get-strengths` (cross-project lookup); decoupled from portal render so a 404/timeout never blocks tiles
