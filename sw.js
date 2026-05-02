@@ -1,11 +1,12 @@
-const CACHE = 'coaching-portal-v3'
+const CACHE = 'coaching-portal-v4'
 const ASSETS = [
   './',
   './index.html',
   './strengths.html',
   './resources.html',
   './resources/feelings-chart.html',
-  './resources/smart-goal.html'
+  './resources/smart-goal.html',
+  './resources/issue-clarifier.html'
 ]
 
 self.addEventListener('install', e => {
