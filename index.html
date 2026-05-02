@@ -91,6 +91,28 @@
     .toggle-chevron { font-size: 14px; color: #0D9488; transition: transform 0.25s; display: inline-block; }
     .toggle-chevron.open { transform: rotate(180deg); }
     .section-body { padding-top: 16px; }
+    .hub-cards-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 8px;
+    }
+    .hub-card {
+      background: white; border: 2px solid #eee; border-radius: 10px;
+      padding: 20px 18px; cursor: pointer; font-family: inherit; text-align: left;
+      display: flex; flex-direction: column; gap: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .hub-card:hover { border-color: #0D9488; box-shadow: 0 3px 10px rgba(13,148,136,0.12); }
+    .hub-card.active { border-color: #0D9488; background: #f9fefe; }
+    .hub-card-icon { font-size: 24px; line-height: 1; margin-bottom: 2px; }
+    .hub-card-label { font-size: 15px; font-weight: 700; color: #003366; }
+    .hub-card-sub { font-size: 11px; color: #999; }
+    .hub-section {
+      background: white; border-radius: 10px; margin-bottom: 8px;
+      padding: 24px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .hub-section-heading {
+      font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+      color: #003366; margin-bottom: 18px; padding-bottom: 8px; border-bottom: 2px solid #0D9488;
+    }
     .locked-subheading {
       font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
       color: #bbb; margin: 20px 0 12px; padding-top: 16px; border-top: 1px solid #eee;
@@ -181,9 +203,12 @@
       .welcome-banner h1 { font-size: 18px; }
       .cards-grid { grid-template-columns: 1fr 1fr; }
       .strengths-grid { grid-template-columns: 1fr; grid-auto-flow: row; gap: 8px; }
+      .hub-cards-row { gap: 10px; }
+      .hub-card { padding: 16px 14px; }
     }
     @media (max-width: 360px) {
       .cards-grid { grid-template-columns: 1fr; }
+      .hub-cards-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -234,21 +259,29 @@
         <h1 id="welcomeHeading"></h1>
         <p>Your personalised coaching tools are ready below. Reach out to your coach to unlock additional portals.</p>
       </div>
-      <div class="section-wrap" id="strengthsSection" style="display:none">
-        <button class="section-toggle" onclick="toggleSection('strengthsBody','strengthsChevron')">
-          <div class="section-toggle-inner">
-            <span style="font-size:20px">💪</span>
-            <div>
-              <div class="section-toggle-label">Your Strengths</div>
-              <div class="section-toggle-sub">CliftonStrengths Top 10</div>
-            </div>
-          </div>
-          <span class="toggle-chevron" id="strengthsChevron">▼</span>
+      <div class="hub-cards-row">
+        <button class="hub-card" id="strengthsHubCard" onclick="toggleHubSection('strengthsHubSection','strengthsHubCard')">
+          <span class="hub-card-icon">💪</span>
+          <span class="hub-card-label">Strengths Hub</span>
+          <span class="hub-card-sub">Your CliftonStrengths themes</span>
         </button>
-        <div class="section-body" id="strengthsBody" style="display:none">
-          <div class="strengths-grid" id="strengthsList"></div>
-        </div>
+        <button class="hub-card" id="globalResourcesCard" onclick="toggleHubSection('globalResourcesSection','globalResourcesCard')">
+          <span class="hub-card-icon">🌐</span>
+          <span class="hub-card-label">Global Resources</span>
+          <span class="hub-card-sub">Tools and links for clients</span>
+        </button>
       </div>
+
+      <div class="hub-section" id="strengthsHubSection" style="display:none">
+        <div class="hub-section-heading">Strengths Hub</div>
+        <div class="strengths-grid" id="strengthsList"></div>
+      </div>
+
+      <div class="hub-section" id="globalResourcesSection" style="display:none">
+        <div class="hub-section-heading">Global Resources</div>
+        <p style="color:#aaa;font-size:14px;line-height:1.6">Resources and links will appear here — check back after your next session with your coach.</p>
+      </div>
+
       <div class="section-wrap" id="activeSection">
         <button class="section-toggle" onclick="toggleSection('toolsBody','toolsChevron')">
           <div class="section-toggle-inner">
@@ -285,7 +318,7 @@
   </footer>
 
   <script>
-    const VERSION = '2026-05-02.3'
+    const VERSION = '2026-05-02.4'
     document.getElementById('versionText').textContent = VERSION
 
     async function hardRefresh() {
@@ -344,6 +377,14 @@
       const isOpen = body.style.display !== 'none'
       body.style.display = isOpen ? 'none' : 'block'
       if (chevron) chevron.classList.toggle('open', !isOpen)
+    }
+
+    function toggleHubSection(sectionId, cardId) {
+      const section = document.getElementById(sectionId)
+      const card = document.getElementById(cardId)
+      const isOpen = section.style.display !== 'none'
+      section.style.display = isOpen ? 'none' : 'block'
+      card.classList.toggle('active', !isOpen)
     }
 
     async function login() {
@@ -437,8 +478,11 @@
     }
 
     function renderStrengths(themes) {
-      const section = document.getElementById('strengthsSection')
-      if (!themes.length) { section.style.display = 'none'; return }
+      if (!themes.length) {
+        document.getElementById('strengthsList').innerHTML =
+          '<p style="color:#aaa;font-size:14px;line-height:1.6">No strengths data yet — contact your coach to get started.</p>'
+        return
+      }
       document.getElementById('strengthsList').innerHTML = themes.slice(0, 10).map((theme, i) => {
         const domain = DOMAIN_BY_THEME[theme] || 'strategic'
         return `
@@ -450,7 +494,6 @@
             </div>
           </div>`
       }).join('')
-      section.style.display = 'block'
     }
 
     function renderPortals(portals, containerId, isLocked) {
