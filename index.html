@@ -138,6 +138,14 @@
       border-top: 1px solid #eee; background: white;
     }
     footer a { color: #0D9488; text-decoration: none; }
+    .version-row {
+      margin-top: 6px; font-size: 11px; color: #ccc;
+      display: flex; justify-content: center; gap: 10px; align-items: center;
+    }
+    .hard-refresh {
+      cursor: pointer; color: #0D9488; text-decoration: none;
+    }
+    .hard-refresh:hover { text-decoration: underline; }
     @media (max-width: 480px) {
       .login-box { padding: 28px 20px; }
       .welcome-banner h1 { font-size: 18px; }
@@ -217,9 +225,32 @@
 
   <footer>
     <a href="https://coach4u.com.au" target="_blank">coach4u.com.au</a> &nbsp;|&nbsp; Strengths-Based Coaching and Counselling
+    <div class="version-row">
+      <span>v<span id="versionText"></span></span>
+      <span>·</span>
+      <a class="hard-refresh" onclick="hardRefresh()">Hard refresh</a>
+    </div>
   </footer>
 
   <script>
+    const VERSION = '2026-05-02.1'
+    document.getElementById('versionText').textContent = VERSION
+
+    async function hardRefresh() {
+      try {
+        if ('serviceWorker' in navigator) {
+          const regs = await navigator.serviceWorker.getRegistrations()
+          await Promise.all(regs.map(r => r.unregister()))
+        }
+        if ('caches' in window) {
+          const keys = await caches.keys()
+          await Promise.all(keys.map(k => caches.delete(k)))
+        }
+      } finally {
+        location.reload()
+      }
+    }
+
     const SUPABASE_URL  = 'https://eekefsuaefgpqmjdyniy.supabase.co'
     const SUPABASE_ANON = 'sb_publishable_pcXHwQVMpvEojb4K3afEMw_RMvgZM-Y'
     const RESET_REDIRECT = 'https://cathcoach4u.github.io/coach4Uapp-dashboard/auth.html'
