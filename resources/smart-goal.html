@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SMART Goal Builder | Coach4U</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --c4u-dark-blue: #1B3664;
+    --c4u-light-blue: #5684C4;
+    --c4u-dark-grey: #2D2D2D;
+    --c4u-light-grey: #DDDDDD;
+    --c4u-bg: #ffffff;
+    --c4u-soft: #F5F7FB;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 2px rgba(27, 54, 100, 0.06);
+    --shadow-md: 0 4px 16px rgba(27, 54, 100, 0.08);
+  }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--c4u-bg);
+    color: var(--c4u-dark-grey);
+    min-height: 100vh;
+    padding: 32px 20px 60px;
+    font-size: 1.1rem;
+    line-height: 1.5;
+  }
+
+  .container { max-width: 760px; margin: 0 auto; }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 24px;
+    color: var(--c4u-light-blue);
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: var(--c4u-dark-blue); }
+
+  header { text-align: center; margin-bottom: 36px; }
+  header h1 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: var(--c4u-dark-blue);
+    font-size: 2rem;
+    letter-spacing: -0.5px;
+  }
+  header p {
+    color: var(--c4u-dark-grey);
+    margin-top: 8px;
+    font-size: 1rem;
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .progress {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .progress-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: var(--c4u-light-grey);
+    font-weight: 600;
+  }
+  .progress-step .num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--c4u-light-grey);
+    color: white;
+    display: grid; place-items: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.25s;
+  }
+  .progress-step.active { color: var(--c4u-dark-blue); }
+  .progress-step.active .num { background: var(--c4u-dark-blue); }
+  .progress-step.done .num { background: var(--c4u-light-blue); color: white; }
+  .progress-step.done { color: var(--c4u-light-blue); }
+  .progress-divider { width: 18px; height: 1px; background: var(--c4u-light-grey); }
+
+  .card {
+    background: white;
+    border: 1px solid var(--c4u-light-grey);
+    border-radius: var(--radius-lg);
+    padding: 32px 28px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+  }
+
+  .step-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--c4u-light-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .step-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: var(--c4u-dark-blue);
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+
+  .step-prompt { color: var(--c4u-dark-grey); font-size: 1rem; margin-bottom: 6px; }
+
+  .step-hint {
+    color: var(--c4u-light-blue);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+
+  .step-input {
+    width: 100%;
+    border: 1.5px solid var(--c4u-light-grey);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: var(--c4u-dark-grey);
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color 0.15s;
+    line-height: 1.5;
+  }
+  .step-input.short { min-height: 56px; }
+  .step-input:focus { outline: none; border-color: var(--c4u-light-blue); }
+
+  .summary-banner {
+    background: linear-gradient(135deg, #1B3664 0%, #5684C4 100%);
+    color: white;
+    padding: 28px 24px;
+    border-radius: var(--radius-md);
+    margin-bottom: 24px;
+  }
+  .summary-banner .label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.85;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .summary-paragraph {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    letter-spacing: -0.1px;
+  }
+
+  .copy-row {
+    display: flex; justify-content: flex-end; margin-top: 16px;
+  }
+  .copy-btn {
+    background: rgba(255,255,255,0.18);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .copy-btn:hover { background: rgba(255,255,255,0.28); }
+  .copy-btn.copied { background: rgba(255,255,255,0.4); }
+
+  .breakdown {
+    background: var(--c4u-soft);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .breakdown-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: var(--c4u-dark-blue);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+  }
+  .breakdown-item { margin-bottom: 12px; }
+  .breakdown-item:last-child { margin-bottom: 0; }
+  .breakdown-letter {
+    display: inline-block;
+    width: 28px; height: 28px;
+    background: var(--c4u-dark-blue);
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .breakdown-key {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: var(--c4u-dark-blue);
+    font-size: 0.95rem;
+  }
+  .breakdown-value {
+    color: var(--c4u-dark-grey);
+    font-size: 0.95rem;
+    margin-top: 4px;
+    margin-left: 38px;
+    line-height: 1.5;
+  }
+
+  .reflect-prompts { display: flex; flex-direction: column; gap: 16px; }
+  .reflect-prompts label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: var(--c4u-dark-blue);
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .reflect-prompts textarea {
+    width: 100%;
+    border: 1.5px solid var(--c4u-light-grey);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    color: var(--c4u-dark-grey);
+    resize: vertical;
+    min-height: 70px;
+    transition: border-color 0.15s;
+  }
+  .reflect-prompts textarea:focus {
+    outline: none;
+    border-color: var(--c4u-light-blue);
+  }
+
+  .button-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: var(--c4u-dark-blue); color: white; }
+  .btn-primary:hover { background: #14284d; }
+  .btn-primary:disabled { background: var(--c4u-light-grey); cursor: not-allowed; }
+  .btn-secondary {
+    background: white;
+    color: var(--c4u-dark-blue);
+    border: 1.5px solid var(--c4u-light-grey);
+  }
+  .btn-secondary:hover { border-color: var(--c4u-dark-blue); }
+
+  footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 9pt;
+    color: var(--c4u-dark-grey);
+  }
+  footer a { color: var(--c4u-light-blue); text-decoration: none; }
+  footer a:hover { color: var(--c4u-dark-blue); }
+
+  .hidden { display: none; }
+
+  @media (max-width: 540px) {
+    .progress-step span:not(.num) { display: none; }
+    .progress-divider { width: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <a class="back-link" href="../resources.html">← Back to Resources</a>
+
+  <header>
+    <h1>SMART Goal Builder</h1>
+    <p>A clear goal is a doable goal. Walk through five short questions and shape one you can actually act on.</p>
+  </header>
+
+  <div class="progress" id="progress">
+    <div class="progress-step active" data-step="1"><span class="num">S</span><span>Specific</span></div>
+    <div class="progress-divider"></div>
+    <div class="progress-step" data-step="2"><span class="num">M</span><span>Measurable</span></div>
+    <div class="progress-divider"></div>
+    <div class="progress-step" data-step="3"><span class="num">A</span><span>Achievable</span></div>
+    <div class="progress-divider"></div>
+    <div class="progress-step" data-step="4"><span class="num">R</span><span>Relevant</span></div>
+    <div class="progress-divider"></div>
+    <div class="progress-step" data-step="5"><span class="num">T</span><span>Time-bound</span></div>
+  </div>
+
+  <!-- Step 1 — Specific -->
+  <div class="card" id="step1">
+    <div class="step-label">Step 1 of 5 · Specific</div>
+    <h2 class="step-title">Make it specific</h2>
+    <p class="step-prompt">What exactly do you want to do? Describe the action, no need to start with "I want to".</p>
+    <p class="step-hint">Vague goals are easy to put off. Ask yourself who, what, where and how.</p>
+    <textarea class="step-input" id="input1" placeholder="Walk for 30 minutes, three times a week, before work"></textarea>
+    <div class="button-row">
+      <span></span>
+      <button class="btn btn-primary" id="next1" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- Step 2 — Measurable -->
+  <div class="card hidden" id="step2">
+    <div class="step-label">Step 2 of 5 · Measurable</div>
+    <h2 class="step-title">Make it measurable</h2>
+    <p class="step-prompt">How will you know you are on track? What can you count, log or notice?</p>
+    <p class="step-hint">Numbers, frequencies, dates, or something you can clearly observe.</p>
+    <textarea class="step-input" id="input2" placeholder="Logging each walk in a journal and aiming for 12 walks a month"></textarea>
+    <div class="button-row">
+      <button class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+      <button class="btn btn-primary" id="next2" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- Step 3 — Achievable -->
+  <div class="card hidden" id="step3">
+    <div class="step-label">Step 3 of 5 · Achievable</div>
+    <h2 class="step-title">Is it achievable?</h2>
+    <p class="step-prompt">Be honest. Why is this realistic for you with what you have right now, your time, energy and support?</p>
+    <p class="step-hint">If it feels too big, write what a smaller first version could look like.</p>
+    <textarea class="step-input" id="input3" placeholder="I have the time before work and my walking shoes are ready by the door"></textarea>
+    <div class="button-row">
+      <button class="btn btn-secondary" onclick="goToStep(2)">Back</button>
+      <button class="btn btn-primary" id="next3" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- Step 4 — Relevant -->
+  <div class="card hidden" id="step4">
+    <div class="step-label">Step 4 of 5 · Relevant</div>
+    <h2 class="step-title">Why does it matter?</h2>
+    <p class="step-prompt">Why this goal, and why now? What will it change for you?</p>
+    <p class="step-hint">If the answer feels weak, the goal might not be the right one.</p>
+    <textarea class="step-input" id="input4" placeholder="I want more energy through the day and to feel stronger in my body"></textarea>
+    <div class="button-row">
+      <button class="btn btn-secondary" onclick="goToStep(3)">Back</button>
+      <button class="btn btn-primary" id="next4" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- Step 5 — Time-bound -->
+  <div class="card hidden" id="step5">
+    <div class="step-label">Step 5 of 5 · Time-bound</div>
+    <h2 class="step-title">When?</h2>
+    <p class="step-prompt">When will you achieve this by? A real date or a clear timeframe.</p>
+    <p class="step-hint">A goal without a deadline is a wish.</p>
+    <textarea class="step-input short" id="input5" placeholder="By the end of August, starting Monday"></textarea>
+    <div class="button-row">
+      <button class="btn btn-secondary" onclick="goToStep(4)">Back</button>
+      <button class="btn btn-primary" id="next5" disabled>See your goal</button>
+    </div>
+  </div>
+
+  <!-- Step 6 — Summary -->
+  <div class="card hidden" id="step6">
+    <div class="step-label">Your goal</div>
+    <h2 class="step-title">Here is your SMART goal</h2>
+
+    <div class="summary-banner">
+      <div class="label">Your goal in one paragraph</div>
+      <div class="summary-paragraph" id="finalParagraph"></div>
+      <div class="copy-row">
+        <button class="copy-btn" id="copyBtn" onclick="copyParagraph()">Copy</button>
+      </div>
+    </div>
+
+    <div class="breakdown">
+      <div class="breakdown-title">The five parts</div>
+      <div class="breakdown-item">
+        <span class="breakdown-letter">S</span><span class="breakdown-key">Specific</span>
+        <div class="breakdown-value" id="bd1"></div>
+      </div>
+      <div class="breakdown-item">
+        <span class="breakdown-letter">M</span><span class="breakdown-key">Measurable</span>
+        <div class="breakdown-value" id="bd2"></div>
+      </div>
+      <div class="breakdown-item">
+        <span class="breakdown-letter">A</span><span class="breakdown-key">Achievable</span>
+        <div class="breakdown-value" id="bd3"></div>
+      </div>
+      <div class="breakdown-item">
+        <span class="breakdown-letter">R</span><span class="breakdown-key">Relevant</span>
+        <div class="breakdown-value" id="bd4"></div>
+      </div>
+      <div class="breakdown-item">
+        <span class="breakdown-letter">T</span><span class="breakdown-key">Time-bound</span>
+        <div class="breakdown-value" id="bd5"></div>
+      </div>
+    </div>
+
+    <div class="reflect-prompts">
+      <div>
+        <label>What is the first small step?</label>
+        <textarea id="reflect1" placeholder="The first thing I can do this week..."></textarea>
+      </div>
+      <div>
+        <label>Who can support you with this?</label>
+        <textarea id="reflect2" placeholder="A person, a group, a routine..."></textarea>
+      </div>
+      <div>
+        <label>When will you check in on your progress?</label>
+        <textarea id="reflect3" placeholder="A weekly review, a date in the calendar..."></textarea>
+      </div>
+    </div>
+
+    <div class="button-row">
+      <button class="btn btn-secondary" onclick="goToStep(5)">Back</button>
+      <button class="btn btn-primary" onclick="startOver()">Start a new goal</button>
+    </div>
+  </div>
+
+  <footer>
+    Strengths-Based Coaching and Counselling | <a href="https://www.coach4u.com.au" target="_blank">www.coach4u.com.au</a> | <a href="mailto:cath@coach4u.com.au">cath@coach4u.com.au</a> | 0402 313 337
+  </footer>
+
+</div>
+
+<script>
+const state = {
+  step: 1,
+  inputs: { 1: '', 2: '', 3: '', 4: '', 5: '' }
+};
+
+// Wire up inputs
+for (let i = 1; i <= 5; i++) {
+  const input = document.getElementById('input' + i);
+  const next = document.getElementById('next' + i);
+  input.addEventListener('input', () => {
+    state.inputs[i] = input.value.trim();
+    next.disabled = state.inputs[i].length === 0;
+  });
+  next.addEventListener('click', () => goToStep(i + 1));
+}
+
+function goToStep(n) {
+  state.step = n;
+  for (let i = 1; i <= 6; i++) {
+    document.getElementById('step' + i).classList.toggle('hidden', i !== n);
+  }
+  document.querySelectorAll('.progress-step').forEach(el => {
+    const s = parseInt(el.dataset.step);
+    el.classList.remove('active', 'done');
+    if (n === 6) {
+      el.classList.add('done');
+    } else if (s < n) {
+      el.classList.add('done');
+    } else if (s === n) {
+      el.classList.add('active');
+    }
+  });
+  if (n === 6) buildSummary();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function buildSummary() {
+  const v = state.inputs;
+  const para =
+    `I will ${v[1]} by ${v[5]}. ` +
+    `This is achievable because ${v[3]}. ` +
+    `I will measure progress by ${v[2]}. ` +
+    `This matters to me because ${v[4]}.`;
+  document.getElementById('finalParagraph').textContent = para;
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById('bd' + i).textContent = v[i];
+  }
+}
+
+function copyParagraph() {
+  const text = document.getElementById('finalParagraph').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 1800);
+  });
+}
+
+function startOver() {
+  for (let i = 1; i <= 5; i++) {
+    state.inputs[i] = '';
+    document.getElementById('input' + i).value = '';
+    document.getElementById('next' + i).disabled = true;
+  }
+  document.getElementById('reflect1').value = '';
+  document.getElementById('reflect2').value = '';
+  document.getElementById('reflect3').value = '';
+  goToStep(1);
+}
+</script>
+</body>
+</html>
