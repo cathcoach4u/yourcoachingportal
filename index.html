@@ -262,7 +262,7 @@
   </footer>
 
   <script>
-    const VERSION = '2026-05-02.6'
+    const VERSION = '2026-05-02.7'
     document.getElementById('versionText').textContent = VERSION
 
     async function hardRefresh() {
@@ -357,7 +357,7 @@
         sb.from('portals').select('*').eq('coming_soon', false).order('display_order'),
         sb.from('client_access').select('portal_slug').eq('user_id', user.id)
       ])
-      const portals = portalsRes.data || []
+      const portals = (portalsRes.data || []).filter(p => p.slug !== 'coaching-portal')
       const granted = new Set((accessRes.data || []).map(r => r.portal_slug))
       const active  = portals.filter(p => granted.has(p.slug))
       const locked  = portals.filter(p => !granted.has(p.slug))
