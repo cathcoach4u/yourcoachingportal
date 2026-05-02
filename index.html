@@ -85,23 +85,40 @@
     .strengths-grid {
       display: grid; grid-template-columns: 1fr 1fr;
       grid-template-rows: repeat(5, auto); grid-auto-flow: column;
-      gap: 8px 14px;
+      gap: 10px 16px;
     }
     .strength-card {
       display: flex; align-items: center; gap: 14px;
-      padding: 12px 14px; border-radius: 8px; color: white;
+      padding: 12px 16px;
+      background: white;
+      border-radius: 8px;
+      border-left: 4px solid #ccc;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
     .strength-rank {
-      font-size: 22px; font-weight: 800; min-width: 28px;
-      text-align: center; line-height: 1;
+      font-size: 22px; font-weight: 700; min-width: 28px;
+      color: #0D9488; text-align: center; line-height: 1;
     }
     .strength-info { flex: 1; min-width: 0; }
-    .strength-name { font-size: 15px; font-weight: 700; line-height: 1.2; }
-    .strength-domain { font-size: 11px; opacity: 0.9; margin-top: 2px; }
-    .strength-card.domain-executing    { background: #7B2D8B; }
-    .strength-card.domain-influencing  { background: #E8622A; }
-    .strength-card.domain-relationship { background: #1F96D3; }
-    .strength-card.domain-strategic    { background: #2EAF6E; }
+    .strength-name {
+      font-size: 15px; font-weight: 700; line-height: 1.2; color: #003366;
+    }
+    .strength-domain {
+      font-size: 11px; margin-top: 3px; color: #888;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .domain-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #ccc; flex-shrink: 0;
+    }
+    .strength-card.domain-executing    { border-left-color: #7B2D8B; }
+    .strength-card.domain-executing    .domain-dot { background: #7B2D8B; }
+    .strength-card.domain-influencing  { border-left-color: #E8622A; }
+    .strength-card.domain-influencing  .domain-dot { background: #E8622A; }
+    .strength-card.domain-relationship { border-left-color: #1F96D3; }
+    .strength-card.domain-relationship .domain-dot { background: #1F96D3; }
+    .strength-card.domain-strategic    { border-left-color: #2EAF6E; }
+    .strength-card.domain-strategic    .domain-dot { background: #2EAF6E; }
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -233,7 +250,7 @@
   </footer>
 
   <script>
-    const VERSION = '2026-05-02.1'
+    const VERSION = '2026-05-02.2'
     document.getElementById('versionText').textContent = VERSION
 
     async function hardRefresh() {
@@ -382,7 +399,7 @@
             <span class="strength-rank">${i + 1}</span>
             <div class="strength-info">
               <div class="strength-name">${theme}</div>
-              <div class="strength-domain">${DOMAIN_LABEL[domain]}</div>
+              <div class="strength-domain"><span class="domain-dot"></span>${DOMAIN_LABEL[domain]}</div>
             </div>
           </div>`
       }).join('')
