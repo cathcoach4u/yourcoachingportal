@@ -126,14 +126,22 @@
       const timer = setTimeout(() => ctrl.abort(), 8000)
       try {
         const res = await fetch(RELATIONSHIP_ENDPOINT, {
-          headers: { Authorization: `Bearer ${session.access_token}` },
+          headers: {
+            apikey: SUPABASE_ANON,
+            Authorization: `Bearer ${session.access_token}`
+          },
           signal: ctrl.signal
         })
         clearTimeout(timer)
-        if (!res.ok) return { ok: false }
+        if (!res.ok) {
+          const body = await res.text().catch(() => '')
+          console.error('get-coaching-relationship failed:', res.status, res.statusText, body)
+          return { ok: false }
+        }
         const data = await res.json()
         return { ok: true, groups: Array.isArray(data.groups) ? data.groups : [] }
-      } catch {
+      } catch (err) {
+        console.error('get-coaching-relationship error:', err)
         return { ok: false }
       }
     }
