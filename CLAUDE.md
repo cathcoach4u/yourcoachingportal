@@ -11,6 +11,25 @@ Sub-portals (business, team, marketing, etc.) live in their own GitHub Pages rep
 
 ---
 
+## Two Design Systems
+
+This repo uses two separate design systems. Use the right one — do not mix them.
+
+| | Dashboard | Activity |
+|---|---|---|
+| CSS file | `css/style.css` | `css/activity.css` |
+| Font | Aptos system stack (no Google Fonts) | Inter + Montserrat (Google Fonts required) |
+| Primary colour | `#003366` navy | `#1B3664` dark blue |
+| Accent | `#0D9488` teal | `#5684C4` mid blue |
+| CSS prefix | none | `act-` |
+| Used for | Dashboard, auth, Strengths Hub pages | All pages under `resources/` |
+
+**What is an activity?** A page where the user produces a personal output through interaction — selections, reflections, multi-step flows. Static or informational pages are NOT activities and use the dashboard system.
+
+Both stylesheets are copied from `coach4u-shared`. Each app owns its own local copy — do not link to the shared repo live.
+
+---
+
 ## What this repo owns vs what lives elsewhere
 
 **Owned here (change in this repo):**
@@ -144,7 +163,7 @@ CSS classes: `.domain-executing`, `.domain-influencing`, `.domain-relationship`,
 
 ---
 
-## Brand
+## Brand — Dashboard pages
 
 - Header / primary buttons / titles: navy `#003366`
 - Accent (active card border, links, secondary buttons): teal `#0D9488`, hover `#0F766E`
@@ -192,13 +211,15 @@ Toggle function: `toggleSection(bodyId, chevronId)` — flips `display` and togg
 
 ### Strengths Hub and Global Resources pages
 
-Each is a self-contained HTML file with its own `<style>` and `<script>` — `coach4u-tools.html` and `resources.html` use the portal's Aptos / navy / teal system; tools under `resources/` use their own Inter / Montserrat / `#1B3664` design system (consistent across all resources). Each has a header with a "← Back" link.
+`coach4u-tools.html` and `resources.html` use the **dashboard design system** (Aptos / navy / teal, `css/style.css`). Each has a header with a "← Back" link.
+
+Tools under `resources/` use the **activity design system** — `css/activity.css`, `act-*` CSS classes, Inter + Montserrat fonts, `--act-*` CSS variables (`#1B3664` dark blue, `#5684C4` mid blue). Add `class="activity-page"` to `<body>` and link both Google Fonts and `../css/activity.css` (note `../` since these files are one level inside `resources/`).
 
 - **`coach4u-tools.html`** — Strengths Hub landing. Page banner + a grid of `<a class="hub-tile">` boxes, one per Coach4U-built strengths tool. Currently holds a single tile that navigates to `coach4u-tools/strengths-clifton.html`. Auth-gated; redirects to `./` if no session. Future strengths tools sit alongside as more `.hub-tile` boxes — no DB changes needed.
 - **`coach4u-tools/strengths-clifton.html`** — CliftonStrengths page. Page banner followed by four collapsible toggles: **Your Domain Mix** (default open), **Your Top 10** (default closed), **What each theme means** (default closed), **What you bring** (default closed). Owns `DOMAIN_BY_THEME`, `DOMAIN_LABEL`, `STRENGTHS_ENDPOINT`, `fetchStrengths`, `renderStrengths`, `renderDomainMix`, `renderReports`, and the `THEME_INFO` object covering all 34 themes (description + brings per theme). Back arrow returns to `coach4u-tools.html`.
 - **`coach4u-tools/coaching-admin.html`** — "Existing Coaching Admin" page. Page banner reads "🔗 Your Coaching Relationship". Calls the `get-coaching-relationship` Edge Function with the user's session token, then renders one card per coaching group: a green role pill (Individual / Couple / Organisation), a blue relationship-name pill, and an unstyled list of any other members. Loading / empty / error states are handled in-page. No secrets in the file — the Edge Function is the only thing that holds the Internal Hub service-role key.
 - **`resources.html`** — listing page for client-facing tools. Each tool is an `<a class="resource-card">` linking into the `resources/` subdirectory. Auth-gated.
-- **`resources/<tool>.html`** — individual tool pages. Three currently:
+- **`resources/<tool>.html`** — individual activity tool pages. Three currently:
   - **`feelings-chart.html`** — 4-step (Core → Layer → Nuance → Reflect) feelings naming wizard with multi-select at every step.
   - **`smart-goal.html`** — 5-step SMART goal builder. Final card stitches inputs into one paragraph (`I will [S] by [T]. This is achievable because [A]. I will measure progress by [M]. This matters to me because [R].`) with a Copy button, plus a five-letter breakdown and three reflect prompts.
   - **`issue-clarifier.html`** — 5-step issue clarifier (Scope pills → Facts → Impact → Underneath → Real issue with two template hints). Summary shows the journey from scope to core in a 5-row card with the real issue highlighted in the navy gradient banner. Includes 3 reflect prompts and a 1–10 confidence rating against the first small step.
@@ -207,7 +228,7 @@ Each is a self-contained HTML file with its own `<style>` and `<script>` — `co
 
 ### Adding a new resource
 
-1. Create `resources/<slug>.html`. Either match the existing Inter/Montserrat design system for visual consistency, or use a different one if the tool warrants it. Add a `← Back to Coaching Portal` link at the top pointing to `../` (the dashboard).
+1. Create `resources/<slug>.html`. Use the **activity design system**: `<body class="activity-page">`, link Google Fonts + `../css/activity.css`, use `act-*` CSS classes. Add a small page-specific `<style>` block only for components not covered by `activity.css`. Add a `← Back to Coaching Portal` link using `.act-back-link` at the top.
 2. Add a matching `<a class="resource-card">` to `resources.html` (icon, title, description, link arrow).
 3. Update `sw.js` `ASSETS` list to include the new file path.
 4. Bump `sw.js` `CACHE` version (e.g. `coaching-portal-v5`) so old caches clear on next visit.
@@ -217,7 +238,7 @@ Each is a self-contained HTML file with its own `<style>` and `<script>` — `co
 
 Convention: every Coach4U-built deep page lives at `coach4u-tools/<slug>.html` so its URL reads `https://cathcoach4u.github.io/yourcoachingportal/coach4u-tools/<slug>.html`. Examples to follow: `coach4u-tools/strengths-clifton.html`. Future tools (e.g. Pulse Reports → `coach4u-tools/pulse-reports.html`) drop in alongside.
 
-1. Create `coach4u-tools/<slug>.html`. The dashboard's Aptos / navy / teal system is the default; copy the structure from `coach4u-tools/strengths-clifton.html` (header with back arrow, page banner, content area, footer, Supabase init).
+1. Create `coach4u-tools/<slug>.html`. These are dashboard-system pages — use the Aptos / navy / teal system from `css/style.css`. Copy the structure from `coach4u-tools/strengths-clifton.html` (header with back arrow, page banner, content area, footer, Supabase init).
 2. Inside that file the relative paths are one level deeper than root files. Use `../manifest.json`, `../icon.svg`, `../sw.js`, and `location.href = '../'` for redirects. The back arrow goes to `../coach4u-tools.html`.
 3. Add a matching `<a class="hub-tile">` to `coach4u-tools.html` (the landing) with `href="coach4u-tools/<slug>.html"` and an icon, title, description, arrow.
 4. Use the same Supabase script tag (pinned version + SRI hash + `crossorigin="anonymous"`) used in the other gated pages — see "Security invariants" above.
@@ -235,11 +256,14 @@ yourcoachingportal/
 ├── coach4u-tools/            deep pages for each Coach4U-built tool
 │   ├── strengths-clifton.html  CliftonStrengths content (Domain Mix + Top 10 + 2 reports)
 │   └── coaching-admin.html     "Your Coaching Relationship" — calls get-coaching-relationship
+├── css/
+│   ├── style.css             Dashboard design system (navy/teal, Aptos) — copied from coach4u-shared
+│   └── activity.css          Activity design system (dark-blue/mid-blue, Inter/Montserrat) — copied from coach4u-shared
 ├── resources.html            Global Resources hub — lists client-facing tools
 ├── resources/
-│   ├── feelings-chart.html   4-step feelings chart
-│   ├── smart-goal.html       5-step SMART goal builder
-│   └── issue-clarifier.html  5-step issue clarifier
+│   ├── feelings-chart.html   4-step feelings chart (activity design system)
+│   ├── smart-goal.html       5-step SMART goal builder (activity design system)
+│   └── issue-clarifier.html  5-step issue clarifier (activity design system)
 ├── manifest.json             PWA manifest (start_url and scope are "./" — path-agnostic)
 ├── sw.js                     service worker (caches all HTML pages, ignores Supabase calls)
 ├── icon.svg                  PWA / apple-touch icon (4U on teal #0D9488, 512×512)
@@ -249,11 +273,9 @@ yourcoachingportal/
 └── README.md
 ```
 
-Each top-level HTML page has its own inline `<style>` and `<script>` — no shared CSS/JS file by design (no bundler, no ES modules — GitHub Pages serves ES modules unreliably for this account). When the same logic appears on more than one page (e.g. Supabase init, logout), accept the small duplication.
+Dashboard pages (`index.html`, `coach4u-tools.html`, etc.) have their own inline `<style>` and `<script>` — no shared CSS for these by design (no bundler, no ES modules — GitHub Pages serves ES modules unreliably for this account). Activity pages under `resources/` use the shared `css/activity.css` stylesheet.
 
-When adding a new resource: drop a new HTML file under `resources/` and add a matching `<a class="resource-card">` to `resources.html`. The new file should auth-gate (redirect to `../` if no session) only if it needs the user identity; pure-content tools like the feelings chart can stay open since GitHub Pages is public anyway.
-
-After adding new HTML pages, update `sw.js` ASSETS list and bump the `CACHE` version (e.g. `coaching-portal-v3`) so old caches clear on next visit.
+When adding new HTML pages, update `sw.js` ASSETS list and bump the `CACHE` version (e.g. `coaching-portal-v3`) so old caches clear on next visit.
 
 ---
 
