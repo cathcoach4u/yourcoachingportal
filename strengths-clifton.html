@@ -156,19 +156,41 @@
       <h1>Your CliftonStrengths</h1>
       <p>Your top 10 themes, what shows up most strongly when you are at your best.</p>
     </div>
-    <div id="domainMixWrap" style="display:none">
-      <div class="section-heading">Your Domain Mix</div>
-      <div class="domain-mix-grid" id="domainMixGrid"></div>
-    </div>
+    <div id="loadingState" class="empty-state" style="margin-bottom: 16px">Loading your strengths&hellip;</div>
 
-    <div id="topTenWrap">
-      <div class="section-heading" id="topTenHeading" style="display:none">Your Top 10</div>
-      <div id="strengthsList" class="strengths-grid">
-        <div class="empty-state">Loading your strengths&hellip;</div>
+    <div id="domainMixWrap" class="report-section" style="display:none">
+      <button class="section-toggle" onclick="toggleSection('domainMixBody','domainMixChevron')">
+        <div class="section-toggle-inner">
+          <span style="font-size:20px">🎯</span>
+          <div>
+            <div class="section-toggle-label">Your Domain Mix</div>
+            <div class="section-toggle-sub">How your top 10 split across the four Gallup domains</div>
+          </div>
+        </div>
+        <span class="toggle-chevron open" id="domainMixChevron">▼</span>
+      </button>
+      <div class="report-body" id="domainMixBody">
+        <div class="domain-mix-grid" id="domainMixGrid"></div>
       </div>
     </div>
 
-    <div id="reportsWrap" style="display:none; margin-top: 28px">
+    <div id="topTenWrap" class="report-section" style="display:none">
+      <button class="section-toggle" onclick="toggleSection('topTenBody','topTenChevron')">
+        <div class="section-toggle-inner">
+          <span style="font-size:20px">🏆</span>
+          <div>
+            <div class="section-toggle-label">Your Top 10</div>
+            <div class="section-toggle-sub">Your strongest themes in order of rank</div>
+          </div>
+        </div>
+        <span class="toggle-chevron" id="topTenChevron">▼</span>
+      </button>
+      <div class="report-body" id="topTenBody" style="display:none">
+        <div id="strengthsList" class="strengths-grid"></div>
+      </div>
+    </div>
+
+    <div id="reportsWrap" style="display:none">
       <div class="report-section">
         <button class="section-toggle" onclick="toggleSection('descriptionsBody','descriptionsChevron')">
           <div class="section-toggle-inner">
@@ -196,6 +218,8 @@
         <div class="report-body" id="bringsBody" style="display:none"></div>
       </div>
     </div>
+
+    <div id="emptyState" class="empty-state" style="display:none">No strengths data yet, contact your coach to get started.</div>
   </div>
   <footer>
     <a href="https://coach4u.com.au" target="_blank">coach4u.com.au</a> &nbsp;|&nbsp; Strengths-Based Coaching and Counselling
@@ -293,12 +317,13 @@
     }
 
     function renderStrengths(themes) {
-      const list = document.getElementById('strengthsList')
+      document.getElementById('loadingState').style.display = 'none'
       if (!themes.length) {
-        list.innerHTML = '<div class="empty-state">No strengths data yet, contact your coach to get started.</div>'
+        document.getElementById('emptyState').style.display = 'block'
         return
       }
       const top = themes.slice(0, 10)
+      const list = document.getElementById('strengthsList')
       list.innerHTML = top.map((theme, i) => {
         const domain = DOMAIN_BY_THEME[theme] || 'strategic'
         return `
@@ -310,7 +335,7 @@
             </div>
           </div>`
       }).join('')
-      document.getElementById('topTenHeading').style.display = 'block'
+      document.getElementById('topTenWrap').style.display = 'block'
       renderDomainMix(top)
       renderReports(top)
     }

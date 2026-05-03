@@ -5,7 +5,7 @@ Single-page hub that signs a Coach4U client in and shows the coaching tools (sub
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.15` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.16` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
@@ -149,7 +149,7 @@ Toggle function: `toggleSection(bodyId, chevronId)` — flips `display` and togg
 Each is a self-contained HTML file with its own `<style>` and `<script>` — `strengths.html` and `resources.html` use the portal's Aptos / navy / teal system; tools under `resources/` use their own Inter / Montserrat / `#1B3664` design system (consistent across all resources). Each has a header with a "← Back" link.
 
 - **`strengths.html`** — Strengths Hub landing. Page banner + a grid of `<a class="hub-tile">` boxes, one per Coach4U-built strengths tool. Currently holds a single tile that navigates to `strengths-clifton.html`. Auth-gated; redirects to `./` if no session. Future strengths tools sit alongside as more `.hub-tile` boxes — no DB changes needed.
-- **`strengths-clifton.html`** — CliftonStrengths page. Layout in render order: page banner → Domain Mix grid (4 cards counting how many of the user's top 10 sit in each Gallup domain, with theme names listed inside each) → Top 10 grid → two collapsible reports ("What each theme means", "What you bring") that iterate over the user's 10 themes. Owns `DOMAIN_BY_THEME`, `DOMAIN_LABEL`, `STRENGTHS_ENDPOINT`, `fetchStrengths`, `renderStrengths`, `renderDomainMix`, `renderReports`, and the `THEME_INFO` object covering all 34 themes (description + brings per theme). Back arrow returns to `strengths.html`.
+- **`strengths-clifton.html`** — CliftonStrengths page. Page banner followed by four collapsible toggles: **Your Domain Mix** (default open), **Your Top 10** (default closed), **What each theme means** (default closed), **What you bring** (default closed). Owns `DOMAIN_BY_THEME`, `DOMAIN_LABEL`, `STRENGTHS_ENDPOINT`, `fetchStrengths`, `renderStrengths`, `renderDomainMix`, `renderReports`, and the `THEME_INFO` object covering all 34 themes (description + brings per theme). Back arrow returns to `strengths.html`.
 - **`resources.html`** — listing page for client-facing tools. Each tool is an `<a class="resource-card">` linking into the `resources/` subdirectory. Auth-gated.
 - **`resources/<tool>.html`** — individual tool pages. Three currently:
   - **`feelings-chart.html`** — 4-step (Core → Layer → Nuance → Reflect) feelings naming wizard with multi-select at every step.
