@@ -1,9 +1,9 @@
-const CACHE = 'coaching-portal-v8'
+const CACHE = 'coaching-portal-v11'
 const ASSETS = [
   './',
   './index.html',
-  './strengths.html',
-  './strengths-clifton.html',
+  './coach4u-tools.html',
+  './coach4u-tools/strengths-clifton.html',
   './resources.html',
   './resources/feelings-chart.html',
   './resources/smart-goal.html',
