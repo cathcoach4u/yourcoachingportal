@@ -7,7 +7,7 @@ Sub-portals (business, team, marketing, etc.) live in their own GitHub Pages rep
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.23` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.24` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
@@ -195,7 +195,7 @@ Each is a self-contained HTML file with its own `<style>` and `<script>` — `co
 
 - **`coach4u-tools.html`** — Strengths Hub landing. Page banner + a grid of `<a class="hub-tile">` boxes, one per Coach4U-built strengths tool. Currently holds a single tile that navigates to `coach4u-tools/strengths-clifton.html`. Auth-gated; redirects to `./` if no session. Future strengths tools sit alongside as more `.hub-tile` boxes — no DB changes needed.
 - **`coach4u-tools/strengths-clifton.html`** — CliftonStrengths page. Page banner followed by four collapsible toggles: **Your Domain Mix** (default open), **Your Top 10** (default closed), **What each theme means** (default closed), **What you bring** (default closed). Owns `DOMAIN_BY_THEME`, `DOMAIN_LABEL`, `STRENGTHS_ENDPOINT`, `fetchStrengths`, `renderStrengths`, `renderDomainMix`, `renderReports`, and the `THEME_INFO` object covering all 34 themes (description + brings per theme). Back arrow returns to `coach4u-tools.html`.
-- **`coach4u-tools/coaching-admin.html`** — "Existing Coaching Admin" page. Page banner reads "🔗 Your Coaching Relationship". Calls the `get-coaching-relationship` Edge Function with the user's session token, then renders one card per coaching group: a green role pill (Individual / Couple / Organisation), a blue relationship-name pill, and an unstyled list of any other members. Loading / empty / error states are handled in-page. No secrets in the file — the Edge Function is the only thing that holds the Internal Hub service-role key.
+- **`coach4u-tools/coaching-admin.html`** — "Coach4U Admin" page. Page banner reads "🔗 Your Coaching Relationship". Calls the `get-coaching-relationship` Edge Function with the user's session token, then renders one card per coaching group: a green role pill (Individual / Couple / Organisation), a blue relationship-name pill, and an unstyled list of any other members. Loading / empty / error states are handled in-page. No secrets in the file — the Edge Function is the only thing that holds the Internal Hub service-role key.
 - **`resources.html`** — listing page for client-facing tools. Each tool is an `<a class="resource-card">` linking into the `resources/` subdirectory. Auth-gated.
 - **`resources/<tool>.html`** — individual tool pages. Three currently:
   - **`feelings-chart.html`** — 4-step (Core → Layer → Nuance → Reflect) feelings naming wizard with multi-select at every step.
