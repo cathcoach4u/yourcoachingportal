@@ -5,7 +5,7 @@ Single-page hub that signs a Coach4U client in and shows the coaching tools (sub
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.12` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.13` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
