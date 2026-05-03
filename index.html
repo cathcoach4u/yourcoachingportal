@@ -230,6 +230,22 @@
         </a>
       </div>
 
+      <div class="section-wrap" id="coach4uSection" style="display:none">
+        <button class="section-toggle" onclick="toggleSection('coach4uBody','coach4uChevron')">
+          <div class="section-toggle-inner">
+            <span style="font-size:20px">⭐</span>
+            <div>
+              <div class="section-toggle-label">Your Coach4U Tools</div>
+              <div class="section-toggle-sub">Your curated coaching content</div>
+            </div>
+          </div>
+          <span class="toggle-chevron open" id="coach4uChevron">▼</span>
+        </button>
+        <div class="section-body" id="coach4uBody">
+          <div class="cards-grid" id="coach4uPortals"></div>
+        </div>
+      </div>
+
       <div class="section-wrap" id="activeSection">
         <button class="section-toggle" onclick="toggleSection('toolsBody','toolsChevron')">
           <div class="section-toggle-inner">
@@ -266,7 +282,7 @@
   </footer>
 
   <script>
-    const VERSION = '2026-05-02.13'
+    const VERSION = '2026-05-02.14'
     document.getElementById('versionText').textContent = VERSION
 
     async function hardRefresh() {
@@ -297,6 +313,10 @@
       'career': '🎯', 'strengths': '💪', 'it': '💻',
       'coach4u-tools': '💪',
     }
+
+    // Slugs that render in the "Your Coach4U Tools" section above Your Tools
+    // instead of in the regular sub-portal grid.
+    const COACH4U_SLUGS = new Set(['coach4u-tools'])
 
     function toggleSection(bodyId, chevronId) {
       const body = document.getElementById(bodyId)
@@ -364,11 +384,16 @@
       ])
       const portals = (portalsRes.data || []).filter(p => p.slug !== 'coaching-portal')
       const granted = new Set((accessRes.data || []).map(r => r.portal_slug))
-      const active  = portals.filter(p => granted.has(p.slug))
-      const locked  = portals.filter(p => !granted.has(p.slug))
+      const coach4u = portals.filter(p => COACH4U_SLUGS.has(p.slug))
+      const others  = portals.filter(p => !COACH4U_SLUGS.has(p.slug))
+      const activeCoach4u = coach4u.filter(p => granted.has(p.slug))
+      const active  = others.filter(p => granted.has(p.slug))
+      const locked  = others.filter(p => !granted.has(p.slug))
 
+      renderPortals(activeCoach4u, 'coach4uPortals', false)
       renderPortals(active, 'activePortals', false)
       renderPortals(locked, 'lockedPortals', true)
+      document.getElementById('coach4uSection').style.display = activeCoach4u.length ? 'block' : 'none'
       document.getElementById('activeSection').style.display = 'block'
       document.getElementById('lockedSection').style.display = locked.length ? 'block' : 'none'
       const toolsLabel = document.getElementById('toolsSubLabel')
