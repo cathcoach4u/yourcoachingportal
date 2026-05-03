@@ -10,7 +10,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Coach Portal">
   <link rel="apple-touch-icon" href="icon.svg">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.1/dist/umd/supabase.min.js"
+    integrity="sha384-sfbOag7cEcqn2DK53T/iBNAH/2cMCf7bSzJDwBhV117A0z/NIj9Usei1jKIBY1Ae"
+    crossorigin="anonymous"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -316,6 +318,12 @@
       }
     }
 
+    function escapeHtml(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]))
+    }
+
     function renderStrengths(themes) {
       document.getElementById('loadingState').style.display = 'none'
       if (!themes.length) {
@@ -330,8 +338,8 @@
           <div class="strength-card domain-${domain}">
             <span class="strength-rank">${i + 1}</span>
             <div class="strength-info">
-              <div class="strength-name">${theme}</div>
-              <div class="strength-domain"><span class="domain-dot"></span>${DOMAIN_LABEL[domain]}</div>
+              <div class="strength-name">${escapeHtml(theme)}</div>
+              <div class="strength-domain"><span class="domain-dot"></span>${escapeHtml(DOMAIN_LABEL[domain])}</div>
             </div>
           </div>`
       }).join('')
@@ -351,8 +359,8 @@
       grid.innerHTML = order.map(d => `
         <div class="domain-mix-card domain-${d}">
           <div class="domain-mix-count">${buckets[d].length}</div>
-          <div class="domain-mix-label">${DOMAIN_LABEL[d]}</div>
-          <div class="domain-mix-themes">${buckets[d].join(', ') || '&nbsp;'}</div>
+          <div class="domain-mix-label">${escapeHtml(DOMAIN_LABEL[d])}</div>
+          <div class="domain-mix-themes">${buckets[d].map(escapeHtml).join(', ') || '&nbsp;'}</div>
         </div>`).join('')
       document.getElementById('domainMixWrap').style.display = 'block'
     }
@@ -373,8 +381,8 @@
         <div class="theme-blurb domain-${domain}">
           <div class="theme-blurb-rank">${i + 1}</div>
           <div class="theme-blurb-content">
-            <div class="theme-blurb-name">${theme}</div>
-            <div class="theme-blurb-text">${text}</div>
+            <div class="theme-blurb-name">${escapeHtml(theme)}</div>
+            <div class="theme-blurb-text">${escapeHtml(text)}</div>
           </div>
         </div>`
     }

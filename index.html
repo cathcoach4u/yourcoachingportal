@@ -10,7 +10,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Coach Portal">
   <link rel="apple-touch-icon" href="icon.svg">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.1/dist/umd/supabase.min.js"
+    integrity="sha384-sfbOag7cEcqn2DK53T/iBNAH/2cMCf7bSzJDwBhV117A0z/NIj9Usei1jKIBY1Ae"
+    crossorigin="anonymous"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -131,8 +133,10 @@
       background: #0D9488; color: white; padding: 9px 14px; border: none;
       border-radius: 6px; font-size: 13px; font-weight: 700; font-family: inherit;
       cursor: pointer; transition: background 0.2s; align-self: flex-start; margin-top: auto;
+      text-decoration: none; display: inline-block;
     }
     .btn-open:hover { background: #0F766E; }
+    .btn-open:visited { color: white; }
     .portal-card.locked {
       border-color: #e0e0e0; background: #fafafa; box-shadow: none; opacity: 0.65;
     }
@@ -282,7 +286,7 @@
   </footer>
 
   <script>
-    const VERSION = '2026-05-02.18'
+    const VERSION = '2026-05-02.19'
     document.getElementById('versionText').textContent = VERSION
 
     async function hardRefresh() {
@@ -402,24 +406,44 @@
         : 'Your active coaching portals'
     }
 
+    function escapeHtml(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]))
+    }
+
+    function safePortalUrl(url) {
+      if (!url) return null
+      const trimmed = String(url).trim()
+      if (/^https?:\/\//i.test(trimmed)) return trimmed
+      if (/^[\w.\-/]+\.html$/.test(trimmed)) return trimmed
+      return null
+    }
+
     function renderPortals(portals, containerId, isLocked) {
       const container = document.getElementById(containerId)
       if (!portals.length) { container.innerHTML = '<div style="color:#aaa;font-size:14px">None available yet.</div>'; return }
       container.innerHTML = portals.map(p => {
         const icon = ICONS[p.slug] || '🔧'
+        const name = escapeHtml(p.name)
+        const desc = escapeHtml(p.description || '')
         if (isLocked) return `
           <div class="portal-card locked">
             <div class="card-icon">${icon}</div>
-            <div class="card-name">${p.name}</div>
-            <div class="card-desc">${p.description || ''}</div>
+            <div class="card-name">${name}</div>
+            <div class="card-desc">${desc}</div>
             <div class="locked-label">Contact your coach to unlock</div>
           </div>`
+        const url = safePortalUrl(p.url)
+        const open = url
+          ? `<a class="btn-open" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Open</a>`
+          : `<span class="btn-open" style="opacity:0.6;cursor:not-allowed" aria-disabled="true">Open</span>`
         return `
           <div class="portal-card">
             <div class="card-icon">${icon}</div>
-            <div class="card-name">${p.name}</div>
-            <div class="card-desc">${p.description || ''}</div>
-            <button class="btn-open" onclick="window.open('${p.url || '#'}','_blank')">Open</button>
+            <div class="card-name">${name}</div>
+            <div class="card-desc">${desc}</div>
+            ${open}
           </div>`
       }).join('')
     }

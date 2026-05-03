@@ -7,7 +7,7 @@ Sub-portals (business, team, marketing, etc.) live in their own GitHub Pages rep
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.18` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.19` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
@@ -149,8 +149,20 @@ These have been deliberately removed or set. Don't change unless asked.
 - The header has no subtitle — "Coach4U — Strengths-Based Coaching" is footer-only.
 - The header has no signed-in user name on the right — just the Sign Out button. The welcome banner is the sole greeting.
 - All PWA references (`manifest.json`, `icon.svg`, `sw.js`) use **relative** paths — no `/yourcoachingportal/...` prefix.
-- The Open button URL uses `${p.url || '#'}` to avoid `window.open('undefined')`.
 - Dashboard layout uses **collapsible panels** (see below) — do not revert to a flat always-visible card dump.
+
+### Security invariants (don't regress)
+
+- **Supabase JS is loaded with a pinned version + SRI hash**. The `<script>` tag in `index.html`, `strengths.html`, `strengths-clifton.html`, and `resources.html` looks like `<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@<version>/dist/umd/supabase.min.js" integrity="sha384-..." crossorigin="anonymous"></script>`. When bumping the version, recompute the integrity hash in **all four files**:
+
+  ```bash
+  V=2.105.1 && curl -sL "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@${V}/dist/umd/supabase.min.js" \
+    | openssl dgst -sha384 -binary | openssl base64 -A
+  ```
+
+- **Portal-card render escapes user-supplied DB strings** (`p.name`, `p.description`) and **validates `p.url`** before opening (`safePortalUrl()` allows `https://...` and relative `*.html` only). Any rewrite of `renderPortals()` must keep both. The Open control is a real `<a href target="_blank" rel="noopener noreferrer">`, not an inline `onclick="window.open(...)"`.
+- **CliftonStrengths render escapes theme names and theme text** before injecting via `innerHTML` (`escapeHtml()` helper).
+- **No service-role key in this repo, ever.** Only the publishable anon key (`SUPABASE_ANON`). The service role lives in the admin project.
 
 ### Dashboard layout
 
