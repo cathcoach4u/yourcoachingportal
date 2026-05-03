@@ -99,10 +99,7 @@
     <div id="loadingState" class="empty-state">Loading your coaching relationships&hellip;</div>
     <div id="groupList" class="group-list" style="display:none"></div>
     <div id="emptyState" class="empty-state" style="display:none">No coaching relationships found yet. Reach out to Coach4U if this looks wrong.</div>
-    <div id="errorState" class="error-state" style="display:none">
-      <div>Could not load coaching relationships right now.</div>
-      <pre id="errorDetail" style="margin-top:12px; font-size:11px; color:#555; background:#fafafa; border:1px solid #eee; border-radius:6px; padding:10px; text-align:left; white-space:pre-wrap; word-break:break-word"></pre>
-    </div>
+    <div id="errorState" class="error-state" style="display:none">Could not load coaching relationships right now. Please try again later.</div>
   </div>
   <footer>
     <a href="https://coach4u.com.au" target="_blank" rel="noopener noreferrer">coach4u.com.au</a> &nbsp;|&nbsp; Strengths-Based Coaching and Counselling
@@ -126,7 +123,7 @@
 
     async function fetchRelationships(session) {
       const ctrl = new AbortController()
-      const timer = setTimeout(() => ctrl.abort(), 8000)
+      const timer = setTimeout(() => ctrl.abort(), 10000)
       try {
         const res = await fetch(RELATIONSHIP_ENDPOINT, {
           headers: {
@@ -138,16 +135,14 @@
         clearTimeout(timer)
         if (!res.ok) {
           const body = await res.text().catch(() => '')
-          const detail = `HTTP ${res.status} ${res.statusText}\n${body}`
-          console.error('get-coaching-relationship failed:', detail)
-          return { ok: false, detail }
+          console.error('get-coaching-relationship failed:', res.status, res.statusText, body)
+          return { ok: false }
         }
         const data = await res.json()
         return { ok: true, groups: Array.isArray(data.groups) ? data.groups : [] }
       } catch (err) {
-        const detail = `${err.name}: ${err.message}`
         console.error('get-coaching-relationship error:', err)
-        return { ok: false, detail }
+        return { ok: false }
       }
     }
 
@@ -155,8 +150,6 @@
       document.getElementById('loadingState').style.display = 'none'
       if (!result.ok) {
         document.getElementById('errorState').style.display = 'block'
-        const detailEl = document.getElementById('errorDetail')
-        if (detailEl) detailEl.textContent = result.detail || '(no detail)'
         return
       }
       if (!result.groups.length) {
