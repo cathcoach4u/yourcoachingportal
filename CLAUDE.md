@@ -7,7 +7,7 @@ Sub-portals (business, team, marketing, etc.) live in their own GitHub Pages rep
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.21` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.22` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
@@ -201,6 +201,17 @@ Each is a self-contained HTML file with its own `<style>` and `<script>` — `co
 4. Bump `sw.js` `CACHE` version (e.g. `coaching-portal-v5`) so old caches clear on next visit.
 5. Bump `VERSION` in `index.html` and push to `main`.
 
+### Adding a new Coach4U Tool (deep page under the Coach4U Tools landing)
+
+Convention: every Coach4U-built deep page lives at `coach4u-tools/<slug>.html` so its URL reads `https://cathcoach4u.github.io/yourcoachingportal/coach4u-tools/<slug>.html`. Examples to follow: `coach4u-tools/strengths-clifton.html`. Future tools (e.g. Pulse Reports → `coach4u-tools/pulse-reports.html`) drop in alongside.
+
+1. Create `coach4u-tools/<slug>.html`. The dashboard's Aptos / navy / teal system is the default; copy the structure from `coach4u-tools/strengths-clifton.html` (header with back arrow, page banner, content area, footer, Supabase init).
+2. Inside that file the relative paths are one level deeper than root files. Use `../manifest.json`, `../icon.svg`, `../sw.js`, and `location.href = '../'` for redirects. The back arrow goes to `../coach4u-tools.html`.
+3. Add a matching `<a class="hub-tile">` to `coach4u-tools.html` (the landing) with `href="coach4u-tools/<slug>.html"` and an icon, title, description, arrow.
+4. Use the same Supabase script tag (pinned version + SRI hash + `crossorigin="anonymous"`) used in the other gated pages — see "Security invariants" above.
+5. Update `sw.js` `ASSETS` to include `./coach4u-tools/<slug>.html`. Bump the `CACHE` version.
+6. Bump `VERSION` in `index.html`. No DB / migrations needed — the `coach4u-tools` portal slug already routes the dashboard tile to `coach4u-tools.html`, and access stays gated by the existing `client_access` row.
+
 ---
 
 ## File structure
@@ -208,8 +219,9 @@ Each is a self-contained HTML file with its own `<style>` and `<script>` — `co
 ```
 yourcoachingportal/
 ├── index.html                login + dashboard (free resources row + Coach4U Tools + Your Tools)
-├── coach4u-tools.html            Strengths Hub landing — boxes for each strengths tool
-├── coach4u-tools/strengths-clifton.html    CliftonStrengths content (Domain Mix + Top 10 + 2 reports)
+├── coach4u-tools.html        Coach4U Tools landing — boxes for each Coach4U-built tool
+├── coach4u-tools/            deep pages for each Coach4U-built tool
+│   └── strengths-clifton.html  CliftonStrengths content (Domain Mix + Top 10 + 2 reports)
 ├── resources.html            Global Resources hub — lists client-facing tools
 ├── resources/
 │   ├── feelings-chart.html   4-step feelings chart
