@@ -7,7 +7,7 @@ Sub-portals (business, team, marketing, etc.) live in their own GitHub Pages rep
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.20` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.21` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
@@ -16,7 +16,7 @@ Sub-portals (business, team, marketing, etc.) live in their own GitHub Pages rep
 **Owned here (change in this repo):**
 
 - Login flow, password reset, dashboard layout (`index.html`).
-- **Strengths Hub** landing (`coach4u-tools.html`) and the **CliftonStrengths** sub-page (`strengths-clifton.html`) — including the `THEME_INFO` content for all 34 themes, domain mapping, and Edge Function call.
+- **Strengths Hub** landing (`coach4u-tools.html`) and the **CliftonStrengths** sub-page (`coach4u-tools/strengths-clifton.html`) — including the `THEME_INFO` content for all 34 themes, domain mapping, and Edge Function call.
 - All **free resources** under `resources/` (Feelings Chart, SMART Goal Builder, Issue Clarifier) and the directory page `resources.html`.
 - PWA assets (`manifest.json`, `sw.js`, `icon.svg`).
 - All Supabase **migrations** under `migrations/`. SQL is run manually in the Supabase SQL editor; this folder is the audit trail.
@@ -153,7 +153,7 @@ These have been deliberately removed or set. Don't change unless asked.
 
 ### Security invariants (don't regress)
 
-- **Supabase JS is loaded with a pinned version + SRI hash**. The `<script>` tag in `index.html`, `coach4u-tools.html`, `strengths-clifton.html`, and `resources.html` looks like `<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@<version>/dist/umd/supabase.min.js" integrity="sha384-..." crossorigin="anonymous"></script>`. When bumping the version, recompute the integrity hash in **all four files**:
+- **Supabase JS is loaded with a pinned version + SRI hash**. The `<script>` tag in `index.html`, `coach4u-tools.html`, `coach4u-tools/strengths-clifton.html`, and `resources.html` looks like `<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@<version>/dist/umd/supabase.min.js" integrity="sha384-..." crossorigin="anonymous"></script>`. When bumping the version, recompute the integrity hash in **all four files**:
 
   ```bash
   V=2.105.1 && curl -sL "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@${V}/dist/umd/supabase.min.js" \
@@ -183,15 +183,15 @@ Toggle function: `toggleSection(bodyId, chevronId)` — flips `display` and togg
 
 Each is a self-contained HTML file with its own `<style>` and `<script>` — `coach4u-tools.html` and `resources.html` use the portal's Aptos / navy / teal system; tools under `resources/` use their own Inter / Montserrat / `#1B3664` design system (consistent across all resources). Each has a header with a "← Back" link.
 
-- **`coach4u-tools.html`** — Strengths Hub landing. Page banner + a grid of `<a class="hub-tile">` boxes, one per Coach4U-built strengths tool. Currently holds a single tile that navigates to `strengths-clifton.html`. Auth-gated; redirects to `./` if no session. Future strengths tools sit alongside as more `.hub-tile` boxes — no DB changes needed.
-- **`strengths-clifton.html`** — CliftonStrengths page. Page banner followed by four collapsible toggles: **Your Domain Mix** (default open), **Your Top 10** (default closed), **What each theme means** (default closed), **What you bring** (default closed). Owns `DOMAIN_BY_THEME`, `DOMAIN_LABEL`, `STRENGTHS_ENDPOINT`, `fetchStrengths`, `renderStrengths`, `renderDomainMix`, `renderReports`, and the `THEME_INFO` object covering all 34 themes (description + brings per theme). Back arrow returns to `coach4u-tools.html`.
+- **`coach4u-tools.html`** — Strengths Hub landing. Page banner + a grid of `<a class="hub-tile">` boxes, one per Coach4U-built strengths tool. Currently holds a single tile that navigates to `coach4u-tools/strengths-clifton.html`. Auth-gated; redirects to `./` if no session. Future strengths tools sit alongside as more `.hub-tile` boxes — no DB changes needed.
+- **`coach4u-tools/strengths-clifton.html`** — CliftonStrengths page. Page banner followed by four collapsible toggles: **Your Domain Mix** (default open), **Your Top 10** (default closed), **What each theme means** (default closed), **What you bring** (default closed). Owns `DOMAIN_BY_THEME`, `DOMAIN_LABEL`, `STRENGTHS_ENDPOINT`, `fetchStrengths`, `renderStrengths`, `renderDomainMix`, `renderReports`, and the `THEME_INFO` object covering all 34 themes (description + brings per theme). Back arrow returns to `coach4u-tools.html`.
 - **`resources.html`** — listing page for client-facing tools. Each tool is an `<a class="resource-card">` linking into the `resources/` subdirectory. Auth-gated.
 - **`resources/<tool>.html`** — individual tool pages. Three currently:
   - **`feelings-chart.html`** — 4-step (Core → Layer → Nuance → Reflect) feelings naming wizard with multi-select at every step.
   - **`smart-goal.html`** — 5-step SMART goal builder. Final card stitches inputs into one paragraph (`I will [S] by [T]. This is achievable because [A]. I will measure progress by [M]. This matters to me because [R].`) with a Copy button, plus a five-letter breakdown and three reflect prompts.
   - **`issue-clarifier.html`** — 5-step issue clarifier (Scope pills → Facts → Impact → Underneath → Real issue with two template hints). Summary shows the journey from scope to core in a 5-row card with the real issue highlighted in the navy gradient banner. Includes 3 reflect prompts and a 1–10 confidence rating against the first small step.
 
-`coach4u-tools.html`, `strengths-clifton.html`, and `resources.html` auth-gate via `sb.auth.getSession()` and redirect to `./` if no session. Tools under `resources/` are self-contained content (no Supabase calls) and don't auth-gate — public access via direct URL is fine. Shared session via `localStorage` (same Supabase project) means the user does not re-login when navigating between gated pages.
+`coach4u-tools.html`, `coach4u-tools/strengths-clifton.html`, and `resources.html` auth-gate via `sb.auth.getSession()` and redirect to `./` if no session. Tools under `resources/` are self-contained content (no Supabase calls) and don't auth-gate — public access via direct URL is fine. Shared session via `localStorage` (same Supabase project) means the user does not re-login when navigating between gated pages.
 
 ### Adding a new resource
 
@@ -209,7 +209,7 @@ Each is a self-contained HTML file with its own `<style>` and `<script>` — `co
 yourcoachingportal/
 ├── index.html                login + dashboard (free resources row + Coach4U Tools + Your Tools)
 ├── coach4u-tools.html            Strengths Hub landing — boxes for each strengths tool
-├── strengths-clifton.html    CliftonStrengths content (Domain Mix + Top 10 + 2 reports)
+├── coach4u-tools/strengths-clifton.html    CliftonStrengths content (Domain Mix + Top 10 + 2 reports)
 ├── resources.html            Global Resources hub — lists client-facing tools
 ├── resources/
 │   ├── feelings-chart.html   4-step feelings chart
