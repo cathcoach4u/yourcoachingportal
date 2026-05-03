@@ -5,7 +5,7 @@ Single-page hub that signs a Coach4U client in and shows the coaching tools (sub
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.16` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.17` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
@@ -160,7 +160,7 @@ Each is a self-contained HTML file with its own `<style>` and `<script>` — `st
 
 ### Adding a new resource
 
-1. Create `resources/<slug>.html`. Either match the existing Inter/Montserrat design system for visual consistency, or use a different one if the tool warrants it. Add a `← Back to Resources` link at the top pointing to `../resources.html`.
+1. Create `resources/<slug>.html`. Either match the existing Inter/Montserrat design system for visual consistency, or use a different one if the tool warrants it. Add a `← Back to Coaching Portal` link at the top pointing to `../` (the dashboard).
 2. Add a matching `<a class="resource-card">` to `resources.html` (icon, title, description, link arrow).
 3. Update `sw.js` `ASSETS` list to include the new file path.
 4. Bump `sw.js` `CACHE` version (e.g. `coaching-portal-v5`) so old caches clear on next visit.
