@@ -1,11 +1,34 @@
 # Your Coaching Portal — Claude Code Guide
 
-Single-page hub that signs a Coach4U client in and shows the coaching tools (sub-portals) they have access to, plus their CliftonStrengths Top 10. Each tool is its own GitHub Pages site; this repo only does login + landing.
+The Coach4U **client-facing** portal. Handles sign-in, the dashboard, the in-house **Strengths Hub** (CliftonStrengths reports), and the **free coaching resources** (Feelings Chart, SMART Goal Builder, Issue Clarifier). Also the source of truth for the Supabase migrations and the `get-strengths` Edge Function contract.
+
+Sub-portals (business, team, marketing, etc.) live in their own GitHub Pages repos and are linked from the dashboard via rows in the `portals` table. They share the same Supabase project so auth carries across via `localStorage` (no re-login).
 
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.17` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.18` (bump `VERSION` const in `index.html` on every push)
+
+---
+
+## What this repo owns vs what lives elsewhere
+
+**Owned here (change in this repo):**
+
+- Login flow, password reset, dashboard layout (`index.html`).
+- **Strengths Hub** landing (`strengths.html`) and the **CliftonStrengths** sub-page (`strengths-clifton.html`) — including the `THEME_INFO` content for all 34 themes, domain mapping, and Edge Function call.
+- All **free resources** under `resources/` (Feelings Chart, SMART Goal Builder, Issue Clarifier) and the directory page `resources.html`.
+- PWA assets (`manifest.json`, `sw.js`, `icon.svg`).
+- All Supabase **migrations** under `migrations/`. SQL is run manually in the Supabase SQL editor; this folder is the audit trail.
+- The **contract** for the `get-strengths` Edge Function (endpoint, request/response shape) is documented here even though the function itself is deployed in the admin Supabase project.
+
+**Lives elsewhere — do NOT change here:**
+
+- Sub-portals (business, team, marketing, life, relationship, thrivehq, strengths). Each is its own GitHub Pages repo. The dashboard links to them via the `portals.url` column.
+- Coach-side admin UI for granting `client_access` and populating `client_strengths`. Separate repo writing to the same Supabase project.
+- The deployed `get-strengths` Edge Function code (lives in the admin Supabase project).
+
+**"Coach4U Tools" specifically:** the Strengths Hub, and any future Coach4U-built tools, are surfaced on the dashboard as gated tiles in the **Your Coach4U Tools** section. Routing is controlled by the `COACH4U_SLUGS` set in `index.html` plus a row in the `portals` table whose `url` points at an in-repo HTML file (e.g. `strengths.html`). Access is gated by `client_access` like every other portal.
 
 ---
 
@@ -172,7 +195,7 @@ Each is a self-contained HTML file with its own `<style>` and `<script>` — `st
 
 ```
 yourcoachingportal/
-├── index.html                login + dashboard (hub cards + Your Tools toggle)
+├── index.html                login + dashboard (free resources row + Coach4U Tools + Your Tools)
 ├── strengths.html            Strengths Hub landing — boxes for each strengths tool
 ├── strengths-clifton.html    CliftonStrengths content (Domain Mix + Top 10 + 2 reports)
 ├── resources.html            Global Resources hub — lists client-facing tools
@@ -283,5 +306,6 @@ If the new paste's only differences are regressions, say so — don't apply it.
 For UI changes (can't drive a browser):
 
 1. Read the file back and confirm the edit landed.
-2. Mentally walk the user flow: login → welcome banner → two collapsed/expanded panels → open a portal → sign out.
-3. State explicitly that I haven't browser-tested.
+2. Mentally walk the user flow: login → welcome banner → free resources row → Your Coach4U Tools panel (only visible if granted) → Your Tools panel → click a tile → sign out.
+3. If touching the Strengths Hub: also walk dashboard → Your Coach4U Tools tile → Strengths Hub landing → CliftonStrengths box → back arrow returns to hub → back returns to dashboard.
+4. State explicitly that I haven't browser-tested.
