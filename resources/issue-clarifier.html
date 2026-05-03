@@ -5,520 +5,183 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Issue Clarifier | Coach4U</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/activity.css">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --c4u-dark-blue: #1B3664;
-    --c4u-light-blue: #5684C4;
-    --c4u-dark-grey: #2D2D2D;
-    --c4u-light-grey: #DDDDDD;
-    --c4u-bg: #ffffff;
-    --c4u-soft: #F5F7FB;
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --shadow-sm: 0 1px 2px rgba(27, 54, 100, 0.06);
-    --shadow-md: 0 4px 16px rgba(27, 54, 100, 0.08);
-  }
-
-  body {
-    font-family: 'Montserrat', sans-serif;
-    background: var(--c4u-bg);
-    color: var(--c4u-dark-grey);
-    min-height: 100vh;
-    padding: 32px 20px 60px;
-    font-size: 1.1rem;
-    line-height: 1.5;
-  }
-
-  .container { max-width: 760px; margin: 0 auto; }
-
-  .back-link {
-    display: inline-block;
-    margin-bottom: 24px;
-    color: var(--c4u-light-blue);
-    text-decoration: none;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: color 0.15s;
-  }
-  .back-link:hover { color: var(--c4u-dark-blue); }
-
-  header { text-align: center; margin-bottom: 36px; }
-  header h1 {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    color: var(--c4u-dark-blue);
-    font-size: 2rem;
-    letter-spacing: -0.5px;
-  }
-  header p {
-    color: var(--c4u-dark-grey);
-    margin-top: 8px;
-    font-size: 1rem;
-    max-width: 540px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .progress {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 32px;
-    flex-wrap: wrap;
-  }
-  .progress-step {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.85rem;
-    color: var(--c4u-light-grey);
-    font-weight: 600;
-  }
-  .progress-step .num {
-    width: 26px; height: 26px;
-    border-radius: 50%;
-    background: var(--c4u-light-grey);
-    color: white;
-    display: grid; place-items: center;
-    font-size: 0.8rem;
-    transition: all 0.25s;
-  }
-  .progress-step.active { color: var(--c4u-dark-blue); }
-  .progress-step.active .num { background: var(--c4u-dark-blue); }
-  .progress-step.done .num { background: var(--c4u-light-blue); color: white; }
-  .progress-step.done { color: var(--c4u-light-blue); }
-  .progress-divider { width: 18px; height: 1px; background: var(--c4u-light-grey); }
-
-  .card {
-    background: white;
-    border: 1px solid var(--c4u-light-grey);
-    border-radius: var(--radius-lg);
-    padding: 32px 28px;
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 20px;
-  }
-
-  .step-label {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--c4u-light-blue);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 8px;
-  }
-
-  .step-title {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    color: var(--c4u-dark-blue);
-    font-size: 1.5rem;
-    margin-bottom: 8px;
-    letter-spacing: -0.3px;
-  }
-
-  .step-prompt { color: var(--c4u-dark-grey); font-size: 1rem; margin-bottom: 6px; }
-
-  .step-hint {
-    color: var(--c4u-light-blue);
-    font-size: 0.85rem;
-    font-style: italic;
-    margin-bottom: 20px;
-  }
-
-  .step-input {
-    width: 100%;
-    border: 1.5px solid var(--c4u-light-grey);
-    border-radius: var(--radius-sm);
-    padding: 14px 16px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
-    color: var(--c4u-dark-grey);
-    resize: vertical;
-    min-height: 100px;
-    transition: border-color 0.15s;
-    line-height: 1.5;
-  }
-  .step-input:focus { outline: none; border-color: var(--c4u-light-blue); }
-
-  .scope-label {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    color: var(--c4u-dark-blue);
-    font-size: 0.95rem;
-    margin: 18px 0 10px;
-  }
-  .scope-label:first-child { margin-top: 0; }
-
-  .pill-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-  }
-  @media (max-width: 560px) {
-    .pill-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  .pill-row { display: flex; gap: 8px; flex-wrap: wrap; }
-  .pill-row .pill { flex: 1; min-width: 130px; }
-
-  .pill {
-    background: var(--c4u-soft);
-    border: 1.5px solid transparent;
-    border-radius: var(--radius-sm);
-    padding: 12px 10px;
-    text-align: center;
-    cursor: pointer;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    color: var(--c4u-dark-grey);
-    font-size: 0.95rem;
-    transition: all 0.15s;
-  }
-  .pill:hover { border-color: var(--c4u-light-blue); background: white; }
-  .pill.selected {
-    background: var(--c4u-dark-blue);
-    border-color: var(--c4u-dark-blue);
-    color: white;
-    font-weight: 600;
-  }
-
-  .template-hint {
-    background: var(--c4u-soft);
-    border-left: 3px solid var(--c4u-light-blue);
-    padding: 12px 16px;
-    margin-top: 14px;
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-    font-size: 0.9rem;
-    color: var(--c4u-dark-grey);
-    line-height: 1.55;
-  }
-  .template-hint + .template-hint { margin-top: 8px; }
-  .template-hint .label {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    color: var(--c4u-dark-blue);
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 4px;
-  }
-  .template-hint em { color: var(--c4u-light-blue); font-style: italic; }
-
-  .journey {
-    background: white;
-    border: 1px solid var(--c4u-light-grey);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    margin-bottom: 24px;
-  }
-  .journey-row {
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--c4u-light-grey);
-  }
-  .journey-row:last-child { border-bottom: none; }
-  .journey-label {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    color: var(--c4u-light-blue);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 4px;
-  }
-  .journey-text {
-    font-size: 0.95rem;
-    color: var(--c4u-dark-grey);
-    line-height: 1.55;
-    white-space: pre-wrap;
-  }
-  .journey-row.core {
-    background: linear-gradient(135deg, #1B3664 0%, #5684C4 100%);
-    border-left: 4px solid var(--c4u-dark-blue);
-  }
-  .journey-row.core .journey-label { color: rgba(255,255,255,0.85); }
-  .journey-row.core .journey-text {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    color: white;
-    font-size: 1.05rem;
-  }
-  .journey-row .scope-tag {
-    display: inline-block;
-    background: var(--c4u-soft);
-    border: 1px solid var(--c4u-light-grey);
-    border-radius: 4px;
-    padding: 2px 8px;
-    margin-right: 6px;
-    margin-top: 2px;
-    font-size: 0.8rem;
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    color: var(--c4u-dark-blue);
-  }
-
-  .reflect-prompts { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
-  .reflect-prompts label {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    color: var(--c4u-dark-blue);
-    font-size: 0.95rem;
-    margin-bottom: 6px;
-    display: block;
-  }
-  .reflect-prompts textarea {
-    width: 100%;
-    border: 1.5px solid var(--c4u-light-grey);
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.95rem;
-    color: var(--c4u-dark-grey);
-    resize: vertical;
-    min-height: 70px;
-    transition: border-color 0.15s;
-  }
-  .reflect-prompts textarea:focus { outline: none; border-color: var(--c4u-light-blue); }
-
-  .confidence-block {
-    background: var(--c4u-soft);
-    border-radius: var(--radius-md);
-    padding: 18px 20px;
-    margin-bottom: 24px;
-  }
-  .confidence-prompt {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    color: var(--c4u-dark-blue);
-    font-size: 0.95rem;
-    margin-bottom: 12px;
-  }
-  .conf-row {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    gap: 6px;
-    margin-bottom: 10px;
-  }
-  .conf-dot {
-    aspect-ratio: 1;
-    border: 1.5px solid var(--c4u-light-grey);
-    border-radius: 50%;
-    background: white;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    color: var(--c4u-dark-blue);
-    font-size: 0.85rem;
-    transition: all 0.15s;
-  }
-  .conf-dot:hover { border-color: var(--c4u-light-blue); }
-  .conf-dot.selected {
-    background: var(--c4u-light-blue);
-    border-color: var(--c4u-light-blue);
-    color: white;
-  }
-  .conf-labels {
-    display: flex; justify-content: space-between;
-    font-size: 0.78rem; color: var(--c4u-dark-grey);
-    font-style: italic;
-  }
-
-  .button-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 24px;
-    flex-wrap: wrap;
-  }
-  .btn {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: 0.95rem;
-    padding: 12px 24px;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    border: none;
-    transition: all 0.15s;
-  }
-  .btn-primary { background: var(--c4u-dark-blue); color: white; }
-  .btn-primary:hover { background: #14284d; }
-  .btn-primary:disabled { background: var(--c4u-light-grey); cursor: not-allowed; }
-  .btn-secondary {
-    background: white;
-    color: var(--c4u-dark-blue);
-    border: 1.5px solid var(--c4u-light-grey);
-  }
-  .btn-secondary:hover { border-color: var(--c4u-dark-blue); }
-
-  footer {
-    text-align: center;
-    margin-top: 40px;
-    font-size: 9pt;
-    color: var(--c4u-dark-grey);
-  }
-  footer a { color: var(--c4u-light-blue); text-decoration: none; }
-  footer a:hover { color: var(--c4u-dark-blue); }
-
-  .hidden { display: none; }
-
-  @media (max-width: 540px) {
-    .progress-step span:not(.num) { display: none; }
-    .progress-divider { width: 10px; }
-    .conf-dot { font-size: 0.75rem; }
-  }
+  .act-step-input { width: 100%; border: 1.5px solid var(--act-light-grey); border-radius: var(--act-radius-sm); padding: 14px 16px; font-family: 'Montserrat', sans-serif; font-size: 1rem; color: var(--act-dark-grey); resize: vertical; min-height: 100px; transition: border-color 0.15s; line-height: 1.5; }
+  .act-step-input:focus { outline: none; border-color: var(--act-light-blue); }
+  .act-scope-label { font-family: 'Inter', sans-serif; font-weight: 600; color: var(--act-dark-blue); font-size: 0.95rem; margin: 18px 0 10px; }
+  .act-scope-label:first-child { margin-top: 0; }
+  .act-pill-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  @media (max-width: 560px) { .act-pill-grid { grid-template-columns: repeat(2, 1fr); } }
+  .act-pill-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .act-pill-row .act-pill { flex: 1; min-width: 130px; }
+  .act-pill { background: var(--act-soft); border: 1.5px solid transparent; border-radius: var(--act-radius-sm); padding: 12px 10px; text-align: center; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 500; color: var(--act-dark-grey); font-size: 0.95rem; transition: all 0.15s; }
+  .act-pill:hover { border-color: var(--act-light-blue); background: white; }
+  .act-pill.selected { background: var(--act-dark-blue); border-color: var(--act-dark-blue); color: white; font-weight: 600; }
+  .act-journey { background: white; border: 1px solid var(--act-light-grey); border-radius: var(--act-radius-md); overflow: hidden; margin-bottom: 24px; }
+  .act-journey-row { padding: 14px 18px; border-bottom: 1px solid var(--act-light-grey); }
+  .act-journey-row:last-child { border-bottom: none; }
+  .act-journey-label { font-family: 'Inter', sans-serif; font-weight: 600; color: var(--act-light-blue); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .act-journey-text { font-size: 0.95rem; color: var(--act-dark-grey); line-height: 1.55; white-space: pre-wrap; }
+  .act-journey-row.core { background: linear-gradient(135deg, #1B3664 0%, #5684C4 100%); }
+  .act-journey-row.core .act-journey-label { color: rgba(255,255,255,0.85); }
+  .act-journey-row.core .act-journey-text { font-family: 'Inter', sans-serif; font-weight: 600; color: white; font-size: 1.05rem; }
+  .act-scope-tag { display: inline-block; background: var(--act-soft); border: 1px solid var(--act-light-grey); border-radius: 4px; padding: 2px 8px; margin-right: 6px; margin-top: 2px; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; color: var(--act-dark-blue); }
+  .act-confidence-block { background: var(--act-soft); border-radius: var(--act-radius-md); padding: 18px 20px; margin-bottom: 24px; }
+  .act-confidence-prompt { font-family: 'Inter', sans-serif; font-weight: 600; color: var(--act-dark-blue); font-size: 0.95rem; margin-bottom: 12px; }
+  .act-conf-row { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; margin-bottom: 10px; }
+  .act-conf-dot { aspect-ratio: 1; border: 1.5px solid var(--act-light-grey); border-radius: 50%; background: white; cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 600; color: var(--act-dark-blue); font-size: 0.85rem; transition: all 0.15s; }
+  .act-conf-dot:hover { border-color: var(--act-light-blue); }
+  .act-conf-dot.selected { background: var(--act-light-blue); border-color: var(--act-light-blue); color: white; }
+  .act-conf-labels { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--act-dark-grey); font-style: italic; }
+  @media (max-width: 540px) { .act-progress-step span:not(.num) { display: none; } .act-progress-divider { width: 10px; } .act-conf-dot { font-size: 0.75rem; } }
 </style>
 </head>
-<body>
-<div class="container">
+<body class="activity-page">
+<div class="act-container">
 
-  <a class="back-link" href="../">← Back to Coaching Portal</a>
+  <a class="act-back-link" href="../">← Back to Coaching Portal</a>
 
-  <header>
+  <header class="act-header">
     <h1>Issue Clarifier</h1>
     <p>Sometimes the real issue is not the one on the surface. Five short steps to move from messy detail to a clear core, then a small next step you can act on.</p>
   </header>
 
-  <div class="progress" id="progress">
-    <div class="progress-step active" data-step="1"><span class="num">1</span><span>Scope</span></div>
-    <div class="progress-divider"></div>
-    <div class="progress-step" data-step="2"><span class="num">2</span><span>Facts</span></div>
-    <div class="progress-divider"></div>
-    <div class="progress-step" data-step="3"><span class="num">3</span><span>Impact</span></div>
-    <div class="progress-divider"></div>
-    <div class="progress-step" data-step="4"><span class="num">4</span><span>Underneath</span></div>
-    <div class="progress-divider"></div>
-    <div class="progress-step" data-step="5"><span class="num">5</span><span>Real issue</span></div>
+  <div class="act-progress" id="progress">
+    <div class="act-progress-step active" data-step="1"><span class="num">1</span><span>Scope</span></div>
+    <div class="act-progress-divider"></div>
+    <div class="act-progress-step" data-step="2"><span class="num">2</span><span>Facts</span></div>
+    <div class="act-progress-divider"></div>
+    <div class="act-progress-step" data-step="3"><span class="num">3</span><span>Impact</span></div>
+    <div class="act-progress-divider"></div>
+    <div class="act-progress-step" data-step="4"><span class="num">4</span><span>Underneath</span></div>
+    <div class="act-progress-divider"></div>
+    <div class="act-progress-step" data-step="5"><span class="num">5</span><span>Real issue</span></div>
   </div>
 
   <!-- Step 1 — Scope -->
-  <div class="card" id="step1">
-    <div class="step-label">Step 1 of 5</div>
-    <h2 class="step-title">What is this about</h2>
-    <p class="step-prompt">A quick scope check before you go in.</p>
-    <p class="step-hint">Pick what fits closest. You can always adjust later.</p>
+  <div class="act-card" id="step1">
+    <div class="act-step-label">Step 1 of 5</div>
+    <h2 class="act-step-title">What is this about</h2>
+    <p class="act-step-prompt">A quick scope check before you go in.</p>
+    <p class="act-step-hint">Pick what fits closest. You can always adjust later.</p>
 
-    <div class="scope-label">What is this mostly about</div>
-    <div class="pill-grid" id="scopeArea">
-      <div class="pill" data-area="me">Me</div>
-      <div class="pill" data-area="us">Us</div>
-      <div class="pill" data-area="work">Work</div>
-      <div class="pill" data-area="family">Family</div>
-      <div class="pill" data-area="health">Health</div>
-      <div class="pill" data-area="money">Money</div>
-      <div class="pill" data-area="time">Time</div>
-      <div class="pill" data-area="other">Other</div>
+    <div class="act-scope-label">What is this mostly about</div>
+    <div class="act-pill-grid" id="scopeArea">
+      <div class="act-pill" data-area="me">Me</div>
+      <div class="act-pill" data-area="us">Us</div>
+      <div class="act-pill" data-area="work">Work</div>
+      <div class="act-pill" data-area="family">Family</div>
+      <div class="act-pill" data-area="health">Health</div>
+      <div class="act-pill" data-area="money">Money</div>
+      <div class="act-pill" data-area="time">Time</div>
+      <div class="act-pill" data-area="other">Other</div>
     </div>
 
-    <div class="scope-label">Is this one issue, or a bundle</div>
-    <div class="pill-row" id="scopeBundle">
-      <div class="pill" data-bundle="one">One issue</div>
-      <div class="pill" data-bundle="bundle">A bundle</div>
-      <div class="pill" data-bundle="unsure">Not sure</div>
+    <div class="act-scope-label">Is this one issue, or a bundle</div>
+    <div class="act-pill-row" id="scopeBundle">
+      <div class="act-pill" data-bundle="one">One issue</div>
+      <div class="act-pill" data-bundle="bundle">A bundle</div>
+      <div class="act-pill" data-bundle="unsure">Not sure</div>
     </div>
 
-    <div class="button-row">
+    <div class="act-button-row">
       <span></span>
-      <button class="btn btn-primary" id="next1" disabled>Continue</button>
+      <button class="act-btn act-btn-primary" id="next1" disabled>Continue</button>
     </div>
   </div>
 
   <!-- Step 2 — Facts -->
-  <div class="card hidden" id="step2">
-    <div class="step-label">Step 2 of 5</div>
-    <h2 class="step-title">What is happening, just the facts</h2>
-    <p class="step-prompt">Describe what is going on, like a neutral person would see or hear it.</p>
-    <p class="step-hint">No interpretation yet. What happened, when, what was said or done.</p>
-    <textarea class="step-input" id="inputFacts" placeholder="Last time, what I saw or heard was..."></textarea>
-    <div class="button-row">
-      <button class="btn btn-secondary" onclick="goToStep(1)">Back</button>
-      <button class="btn btn-primary" id="next2" disabled>Continue</button>
+  <div class="act-card act-hidden" id="step2">
+    <div class="act-step-label">Step 2 of 5</div>
+    <h2 class="act-step-title">What is happening, just the facts</h2>
+    <p class="act-step-prompt">Describe what is going on, like a neutral person would see or hear it.</p>
+    <p class="act-step-hint">No interpretation yet. What happened, when, what was said or done.</p>
+    <textarea class="act-step-input" id="inputFacts" placeholder="Last time, what I saw or heard was..."></textarea>
+    <div class="act-button-row">
+      <button class="act-btn act-btn-secondary" onclick="goToStep(1)">Back</button>
+      <button class="act-btn act-btn-primary" id="next2" disabled>Continue</button>
     </div>
   </div>
 
   <!-- Step 3 — Impact -->
-  <div class="card hidden" id="step3">
-    <div class="step-label">Step 3 of 5</div>
-    <h2 class="step-title">Why this matters</h2>
-    <p class="step-prompt">Name the impact, then what you want instead.</p>
-    <p class="step-hint">What is the cost to you, the relationship, the outcome, and what would good look like.</p>
-    <textarea class="step-input" id="inputImpact" placeholder="The impact for me is... and what I want instead is..."></textarea>
-    <div class="button-row">
-      <button class="btn btn-secondary" onclick="goToStep(2)">Back</button>
-      <button class="btn btn-primary" id="next3" disabled>Continue</button>
+  <div class="act-card act-hidden" id="step3">
+    <div class="act-step-label">Step 3 of 5</div>
+    <h2 class="act-step-title">Why this matters</h2>
+    <p class="act-step-prompt">Name the impact, then what you want instead.</p>
+    <p class="act-step-hint">What is the cost to you, the relationship, the outcome, and what would good look like.</p>
+    <textarea class="act-step-input" id="inputImpact" placeholder="The impact for me is... and what I want instead is..."></textarea>
+    <div class="act-button-row">
+      <button class="act-btn act-btn-secondary" onclick="goToStep(2)">Back</button>
+      <button class="act-btn act-btn-primary" id="next3" disabled>Continue</button>
     </div>
   </div>
 
   <!-- Step 4 — Underneath -->
-  <div class="card hidden" id="step4">
-    <div class="step-label">Step 4 of 5</div>
-    <h2 class="step-title">What is underneath</h2>
-    <p class="step-prompt">What are you feeling right now, what do you need, what value matters here, what are you afraid of.</p>
-    <p class="step-hint">Often the real issue is about something the situation is threatening or denying you.</p>
-    <textarea class="step-input" id="inputUnderneath" placeholder="Underneath this for me is..."></textarea>
-    <div class="button-row">
-      <button class="btn btn-secondary" onclick="goToStep(3)">Back</button>
-      <button class="btn btn-primary" id="next4" disabled>Continue</button>
+  <div class="act-card act-hidden" id="step4">
+    <div class="act-step-label">Step 4 of 5</div>
+    <h2 class="act-step-title">What is underneath</h2>
+    <p class="act-step-prompt">What are you feeling right now, what do you need, what value matters here, what are you afraid of.</p>
+    <p class="act-step-hint">Often the real issue is about something the situation is threatening or denying you.</p>
+    <textarea class="act-step-input" id="inputUnderneath" placeholder="Underneath this for me is..."></textarea>
+    <div class="act-button-row">
+      <button class="act-btn act-btn-secondary" onclick="goToStep(3)">Back</button>
+      <button class="act-btn act-btn-primary" id="next4" disabled>Continue</button>
     </div>
   </div>
 
   <!-- Step 5 — Real issue -->
-  <div class="card hidden" id="step5">
-    <div class="step-label">Step 5 of 5</div>
-    <h2 class="step-title">The real issue, in one sentence</h2>
-    <p class="step-prompt">Specific, usable, something you can act on.</p>
-    <p class="step-hint">Saying it cleanly is half the work.</p>
-    <textarea class="step-input" id="inputIssue" placeholder="The real issue is..."></textarea>
+  <div class="act-card act-hidden" id="step5">
+    <div class="act-step-label">Step 5 of 5</div>
+    <h2 class="act-step-title">The real issue, in one sentence</h2>
+    <p class="act-step-prompt">Specific, usable, something you can act on.</p>
+    <p class="act-step-hint">Saying it cleanly is half the work.</p>
+    <textarea class="act-step-input" id="inputIssue" placeholder="The real issue is..."></textarea>
 
-    <div class="template-hint">
-      <div class="label">If this is mostly about you</div>
+    <div class="act-reference">
+      <div class="act-reference-label">If this is mostly about you</div>
       The real issue is that I need <em>[need or value]</em> and I am not getting it because <em>[specific barrier]</em>, so I will <em>[small change I can control]</em>.
     </div>
-    <div class="template-hint">
-      <div class="label">If this involves others</div>
+    <div class="act-reference">
+      <div class="act-reference-label">If this involves others</div>
       The real issue is the pattern of <em>[pattern]</em>, the impact is <em>[impact]</em>, the need underneath is <em>[need]</em>, the next step is <em>[small step]</em>.
     </div>
 
-    <div class="button-row">
-      <button class="btn btn-secondary" onclick="goToStep(4)">Back</button>
-      <button class="btn btn-primary" id="next5" disabled>See your summary</button>
+    <div class="act-button-row">
+      <button class="act-btn act-btn-secondary" onclick="goToStep(4)">Back</button>
+      <button class="act-btn act-btn-primary" id="next5" disabled>See your summary</button>
     </div>
   </div>
 
   <!-- Step 6 — Summary -->
-  <div class="card hidden" id="step6">
-    <div class="step-label">Your summary</div>
-    <h2 class="step-title">From surface to core</h2>
+  <div class="act-card act-hidden" id="step6">
+    <div class="act-step-label">Your summary</div>
+    <h2 class="act-step-title">From surface to core</h2>
 
-    <div class="journey">
-      <div class="journey-row">
-        <div class="journey-label">Scope</div>
-        <div class="journey-text" id="jScope"></div>
+    <div class="act-journey">
+      <div class="act-journey-row">
+        <div class="act-journey-label">Scope</div>
+        <div class="act-journey-text" id="jScope"></div>
       </div>
-      <div class="journey-row">
-        <div class="journey-label">Facts</div>
-        <div class="journey-text" id="jFacts"></div>
+      <div class="act-journey-row">
+        <div class="act-journey-label">Facts</div>
+        <div class="act-journey-text" id="jFacts"></div>
       </div>
-      <div class="journey-row">
-        <div class="journey-label">Impact</div>
-        <div class="journey-text" id="jImpact"></div>
+      <div class="act-journey-row">
+        <div class="act-journey-label">Impact</div>
+        <div class="act-journey-text" id="jImpact"></div>
       </div>
-      <div class="journey-row">
-        <div class="journey-label">Underneath</div>
-        <div class="journey-text" id="jUnderneath"></div>
+      <div class="act-journey-row">
+        <div class="act-journey-label">Underneath</div>
+        <div class="act-journey-text" id="jUnderneath"></div>
       </div>
-      <div class="journey-row core">
-        <div class="journey-label">The real issue</div>
-        <div class="journey-text" id="jIssue"></div>
+      <div class="act-journey-row core">
+        <div class="act-journey-label">The real issue</div>
+        <div class="act-journey-text" id="jIssue"></div>
       </div>
     </div>
 
-    <div class="reflect-prompts">
+    <div class="act-reflect-prompts">
       <div>
         <label>What is one small step you can take in the next 24 hours</label>
         <textarea id="reflect1" placeholder="The first thing I can do..."></textarea>
@@ -533,19 +196,19 @@
       </div>
     </div>
 
-    <div class="confidence-block">
-      <div class="confidence-prompt">How confident are you that you will do that first small step</div>
-      <div class="conf-row" id="confRow"></div>
-      <div class="conf-labels"><span>Not at all</span><span>Very confident</span></div>
+    <div class="act-confidence-block">
+      <div class="act-confidence-prompt">How confident are you that you will do that first small step</div>
+      <div class="act-conf-row" id="confRow"></div>
+      <div class="act-conf-labels"><span>Not at all</span><span>Very confident</span></div>
     </div>
 
-    <div class="button-row">
-      <button class="btn btn-secondary" onclick="goToStep(5)">Back</button>
-      <button class="btn btn-primary" onclick="startOver()">Start a new clarifier</button>
+    <div class="act-button-row">
+      <button class="act-btn act-btn-secondary" onclick="goToStep(5)">Back</button>
+      <button class="act-btn act-btn-primary" onclick="startOver()">Start a new clarifier</button>
     </div>
   </div>
 
-  <footer>
+  <footer class="act-footer">
     Strengths-Based Coaching and Counselling | <a href="https://www.coach4u.com.au" target="_blank">www.coach4u.com.au</a> | <a href="mailto:cath@coach4u.com.au">cath@coach4u.com.au</a> | 0402 313 337
   </footer>
 
@@ -572,7 +235,7 @@ const state = {
 
 // Step 1 — pill selectors
 function bindPillRow(containerId, datasetKey, stateKey) {
-  const tiles = document.querySelectorAll('#' + containerId + ' .pill');
+  const tiles = document.querySelectorAll('#' + containerId + ' .act-pill');
   tiles.forEach(t => {
     t.addEventListener('click', () => {
       tiles.forEach(o => o.classList.remove('selected'));
@@ -609,11 +272,11 @@ bindTextarea('inputIssue',      'issue',      'next5', 6);
 const confRow = document.getElementById('confRow');
 for (let i = 1; i <= 10; i++) {
   const dot = document.createElement('div');
-  dot.className = 'conf-dot';
+  dot.className = 'act-conf-dot';
   dot.textContent = i;
   dot.addEventListener('click', () => {
     state.confidence = i;
-    document.querySelectorAll('.conf-dot').forEach((d, idx) => {
+    document.querySelectorAll('.act-conf-dot').forEach((d, idx) => {
       d.classList.toggle('selected', idx + 1 === i);
     });
   });
@@ -623,9 +286,9 @@ for (let i = 1; i <= 10; i++) {
 function goToStep(n) {
   state.step = n;
   for (let i = 1; i <= 6; i++) {
-    document.getElementById('step' + i).classList.toggle('hidden', i !== n);
+    document.getElementById('step' + i).classList.toggle('act-hidden', i !== n);
   }
-  document.querySelectorAll('.progress-step').forEach(el => {
+  document.querySelectorAll('.act-progress-step').forEach(el => {
     const s = parseInt(el.dataset.step);
     el.classList.remove('active', 'done');
     if (n === 6) {
@@ -641,8 +304,8 @@ function goToStep(n) {
 }
 
 function buildSummary() {
-  const scopeText = `<span class="scope-tag">${SCOPE_AREA_LABEL[state.scope.area]}</span>` +
-                    `<span class="scope-tag">${SCOPE_BUNDLE_LABEL[state.scope.bundle]}</span>`;
+  const scopeText = `<span class="act-scope-tag">${SCOPE_AREA_LABEL[state.scope.area]}</span>` +
+                    `<span class="act-scope-tag">${SCOPE_BUNDLE_LABEL[state.scope.bundle]}</span>`;
   document.getElementById('jScope').innerHTML       = scopeText;
   document.getElementById('jFacts').textContent      = state.facts;
   document.getElementById('jImpact').textContent     = state.impact;
@@ -655,13 +318,13 @@ function startOver() {
   state.scope = { area: '', bundle: '' };
   state.facts = state.impact = state.underneath = state.issue = '';
   state.confidence = 0;
-  document.querySelectorAll('.pill').forEach(p => p.classList.remove('selected'));
+  document.querySelectorAll('.act-pill').forEach(p => p.classList.remove('selected'));
   ['inputFacts', 'inputImpact', 'inputUnderneath', 'inputIssue', 'reflect1', 'reflect2', 'reflect3']
     .forEach(id => { document.getElementById(id).value = ''; });
   ['next1','next2','next3','next4','next5'].forEach(id => {
     document.getElementById(id).disabled = true;
   });
-  document.querySelectorAll('.conf-dot').forEach(d => d.classList.remove('selected'));
+  document.querySelectorAll('.act-conf-dot').forEach(d => d.classList.remove('selected'));
   goToStep(1);
 }
 </script>
