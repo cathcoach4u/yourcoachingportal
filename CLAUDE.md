@@ -7,7 +7,7 @@ Sub-portals (business, team, marketing, etc.) live in their own GitHub Pages rep
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.26` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.28` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
@@ -81,10 +81,11 @@ A portal is **active** if its slug is in `client_access` for the user. Otherwise
 #### `get-coaching-relationship`
 
 - **Endpoint:** `${SUPABASE_URL}/functions/v1/get-coaching-relationship`
-- Called with `Authorization: Bearer <access_token>` (the session token).
+- Called with `Authorization: Bearer <access_token>` AND `apikey: <SUPABASE_ANON>` headers. Both are required because the function is deployed with `verify_jwt: true` (Supabase default).
 - Returns `{ groups: [{ role, relationship_name, members: [...] }, ...] }`. The logged-in user is filtered out of each `members` array server-side.
-- **Secrets stay server-side.** The function holds the Internal Hub `service_role` key as a Supabase env-var; do NOT bring that key into this repo. The client only ever sends its session JWT.
-- Used by `coach4u-tools/coaching-admin.html`. Same 8-second AbortController + graceful fallback pattern as `get-strengths` — a failing function shows a friendly error state, not a broken page.
+- **Secrets stay server-side.** The function holds the Internal Hub URL + service-role key as Supabase env-vars; do NOT bring that key into this repo. The client only ever sends its session JWT.
+- Function-side env vars are configured in the Supabase Dashboard (Project Settings → Edge Functions → Secrets). The function source must reference the secrets by their **exact** names. Mismatched names make the outbound call to the Internal Hub silently hang (no error, just times out). If a future invocation hangs, check Supabase logs for `reason: EarlyDrop` with very low `cpu_time_used` (e.g. 11ms) — that's the signature.
+- Used by `coach4u-tools/coaching-admin.html`. 10-second AbortController + graceful fallback pattern — a failing function shows a friendly error state, not a broken page.
 
 ### Confirmed portal URLs (as at 2026-05-02)
 
