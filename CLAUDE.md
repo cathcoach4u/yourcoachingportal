@@ -5,7 +5,7 @@ Single-page hub that signs a Coach4U client in and shows the coaching tools (sub
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.14` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.15` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
@@ -148,14 +148,15 @@ Toggle function: `toggleSection(bodyId, chevronId)` — flips `display` and togg
 
 Each is a self-contained HTML file with its own `<style>` and `<script>` — `strengths.html` and `resources.html` use the portal's Aptos / navy / teal system; tools under `resources/` use their own Inter / Montserrat / `#1B3664` design system (consistent across all resources). Each has a header with a "← Back" link.
 
-- **`strengths.html`** — Strengths Hub. Layout in render order: page banner → Domain Mix grid (4 cards counting how many of the user's top 10 sit in each Gallup domain, with theme names listed inside each) → Top 10 grid → two collapsible reports ("What each theme means", "What you bring") that iterate over the user's 10 themes. Owns `DOMAIN_BY_THEME`, `DOMAIN_LABEL`, `STRENGTHS_ENDPOINT`, `fetchStrengths`, `renderStrengths`, `renderDomainMix`, `renderReports`, and the `THEME_INFO` object covering all 34 themes (description + brings per theme). These are NOT in `index.html` any more.
+- **`strengths.html`** — Strengths Hub landing. Page banner + a grid of `<a class="hub-tile">` boxes, one per Coach4U-built strengths tool. Currently holds a single tile that navigates to `strengths-clifton.html`. Auth-gated; redirects to `./` if no session. Future strengths tools sit alongside as more `.hub-tile` boxes — no DB changes needed.
+- **`strengths-clifton.html`** — CliftonStrengths page. Layout in render order: page banner → Domain Mix grid (4 cards counting how many of the user's top 10 sit in each Gallup domain, with theme names listed inside each) → Top 10 grid → two collapsible reports ("What each theme means", "What you bring") that iterate over the user's 10 themes. Owns `DOMAIN_BY_THEME`, `DOMAIN_LABEL`, `STRENGTHS_ENDPOINT`, `fetchStrengths`, `renderStrengths`, `renderDomainMix`, `renderReports`, and the `THEME_INFO` object covering all 34 themes (description + brings per theme). Back arrow returns to `strengths.html`.
 - **`resources.html`** — listing page for client-facing tools. Each tool is an `<a class="resource-card">` linking into the `resources/` subdirectory. Auth-gated.
 - **`resources/<tool>.html`** — individual tool pages. Three currently:
   - **`feelings-chart.html`** — 4-step (Core → Layer → Nuance → Reflect) feelings naming wizard with multi-select at every step.
   - **`smart-goal.html`** — 5-step SMART goal builder. Final card stitches inputs into one paragraph (`I will [S] by [T]. This is achievable because [A]. I will measure progress by [M]. This matters to me because [R].`) with a Copy button, plus a five-letter breakdown and three reflect prompts.
   - **`issue-clarifier.html`** — 5-step issue clarifier (Scope pills → Facts → Impact → Underneath → Real issue with two template hints). Summary shows the journey from scope to core in a 5-row card with the real issue highlighted in the navy gradient banner. Includes 3 reflect prompts and a 1–10 confidence rating against the first small step.
 
-`strengths.html` and `resources.html` auth-gate via `sb.auth.getSession()` and redirect to `./` if no session. Tools under `resources/` are self-contained content (no Supabase calls) and don't auth-gate — public access via direct URL is fine. Shared session via `localStorage` (same Supabase project) means the user does not re-login when navigating between gated pages.
+`strengths.html`, `strengths-clifton.html`, and `resources.html` auth-gate via `sb.auth.getSession()` and redirect to `./` if no session. Tools under `resources/` are self-contained content (no Supabase calls) and don't auth-gate — public access via direct URL is fine. Shared session via `localStorage` (same Supabase project) means the user does not re-login when navigating between gated pages.
 
 ### Adding a new resource
 
@@ -172,7 +173,8 @@ Each is a self-contained HTML file with its own `<style>` and `<script>` — `st
 ```
 yourcoachingportal/
 ├── index.html                login + dashboard (hub cards + Your Tools toggle)
-├── strengths.html            Strengths Hub (domain mix + Top 10 + 2 reports)
+├── strengths.html            Strengths Hub landing — boxes for each strengths tool
+├── strengths-clifton.html    CliftonStrengths content (Domain Mix + Top 10 + 2 reports)
 ├── resources.html            Global Resources hub — lists client-facing tools
 ├── resources/
 │   ├── feelings-chart.html   4-step feelings chart

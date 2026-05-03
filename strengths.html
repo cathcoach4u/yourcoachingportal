@@ -46,100 +46,30 @@
     }
     .page-banner h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
     .page-banner p { font-size: 13px; opacity: 0.9; line-height: 1.55; }
-    .strengths-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      grid-template-rows: repeat(5, auto); grid-auto-flow: column;
-      gap: 10px 16px;
+    .hub-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
     }
-    .strength-card {
-      display: flex; align-items: center; gap: 14px;
-      padding: 12px 16px; background: white; border-radius: 8px;
-      border-left: 4px solid #ccc; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    .hub-tile {
+      background: white; border: 2px solid #0D9488; border-radius: 12px;
+      padding: 22px 20px; display: flex; flex-direction: column;
+      text-decoration: none; color: inherit;
+      box-shadow: 0 2px 8px rgba(13,148,136,0.12); transition: transform 0.2s, box-shadow 0.2s;
     }
-    .strength-rank {
-      font-size: 22px; font-weight: 700; min-width: 28px;
-      color: #0D9488; text-align: center; line-height: 1;
-    }
-    .strength-info { flex: 1; min-width: 0; }
-    .strength-name { font-size: 15px; font-weight: 700; line-height: 1.2; color: #003366; }
-    .strength-domain {
-      font-size: 11px; margin-top: 3px; color: #888;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .domain-dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
-    .strength-card.domain-executing    { border-left-color: #7B2D8B; }
-    .strength-card.domain-executing    .domain-dot { background: #7B2D8B; }
-    .strength-card.domain-influencing  { border-left-color: #E8622A; }
-    .strength-card.domain-influencing  .domain-dot { background: #E8622A; }
-    .strength-card.domain-relationship { border-left-color: #1F96D3; }
-    .strength-card.domain-relationship .domain-dot { background: #1F96D3; }
-    .strength-card.domain-strategic    { border-left-color: #2EAF6E; }
-    .strength-card.domain-strategic    .domain-dot { background: #2EAF6E; }
-    .empty-state {
-      text-align: center; padding: 40px 20px; color: #999; font-size: 14px;
-      background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      grid-column: 1 / -1;
-    }
-    .section-heading {
-      font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
-      color: #003366; margin: 32px 0 14px; padding-bottom: 6px; border-bottom: 2px solid #0D9488;
-    }
-    .domain-mix-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 8px;
-    }
-    .domain-mix-card {
-      background: white; border-left: 4px solid #ccc; border-radius: 8px;
-      padding: 14px 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    }
-    .domain-mix-count { font-size: 26px; font-weight: 700; line-height: 1; color: #003366; }
-    .domain-mix-label { font-size: 12px; font-weight: 600; color: #666; margin-top: 4px; }
-    .domain-mix-themes { font-size: 11px; color: #999; margin-top: 6px; line-height: 1.4; min-height: 16px; }
-    .domain-mix-card.domain-executing    { border-left-color: #7B2D8B; }
-    .domain-mix-card.domain-influencing  { border-left-color: #E8622A; }
-    .domain-mix-card.domain-relationship { border-left-color: #1F96D3; }
-    .domain-mix-card.domain-strategic    { border-left-color: #2EAF6E; }
-    .section-toggle {
-      width: 100%; display: flex; justify-content: space-between; align-items: center;
-      background: white; border: none; border-radius: 10px; padding: 16px 20px;
-      cursor: pointer; font-family: inherit; text-align: left;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: box-shadow 0.2s;
-    }
-    .section-toggle:hover { box-shadow: 0 3px 10px rgba(13,148,136,0.15); }
-    .section-toggle-inner { display: flex; align-items: center; gap: 12px; }
-    .section-toggle-label { font-size: 16px; font-weight: 700; color: #003366; }
-    .section-toggle-sub { font-size: 12px; color: #999; margin-top: 2px; }
-    .toggle-chevron { font-size: 14px; color: #0D9488; transition: transform 0.25s; display: inline-block; }
-    .toggle-chevron.open { transform: rotate(180deg); }
-    .report-section { margin-bottom: 12px; }
-    .report-body { padding-top: 16px; display: flex; flex-direction: column; gap: 10px; }
-    .theme-blurb {
-      background: white; border-radius: 8px; padding: 14px 16px;
-      border-left: 4px solid #ccc; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      display: flex; gap: 14px;
-    }
-    .theme-blurb.domain-executing    { border-left-color: #7B2D8B; }
-    .theme-blurb.domain-influencing  { border-left-color: #E8622A; }
-    .theme-blurb.domain-relationship { border-left-color: #1F96D3; }
-    .theme-blurb.domain-strategic    { border-left-color: #2EAF6E; }
-    .theme-blurb-rank {
-      font-size: 22px; font-weight: 700; color: #0D9488; min-width: 28px;
-      text-align: center; line-height: 1.1;
-    }
-    .theme-blurb-content { flex: 1; min-width: 0; }
-    .theme-blurb-name { font-size: 15px; font-weight: 700; color: #003366; margin-bottom: 4px; }
-    .theme-blurb-text { font-size: 13px; color: #555; line-height: 1.55; }
+    .hub-tile:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(13,148,136,0.2); }
+    .hub-tile-icon { font-size: 32px; line-height: 1; margin-bottom: 12px; }
+    .hub-tile-title { font-size: 17px; font-weight: 700; color: #003366; margin-bottom: 6px; }
+    .hub-tile-desc { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 14px; flex-grow: 1; }
+    .hub-tile-arrow { font-size: 13px; font-weight: 700; color: #0D9488; align-self: flex-start; margin-top: auto; }
     footer {
       text-align: center; padding: 20px 16px; font-size: 12px; color: #bbb;
       border-top: 1px solid #eee; background: white;
     }
     footer a { color: #0D9488; text-decoration: none; }
-    @media (max-width: 640px) {
-      .domain-mix-grid { grid-template-columns: repeat(2, 1fr); }
-    }
     @media (max-width: 480px) {
-      .strengths-grid { grid-template-columns: 1fr; grid-auto-flow: row; gap: 8px; }
       .header-title { font-size: 15px; }
       .page-banner h1 { font-size: 18px; }
+      .hub-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -153,48 +83,16 @@
   </header>
   <div class="content">
     <div class="page-banner">
-      <h1>Your CliftonStrengths</h1>
-      <p>Your top 10 themes, what shows up most strongly when you are at your best.</p>
+      <h1>Your Strengths Hub</h1>
+      <p>Curated tools that help you understand and use your strengths between coaching sessions.</p>
     </div>
-    <div id="domainMixWrap" style="display:none">
-      <div class="section-heading">Your Domain Mix</div>
-      <div class="domain-mix-grid" id="domainMixGrid"></div>
-    </div>
-
-    <div id="topTenWrap">
-      <div class="section-heading" id="topTenHeading" style="display:none">Your Top 10</div>
-      <div id="strengthsList" class="strengths-grid">
-        <div class="empty-state">Loading your strengths&hellip;</div>
-      </div>
-    </div>
-
-    <div id="reportsWrap" style="display:none; margin-top: 28px">
-      <div class="report-section">
-        <button class="section-toggle" onclick="toggleSection('descriptionsBody','descriptionsChevron')">
-          <div class="section-toggle-inner">
-            <span style="font-size:20px">📖</span>
-            <div>
-              <div class="section-toggle-label">What each theme means</div>
-              <div class="section-toggle-sub">Plain English description for each of your top 10</div>
-            </div>
-          </div>
-          <span class="toggle-chevron" id="descriptionsChevron">▼</span>
-        </button>
-        <div class="report-body" id="descriptionsBody" style="display:none"></div>
-      </div>
-      <div class="report-section">
-        <button class="section-toggle" onclick="toggleSection('bringsBody','bringsChevron')">
-          <div class="section-toggle-inner">
-            <span style="font-size:20px">✨</span>
-            <div>
-              <div class="section-toggle-label">What you bring</div>
-              <div class="section-toggle-sub">The strengths each theme offers a team or relationship</div>
-            </div>
-          </div>
-          <span class="toggle-chevron" id="bringsChevron">▼</span>
-        </button>
-        <div class="report-body" id="bringsBody" style="display:none"></div>
-      </div>
+    <div class="hub-grid">
+      <a class="hub-tile" href="strengths-clifton.html">
+        <span class="hub-tile-icon">💪</span>
+        <span class="hub-tile-title">CliftonStrengths</span>
+        <span class="hub-tile-desc">Your Top 10 themes, domain mix, and what each theme means and brings to a team.</span>
+        <span class="hub-tile-arrow">Open →</span>
+      </a>
     </div>
   </div>
   <footer>
@@ -203,161 +101,15 @@
   <script>
     const SUPABASE_URL = 'https://eekefsuaefgpqmjdyniy.supabase.co'
     const SUPABASE_ANON = 'sb_publishable_pcXHwQVMpvEojb4K3afEMw_RMvgZM-Y'
-    const STRENGTHS_ENDPOINT = `${SUPABASE_URL}/functions/v1/get-strengths`
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
-
-    const DOMAIN_BY_THEME = {
-      'Achiever':'executing','Arranger':'executing','Belief':'executing',
-      'Consistency':'executing','Deliberative':'executing','Discipline':'executing',
-      'Focus':'executing','Responsibility':'executing','Restorative':'executing',
-      'Activator':'influencing','Command':'influencing','Communication':'influencing',
-      'Competition':'influencing','Maximizer':'influencing','Self-Assurance':'influencing',
-      'Significance':'influencing','Woo':'influencing',
-      'Adaptability':'relationship','Connectedness':'relationship','Developer':'relationship',
-      'Empathy':'relationship','Harmony':'relationship','Includer':'relationship',
-      'Individualization':'relationship','Positivity':'relationship','Relator':'relationship',
-      'Analytical':'strategic','Context':'strategic','Futuristic':'strategic',
-      'Ideation':'strategic','Input':'strategic','Intellection':'strategic',
-      'Learner':'strategic','Strategic':'strategic',
-    }
-    const DOMAIN_LABEL = {
-      executing: 'Executing', influencing: 'Influencing',
-      relationship: 'Relationship', strategic: 'Strategic',
-    }
-
-    const THEME_INFO = {
-      'Achiever':         { description: 'You have an inner drive to accomplish things. Each day starts at zero and you need to tick something off to feel satisfied.', brings: 'A steady engine for getting things done, a reliable pace that keeps the team moving.' },
-      'Arranger':         { description: 'You see how people, tasks and resources fit together best. You enjoy working out the most productive way to coordinate a complex situation.', brings: 'A flexible organiser who thrives in moving pieces and finds smarter ways for the team to deliver.' },
-      'Belief':           { description: 'You hold a set of core values that guide your decisions. Your work feels meaningful when it aligns with what you believe in.', brings: 'A moral compass for the team, someone who keeps purpose front and centre.' },
-      'Consistency':      { description: 'You believe everyone should be treated the same. Clear rules and even-handed treatment matter to you.', brings: 'Fairness and clarity, a steady hand who applies the same standard to everyone.' },
-      'Deliberative':     { description: 'You think carefully before you act. You see the risks others miss and prefer to weigh things up before committing.', brings: 'A careful eye for risk, the person who slows the team down at the right moment.' },
-      'Discipline':       { description: 'You like routine, structure and order. Plans, lists and predictability help you do your best work.', brings: 'Structure and reliability, someone who turns chaos into a workable plan.' },
-      'Focus':            { description: 'You set a direction and follow it through. You quietly filter out what is not relevant and keep moving toward the goal.', brings: 'A sharp sense of priority, helps the team stay on the path when others get distracted.' },
-      'Responsibility':   { description: 'When you say you will do something, you do it. Your word is important to you and you take ownership of what is yours.', brings: 'Trust and follow-through, someone the team can count on to deliver what they promised.' },
-      'Restorative':      { description: 'You enjoy fixing what is broken. Problems energise rather than drain you, and you like turning a mess into something working.', brings: 'A natural problem-solver, the person who steps in when something has gone wrong.' },
-      'Activator':        { description: 'You would rather get started than keep talking about it. Action teaches you more than analysis does.', brings: 'Momentum and energy, the spark that gets a stalled team moving again.' },
-      'Command':          { description: 'You have presence and you take charge. You are comfortable making decisions and saying what needs to be said.', brings: 'Direction in uncertainty, someone who steps up when leadership is needed.' },
-      'Communication':    { description: 'You bring ideas to life with words. You enjoy explaining, telling stories and finding the right way to put something.', brings: 'A voice for the team, makes complex things easy to understand and remember.' },
-      'Competition':      { description: 'You measure yourself against others and you want to win. You like keeping score and pushing for first place.', brings: 'A drive to outperform, lifts standards by bringing energy to the contest.' },
-      'Maximizer':        { description: 'You would rather make a strength great than fix a weakness. You work with what is already strong and refine it further.', brings: 'A focus on excellence, helps the team play to its strengths instead of patching its gaps.' },
-      'Self-Assurance':   { description: 'You trust your own judgement. You make decisions confidently and are not easily swayed by other peoples doubts.', brings: 'Steadiness under pressure, a calm centre when others are second-guessing.' },
-      'Significance':     { description: 'You want your work to matter and to be recognised. You aim high and want to make an impact people remember.', brings: 'Ambition and standards, lifts the bar for what the team thinks is possible.' },
-      'Woo':              { description: 'You enjoy meeting new people. You are at ease starting conversations and turning strangers into connections.', brings: 'A natural networker, opens doors and builds bridges for the team.' },
-      'Adaptability':     { description: 'You live in the moment. Plans changing does not bother you because you go with what is here now.', brings: 'Calm in chaos, the person who keeps moving when the day takes an unexpected turn.' },
-      'Connectedness':    { description: 'You see things as linked. Events, people and ideas have meaning beyond the obvious for you.', brings: 'Perspective and meaning, helps the team see the bigger picture beyond the task.' },
-      'Developer':        { description: 'You spot small signs of progress in others. You enjoy helping people grow and seeing their potential come through.', brings: 'A coach for the team, lifts others by noticing and nurturing their growth.' },
-      'Empathy':          { description: 'You can sense what other people are feeling. You pick up on what is unspoken and feel it alongside them.', brings: 'Emotional attunement, helps the team feel understood and seen.' },
-      'Harmony':          { description: 'You look for common ground and prefer agreement to argument. Conflict for its own sake does not appeal to you.', brings: 'Calm and consensus, smooths friction and helps the team work together.' },
-      'Includer':         { description: 'You notice who is on the outside and bring them in. Everyone matters to you, especially those being left out.', brings: 'A sense of belonging, makes sure no one on the team is left behind.' },
-      'Individualization':{ description: 'You see what makes each person unique. You tailor how you work with people based on what is true about them, not the average.', brings: 'A read on the team, knows how to bring out the best in each person differently.' },
-      'Positivity':       { description: 'You bring energy and warmth. You see the bright side and you help others find theirs.', brings: 'Lift and optimism, the person who keeps the team mood up when things get hard.' },
-      'Relator':          { description: 'You go deep with a few people rather than wide with many. You value real friendships and real trust.', brings: 'Loyalty and depth, the team-mate who really knows their colleagues.' },
-      'Analytical':       { description: 'You search for reasons and causes. You want the data, the evidence and the logic before you commit to a view.', brings: 'A rigorous mind, makes sure the team decisions stand up to scrutiny.' },
-      'Context':          { description: 'You understand the present by looking at the past. You want to know how things came to be before deciding what is next.', brings: 'Memory and pattern, helps the team learn from what has happened before.' },
-      'Futuristic':       { description: 'You are drawn to what could be. You see what is possible ahead and you can paint it for others.', brings: 'Vision and direction, helps the team see where it could be heading.' },
-      'Ideation':         { description: 'You are fascinated by ideas. You enjoy connecting concepts that do not normally go together to find new angles.', brings: 'Creative spark, brings fresh thinking when the team is stuck in the usual.' },
-      'Input':            { description: 'You collect things like facts, articles, quotes and examples. You like having a rich store to reach into when you need it.', brings: 'A rich knowledge base, has the example, fact or reference the team needs.' },
-      'Intellection':     { description: 'You enjoy thinking. You need quiet time to turn ideas over and you do your best work when given space to reflect.', brings: 'Depth and reflection, the team quiet thinker who arrives with considered views.' },
-      'Learner':          { description: 'You love the process of learning. The journey from not knowing to knowing energises you, regardless of the topic.', brings: 'Curiosity and growth, the team-mate who is always picking up something new and bringing it back.' },
-      'Strategic':        { description: 'You see different paths forward. You can quickly spot patterns, options and the way through.', brings: 'A map for the team, makes complex situations look simple and shows the way forward.' },
-    }
-
-    function toggleSection(bodyId, chevronId) {
-      const body = document.getElementById(bodyId)
-      const chevron = document.getElementById(chevronId)
-      const isOpen = body.style.display !== 'none'
-      body.style.display = isOpen ? 'none' : 'block'
-      if (chevron) chevron.classList.toggle('open', !isOpen)
-    }
 
     async function logout() {
       await sb.auth.signOut()
       location.href = './'
     }
 
-    async function fetchStrengths(session) {
-      try {
-        const ctrl = new AbortController()
-        const timer = setTimeout(() => ctrl.abort(), 8000)
-        const res = await fetch(STRENGTHS_ENDPOINT, {
-          headers: { Authorization: `Bearer ${session.access_token}` },
-          signal: ctrl.signal
-        })
-        clearTimeout(timer)
-        if (!res.ok) return []
-        const data = await res.json()
-        return Array.isArray(data.strengths) ? data.strengths : []
-      } catch {
-        return []
-      }
-    }
-
-    function renderStrengths(themes) {
-      const list = document.getElementById('strengthsList')
-      if (!themes.length) {
-        list.innerHTML = '<div class="empty-state">No strengths data yet, contact your coach to get started.</div>'
-        return
-      }
-      const top = themes.slice(0, 10)
-      list.innerHTML = top.map((theme, i) => {
-        const domain = DOMAIN_BY_THEME[theme] || 'strategic'
-        return `
-          <div class="strength-card domain-${domain}">
-            <span class="strength-rank">${i + 1}</span>
-            <div class="strength-info">
-              <div class="strength-name">${theme}</div>
-              <div class="strength-domain"><span class="domain-dot"></span>${DOMAIN_LABEL[domain]}</div>
-            </div>
-          </div>`
-      }).join('')
-      document.getElementById('topTenHeading').style.display = 'block'
-      renderDomainMix(top)
-      renderReports(top)
-    }
-
-    function renderDomainMix(themes) {
-      const buckets = { executing: [], influencing: [], relationship: [], strategic: [] }
-      themes.forEach(t => {
-        const d = DOMAIN_BY_THEME[t] || 'strategic'
-        buckets[d].push(t)
-      })
-      const order = ['executing', 'influencing', 'relationship', 'strategic']
-      const grid = document.getElementById('domainMixGrid')
-      grid.innerHTML = order.map(d => `
-        <div class="domain-mix-card domain-${d}">
-          <div class="domain-mix-count">${buckets[d].length}</div>
-          <div class="domain-mix-label">${DOMAIN_LABEL[d]}</div>
-          <div class="domain-mix-themes">${buckets[d].join(', ') || '&nbsp;'}</div>
-        </div>`).join('')
-      document.getElementById('domainMixWrap').style.display = 'block'
-    }
-
-    function renderReports(themes) {
-      const descBody = document.getElementById('descriptionsBody')
-      const bringsBody = document.getElementById('bringsBody')
-      descBody.innerHTML = themes.map((theme, i) => themeBlurb(theme, i, 'description')).join('')
-      bringsBody.innerHTML = themes.map((theme, i) => themeBlurb(theme, i, 'brings')).join('')
-      document.getElementById('reportsWrap').style.display = 'block'
-    }
-
-    function themeBlurb(theme, i, field) {
-      const domain = DOMAIN_BY_THEME[theme] || 'strategic'
-      const info = THEME_INFO[theme]
-      const text = info ? info[field] : 'Description coming soon.'
-      return `
-        <div class="theme-blurb domain-${domain}">
-          <div class="theme-blurb-rank">${i + 1}</div>
-          <div class="theme-blurb-content">
-            <div class="theme-blurb-name">${theme}</div>
-            <div class="theme-blurb-text">${text}</div>
-          </div>
-        </div>`
-    }
-
-    sb.auth.getSession().then(async ({ data: { session } }) => {
-      if (!session) { location.href = './'; return }
-      const themes = await fetchStrengths(session)
-      renderStrengths(themes)
+    sb.auth.getSession().then(({ data: { session } }) => {
+      if (!session) location.href = './'
     })
 
     sb.auth.onAuthStateChange((event) => {
