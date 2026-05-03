@@ -1,4 +1,4 @@
-const CACHE = 'coaching-portal-v13'
+const CACHE = 'coaching-portal-v14'
 const ASSETS = [
   './',
   './index.html',

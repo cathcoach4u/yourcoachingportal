@@ -7,7 +7,7 @@ Sub-portals (business, team, marketing, etc.) live in their own GitHub Pages rep
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.25` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.26` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
