@@ -5,541 +5,118 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Feelings Chart | Coach4U</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/activity.css">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --c4u-dark-blue: #1B3664;
-    --c4u-light-blue: #5684C4;
-    --c4u-dark-grey: #2D2D2D;
-    --c4u-light-grey: #DDDDDD;
-    --c4u-bg: #ffffff;
-    --c4u-soft: #F5F7FB;
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --shadow-sm: 0 1px 2px rgba(27, 54, 100, 0.06);
-    --shadow-md: 0 4px 16px rgba(27, 54, 100, 0.08);
+  .act-sub-section, .act-nuance-section { margin-bottom: 24px; }
+  .act-sub-section:last-child, .act-nuance-section:last-child { margin-bottom: 0; }
+  .act-sub-section-title {
+    font-family: 'Inter', sans-serif; font-weight: 600; color: var(--act-dark-blue);
+    font-size: 1rem; margin-bottom: 10px; padding-bottom: 6px;
+    border-bottom: 1px solid var(--act-light-grey);
+    display: flex; align-items: center; gap: 8px;
   }
-
-  body {
-    font-family: 'Montserrat', sans-serif;
-    background: var(--c4u-bg);
-    color: var(--c4u-dark-grey);
-    min-height: 100vh;
-    padding: 32px 20px 60px;
-    font-size: 1.1rem;
-    line-height: 1.5;
-  }
-
-  .container { max-width: 880px; margin: 0 auto; }
-
-  .back-link {
-    display: inline-block;
-    margin-bottom: 24px;
-    color: var(--c4u-light-blue);
-    text-decoration: none;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: color 0.15s;
-  }
-  .back-link:hover { color: var(--c4u-dark-blue); }
-
-  header { text-align: center; margin-bottom: 36px; }
-  header h1 {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    color: var(--c4u-dark-blue);
-    font-size: 2rem;
-    letter-spacing: -0.5px;
-  }
-  header p {
-    color: var(--c4u-dark-grey);
-    margin-top: 8px;
-    font-size: 1rem;
-    max-width: 540px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .progress {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 32px;
-    flex-wrap: wrap;
-  }
-  .progress-step {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.85rem;
-    color: var(--c4u-light-grey);
-    font-weight: 600;
-  }
-  .progress-step .num {
-    width: 26px; height: 26px;
-    border-radius: 50%;
-    background: var(--c4u-light-grey);
-    color: white;
-    display: grid; place-items: center;
-    font-size: 0.8rem;
-    transition: all 0.25s;
-  }
-  .progress-step.active { color: var(--c4u-dark-blue); }
-  .progress-step.active .num { background: var(--c4u-dark-blue); }
-  .progress-step.done .num { background: var(--c4u-light-blue); color: white; }
-  .progress-step.done { color: var(--c4u-light-blue); }
-  .progress-divider { width: 24px; height: 1px; background: var(--c4u-light-grey); }
-
-  .card {
-    background: white;
-    border: 1px solid var(--c4u-light-grey);
-    border-radius: var(--radius-lg);
-    padding: 32px 28px;
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 20px;
-  }
-
-  .step-label {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--c4u-light-blue);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 8px;
-  }
-
-  .step-title {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    color: var(--c4u-dark-blue);
-    font-size: 1.5rem;
-    margin-bottom: 6px;
-    letter-spacing: -0.3px;
-  }
-
-  .step-prompt { color: var(--c4u-dark-grey); font-size: 1rem; margin-bottom: 8px; }
-
-  .step-hint {
-    color: var(--c4u-light-blue);
-    font-size: 0.85rem;
-    font-style: italic;
-    margin-bottom: 24px;
-  }
-
-  .core-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-  }
-  @media (max-width: 640px) {
-    .core-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  .core-tile {
-    background: white;
-    border: 2px solid var(--c4u-light-grey);
-    border-radius: var(--radius-md);
-    padding: 20px 12px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    color: var(--c4u-dark-blue);
-    font-size: 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    position: relative;
-  }
-  .core-tile:hover {
-    border-color: var(--c4u-light-blue);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
-  .core-tile.selected {
-    background: var(--c4u-dark-blue);
-    border-color: var(--c4u-dark-blue);
-    color: white;
-  }
-  .core-tile.selected::after {
-    content: "✓";
-    position: absolute;
-    top: 8px;
-    right: 10px;
-    font-size: 0.85rem;
-    font-weight: 700;
-  }
-  .core-tile .emoji { font-size: 1.8rem; line-height: 1; }
-
-  /* Sub-feelings layout: grouped sections when multiple cores */
-  .sub-section { margin-bottom: 24px; }
-  .sub-section:last-child { margin-bottom: 0; }
-  .sub-section-title {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    color: var(--c4u-dark-blue);
-    font-size: 1rem;
-    margin-bottom: 10px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--c4u-light-grey);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .sub-section-title .emoji { font-size: 1.1rem; }
-
-  .sub-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 10px;
-  }
-
-  .sub-tile {
-    background: var(--c4u-soft);
-    border: 1.5px solid transparent;
-    border-radius: var(--radius-sm);
-    padding: 14px 30px 14px 12px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    color: var(--c4u-dark-grey);
-    font-size: 0.95rem;
-    position: relative;
-  }
-  .sub-tile:hover {
-    border-color: var(--c4u-light-blue);
-    background: white;
-  }
-  .sub-tile.selected {
-    background: var(--c4u-light-blue);
-    border-color: var(--c4u-light-blue);
-    color: white;
-    font-weight: 600;
-  }
-  .sub-tile.selected::after {
-    content: "✓";
-    position: absolute;
-    top: 50%;
-    right: 12px;
-    transform: translateY(-50%);
-    font-size: 0.85rem;
-    font-weight: 700;
-  }
-
-  .nuance-section { margin-bottom: 24px; }
-  .nuance-section:last-child { margin-bottom: 0; }
-  .nuance-section-title {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    color: var(--c4u-dark-blue);
-    font-size: 1rem;
-    margin-bottom: 10px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--c4u-light-grey);
-  }
-
-  .nuance-list { display: flex; flex-direction: column; gap: 8px; }
-  .nuance-item {
-    background: var(--c4u-soft);
-    border: 1.5px solid transparent;
-    border-radius: var(--radius-sm);
-    padding: 12px 40px 12px 18px;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    position: relative;
-  }
-  .nuance-item:hover {
-    border-color: var(--c4u-light-blue);
-    background: white;
-  }
-  .nuance-item.selected {
-    background: white;
-    border-color: var(--c4u-dark-blue);
-    box-shadow: var(--shadow-sm);
-  }
-  .nuance-item.selected::after {
-    content: "✓";
-    position: absolute;
-    top: 50%;
-    right: 16px;
-    transform: translateY(-50%);
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--c4u-dark-blue);
-  }
-  .nuance-item .word {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    color: var(--c4u-dark-blue);
-    flex-shrink: 0;
-    min-width: 120px;
-  }
-  .nuance-item .desc { color: var(--c4u-dark-grey); font-size: 0.9rem; }
-
-  /* "None of these fit" link */
-  .none-fit-link {
-    margin-top: 20px;
-    padding: 14px 18px;
-    background: transparent;
-    border: 1.5px dashed var(--c4u-light-grey);
-    border-radius: var(--radius-sm);
-    color: var(--c4u-dark-grey);
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.9rem;
-    cursor: pointer;
-    width: 100%;
-    text-align: left;
-    transition: all 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .none-fit-link:hover {
-    border-color: var(--c4u-light-blue);
-    color: var(--c4u-dark-blue);
-    background: var(--c4u-soft);
-  }
-  .none-fit-link .arrow {
-    color: var(--c4u-light-blue);
-    font-weight: 700;
-  }
-
-  /* Redirect panel shown when "None of these fit" is clicked */
-  .redirect-panel {
-    margin-top: 20px;
-    padding: 20px;
-    background: var(--c4u-soft);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--c4u-light-grey);
-  }
-  .redirect-panel p {
-    font-size: 0.95rem;
-    color: var(--c4u-dark-grey);
-    margin-bottom: 14px;
-  }
-  .redirect-panel p strong {
-    font-family: 'Inter', sans-serif;
-    color: var(--c4u-dark-blue);
-    font-weight: 600;
-  }
-  .redirect-options {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .summary-banner {
-    background: linear-gradient(135deg, #1B3664 0%, #5684C4 100%);
-    color: white;
-    padding: 24px;
-    border-radius: var(--radius-md);
-    margin-bottom: 24px;
-    text-align: center;
-  }
-  .summary-banner .label {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    opacity: 0.85;
-    margin-bottom: 10px;
-    font-weight: 500;
-  }
-  .summary-banner .feeling-words {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    font-size: 1.6rem;
-    letter-spacing: -0.3px;
-    line-height: 1.4;
-  }
-  .summary-banner .feeling-words .sep {
-    opacity: 0.5;
-    margin: 0 10px;
-    font-weight: 400;
-  }
-  .summary-banner .path {
-    font-size: 0.85rem;
-    opacity: 0.85;
-    margin-top: 12px;
-    line-height: 1.6;
-  }
-
-  .reflect-prompts { display: flex; flex-direction: column; gap: 16px; }
-  .reflect-prompts label {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    color: var(--c4u-dark-blue);
-    font-size: 0.95rem;
-    margin-bottom: 6px;
-    display: block;
-  }
-  .reflect-prompts textarea {
-    width: 100%;
-    border: 1.5px solid var(--c4u-light-grey);
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.95rem;
-    color: var(--c4u-dark-grey);
-    resize: vertical;
-    min-height: 70px;
-    transition: border-color 0.15s;
-  }
-  .reflect-prompts textarea:focus {
-    outline: none;
-    border-color: var(--c4u-light-blue);
-  }
-
-  .button-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 28px;
-    flex-wrap: wrap;
-  }
-  .btn {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: 0.95rem;
-    padding: 12px 24px;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    border: none;
-    transition: all 0.15s;
-  }
-  .btn-primary { background: var(--c4u-dark-blue); color: white; }
-  .btn-primary:hover { background: #14284d; }
-  .btn-primary:disabled { background: var(--c4u-light-grey); cursor: not-allowed; }
-  .btn-secondary {
-    background: white;
-    color: var(--c4u-dark-blue);
-    border: 1.5px solid var(--c4u-light-grey);
-  }
-  .btn-secondary:hover { border-color: var(--c4u-dark-blue); }
-
-  footer {
-    text-align: center;
-    margin-top: 40px;
-    font-size: 9pt;
-    color: var(--c4u-dark-grey);
-  }
-  footer a { color: var(--c4u-light-blue); text-decoration: none; }
-  footer a:hover { color: var(--c4u-dark-blue); }
-
-  .hidden { display: none; }
+  .act-sub-section-title .act-emoji { font-size: 1.1rem; }
+  .act-summary-words .sep { opacity: 0.5; margin: 0 10px; font-weight: 400; }
 </style>
 </head>
-<body>
-<div class="container">
+<body class="activity-page">
+<div class="act-container">
 
-  <a class="back-link" href="../">← Back to Coaching Portal</a>
+  <a class="act-back-link" href="../">← Back to Coaching Portal</a>
 
-  <header>
+  <header class="act-header">
     <h1>Feelings Chart</h1>
     <p>Naming what we feel is the first step in understanding ourselves. Take your time.</p>
   </header>
 
-  <div class="progress" id="progress">
-    <div class="progress-step active" data-step="1"><span class="num">1</span><span>Core</span></div>
-    <div class="progress-divider"></div>
-    <div class="progress-step" data-step="2"><span class="num">2</span><span>Layer</span></div>
-    <div class="progress-divider"></div>
-    <div class="progress-step" data-step="3"><span class="num">3</span><span>Nuance</span></div>
-    <div class="progress-divider"></div>
-    <div class="progress-step" data-step="4"><span class="num">4</span><span>Reflect</span></div>
+  <div class="act-progress" id="progress">
+    <div class="act-progress-step active" data-step="1"><span class="num">1</span><span>Core</span></div>
+    <div class="act-progress-divider"></div>
+    <div class="act-progress-step" data-step="2"><span class="num">2</span><span>Layer</span></div>
+    <div class="act-progress-divider"></div>
+    <div class="act-progress-step" data-step="3"><span class="num">3</span><span>Nuance</span></div>
+    <div class="act-progress-divider"></div>
+    <div class="act-progress-step" data-step="4"><span class="num">4</span><span>Reflect</span></div>
   </div>
 
   <!-- ── STEP 1 ─────────────────────────── -->
-  <div class="card" id="step1">
-    <div class="step-label">Step 1 of 4</div>
-    <h2 class="step-title">Where do you start?</h2>
-    <p class="step-prompt">Choose the core feeling, or feelings, that fit closest to what is here for you right now. There is no wrong answer.</p>
-    <p class="step-hint">Pick one or more. Feelings often sit across more than one core.</p>
-    <div class="core-grid" id="coreGrid"></div>
+  <div class="act-card" id="step1">
+    <div class="act-step-label">Step 1 of 4</div>
+    <h2 class="act-step-title">Where do you start?</h2>
+    <p class="act-step-prompt">Choose the core feeling, or feelings, that fit closest to what is here for you right now. There is no wrong answer.</p>
+    <p class="act-step-hint">Pick one or more. Feelings often sit across more than one core.</p>
+    <div class="act-core-grid" id="coreGrid"></div>
 
-    <div class="redirect-panel hidden" id="redirect1">
+    <div class="act-redirect-panel act-hidden" id="redirect1">
       <p><strong>That is okay.</strong> Sometimes none of these quite fit, and that is useful information in itself. You might be feeling something more subtle, or a mix that does not have a clear name yet.</p>
       <p>You can pick the closest fit just to start somewhere, or take a moment to notice what is happening in your body and try again.</p>
-      <div class="redirect-options">
-        <button class="btn btn-secondary" onclick="closeRedirect(1)">Pick the closest fit</button>
+      <div class="act-redirect-options">
+        <button class="act-btn act-btn-secondary" onclick="closeRedirect(1)">Pick the closest fit</button>
       </div>
     </div>
 
-    <div class="button-row">
+    <div class="act-button-row">
       <span></span>
-      <button class="btn btn-primary" id="next1" disabled>Continue</button>
+      <button class="act-btn act-btn-primary" id="next1" disabled>Continue</button>
     </div>
   </div>
 
   <!-- ── STEP 2 ─────────────────────────── -->
-  <div class="card hidden" id="step2">
-    <div class="step-label">Step 2 of 4</div>
-    <h2 class="step-title">Going a layer deeper</h2>
-    <p class="step-prompt" id="step2Prompt">Which of these sit closer to your experience?</p>
-    <p class="step-hint">Pick as many as fit. Feelings often layer together.</p>
+  <div class="act-card act-hidden" id="step2">
+    <div class="act-step-label">Step 2 of 4</div>
+    <h2 class="act-step-title">Going a layer deeper</h2>
+    <p class="act-step-prompt" id="step2Prompt">Which of these sit closer to your experience?</p>
+    <p class="act-step-hint">Pick as many as fit. Feelings often layer together.</p>
     <div id="subContainer"></div>
 
-    <div class="redirect-panel hidden" id="redirect2">
+    <div class="act-redirect-panel act-hidden" id="redirect2">
       <p><strong>None of these landing?</strong> The starting feeling might not be quite right. Step back and try a different core, or sit with the closest fit and see what comes up next.</p>
-      <div class="redirect-options">
-        <button class="btn btn-secondary" onclick="goToStep(1)">Back to core feelings</button>
-        <button class="btn btn-secondary" onclick="closeRedirect(2)">Stay here and pick the closest</button>
+      <div class="act-redirect-options">
+        <button class="act-btn act-btn-secondary" onclick="goToStep(1)">Back to core feelings</button>
+        <button class="act-btn act-btn-secondary" onclick="closeRedirect(2)">Stay here and pick the closest</button>
       </div>
     </div>
 
-    <div class="button-row">
-      <button class="btn btn-secondary" onclick="goToStep(1)">Back</button>
-      <button class="btn btn-primary" id="next2" disabled>Continue</button>
+    <div class="act-button-row">
+      <button class="act-btn act-btn-secondary" onclick="goToStep(1)">Back</button>
+      <button class="act-btn act-btn-primary" id="next2" disabled>Continue</button>
     </div>
   </div>
 
   <!-- ── STEP 3 ─────────────────────────── -->
-  <div class="card hidden" id="step3">
-    <div class="step-label">Step 3 of 4</div>
-    <h2 class="step-title">The most precise words</h2>
-    <p class="step-prompt" id="step3Prompt">Each of these has a slightly different shade. Choose the words that name it best.</p>
-    <p class="step-hint">Pick as many as fit across the layers you chose.</p>
+  <div class="act-card act-hidden" id="step3">
+    <div class="act-step-label">Step 3 of 4</div>
+    <h2 class="act-step-title">The most precise words</h2>
+    <p class="act-step-prompt" id="step3Prompt">Each of these has a slightly different shade. Choose the words that name it best.</p>
+    <p class="act-step-hint">Pick as many as fit across the layers you chose.</p>
     <div id="nuanceContainer"></div>
 
-    <div class="redirect-panel hidden" id="redirect3">
+    <div class="act-redirect-panel act-hidden" id="redirect3">
       <p><strong>Nothing quite right?</strong> Sometimes the precise word does not land, even when the layer is close. You can step back to try different layers, or move forward with what is closest.</p>
-      <div class="redirect-options">
-        <button class="btn btn-secondary" onclick="goToStep(2)">Back to layers</button>
-        <button class="btn btn-secondary" onclick="closeRedirect(3)">Move on with the closest fit</button>
+      <div class="act-redirect-options">
+        <button class="act-btn act-btn-secondary" onclick="goToStep(2)">Back to layers</button>
+        <button class="act-btn act-btn-secondary" onclick="closeRedirect(3)">Move on with the closest fit</button>
       </div>
     </div>
 
-    <div class="button-row">
-      <button class="btn btn-secondary" onclick="goToStep(2)">Back</button>
-      <button class="btn btn-primary" id="next3" disabled>Continue</button>
+    <div class="act-button-row">
+      <button class="act-btn act-btn-secondary" onclick="goToStep(2)">Back</button>
+      <button class="act-btn act-btn-primary" id="next3" disabled>Continue</button>
     </div>
   </div>
 
   <!-- ── STEP 4 ─────────────────────────── -->
-  <div class="card hidden" id="step4">
-    <div class="step-label">Step 4 of 4</div>
-    <h2 class="step-title">Sit with it for a moment</h2>
+  <div class="act-card act-hidden" id="step4">
+    <div class="act-step-label">Step 4 of 4</div>
+    <h2 class="act-step-title">Sit with it for a moment</h2>
 
-    <div class="summary-banner">
-      <div class="label">Right now I feel</div>
-      <div class="feeling-words" id="finalWords">—</div>
-      <div class="path" id="finalPath"></div>
+    <div class="act-summary-banner">
+      <div class="act-summary-label">Right now I feel</div>
+      <div class="act-summary-words" id="finalWords">—</div>
+      <div class="act-summary-path" id="finalPath"></div>
     </div>
 
-    <div class="reflect-prompts">
+    <div class="act-reflect-prompts">
       <div>
         <label>What might be underneath these feelings?</label>
         <textarea id="reflect1" placeholder="A need, a thought, a memory…"></textarea>
@@ -554,13 +131,13 @@
       </div>
     </div>
 
-    <div class="button-row">
-      <button class="btn btn-secondary" onclick="goToStep(3)">Back</button>
-      <button class="btn btn-primary" onclick="startOver()">Start again</button>
+    <div class="act-button-row">
+      <button class="act-btn act-btn-secondary" onclick="goToStep(3)">Back</button>
+      <button class="act-btn act-btn-primary" onclick="startOver()">Start again</button>
     </div>
   </div>
 
-  <footer>
+  <footer class="act-footer">
     Strengths-Based Coaching and Counselling | <a href="https://www.coach4u.com.au" target="_blank">www.coach4u.com.au</a> | <a href="mailto:cath@coach4u.com.au">cath@coach4u.com.au</a> | 0402 313 337
   </footer>
 
@@ -872,8 +449,8 @@ function buildStep1() {
   grid.innerHTML = '';
   FEELINGS.forEach((f, i) => {
     const tile = document.createElement('div');
-    tile.className = 'core-tile' + (state.coreIdxs.has(i) ? ' selected' : '');
-    tile.innerHTML = `<span class="emoji">${f.emoji}</span><span>${f.label}</span>`;
+    tile.className = 'act-core-tile' + (state.coreIdxs.has(i) ? ' selected' : '');
+    tile.innerHTML = `<span class="act-emoji">${f.emoji}</span><span>${f.label}</span>`;
     tile.addEventListener('click', () => {
       if (state.coreIdxs.has(i)) {
         state.coreIdxs.delete(i);
@@ -897,8 +474,8 @@ function buildStep1() {
   if (!document.getElementById('noneFit1')) {
     const link = document.createElement('button');
     link.id = 'noneFit1';
-    link.className = 'none-fit-link';
-    link.innerHTML = '<span class="arrow">›</span> None of these quite fit';
+    link.className = 'act-none-fit-btn';
+    link.innerHTML = '<span class="act-arrow">›</span> None of these quite fit';
     link.onclick = () => toggleRedirect(1);
     grid.parentNode.insertBefore(link, document.getElementById('redirect1'));
   }
@@ -928,22 +505,22 @@ function buildStep2() {
   sortedCoreIdxs.forEach(coreIdx => {
     const core = FEELINGS[coreIdx];
     const section = document.createElement('div');
-    section.className = 'sub-section';
+    section.className = 'act-sub-section';
 
     if (isMultiCore) {
       const title = document.createElement('div');
-      title.className = 'sub-section-title';
-      title.innerHTML = `<span class="emoji">${core.emoji}</span><span>Within ${core.label}</span>`;
+      title.className = 'act-sub-section-title';
+      title.innerHTML = `<span class="act-emoji">${core.emoji}</span><span>Within ${core.label}</span>`;
       section.appendChild(title);
     }
 
     const grid = document.createElement('div');
-    grid.className = 'sub-grid';
+    grid.className = 'act-sub-grid';
 
     core.layers.forEach((layer, layerIdx) => {
       const key = `${coreIdx}-${layerIdx}`;
       const tile = document.createElement('div');
-      tile.className = 'sub-tile' + (state.layerKeys.has(key) ? ' selected' : '');
+      tile.className = 'act-sub-tile' + (state.layerKeys.has(key) ? ' selected' : '');
       tile.textContent = layer.label;
       tile.addEventListener('click', () => {
         if (state.layerKeys.has(key)) {
@@ -990,11 +567,11 @@ function buildStep3() {
     const layer = core.layers[layerIdx];
 
     const section = document.createElement('div');
-    section.className = 'nuance-section';
+    section.className = 'act-nuance-section';
 
     if (showHeaders) {
       const title = document.createElement('div');
-      title.className = 'nuance-section-title';
+      title.className = 'act-section-title';
       // If multiple cores selected, show core name for clarity
       const hasMultipleCores = state.coreIdxs.size > 1;
       title.textContent = hasMultipleCores
@@ -1004,13 +581,13 @@ function buildStep3() {
     }
 
     const list = document.createElement('div');
-    list.className = 'nuance-list';
+    list.className = 'act-nuance-list';
 
     layer.nuances.forEach((n, nIdx) => {
       const key = `${coreIdx}-${layerIdx}-${nIdx}`;
       const item = document.createElement('div');
-      item.className = 'nuance-item' + (state.nuanceKeys.has(key) ? ' selected' : '');
-      item.innerHTML = `<span class="word">${n.word}</span><span class="desc">${n.desc}</span>`;
+      item.className = 'act-nuance-item' + (state.nuanceKeys.has(key) ? ' selected' : '');
+      item.innerHTML = `<span class="act-word">${n.word}</span><span class="act-desc">${n.desc}</span>`;
       item.addEventListener('click', () => {
         if (state.nuanceKeys.has(key)) state.nuanceKeys.delete(key);
         else state.nuanceKeys.add(key);
@@ -1076,26 +653,26 @@ function buildStep4() {
 // ── Redirect panel toggling ───────────────────────────────────────────
 function toggleRedirect(stepNum) {
   const panel = document.getElementById('redirect' + stepNum);
-  panel.classList.toggle('hidden');
-  if (!panel.classList.contains('hidden')) {
+  panel.classList.toggle('act-hidden');
+  if (!panel.classList.contains('act-hidden')) {
     panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 }
 
 function closeRedirect(stepNum) {
-  document.getElementById('redirect' + stepNum).classList.add('hidden');
+  document.getElementById('redirect' + stepNum).classList.add('act-hidden');
 }
 
 // ── Step navigation ───────────────────────────────────────────────────
 function goToStep(n) {
   state.step = n;
   for (let i = 1; i <= 4; i++) {
-    document.getElementById('step' + i).classList.toggle('hidden', i !== n);
+    document.getElementById('step' + i).classList.toggle('act-hidden', i !== n);
     // Hide any open redirect panels when leaving a step
     const panel = document.getElementById('redirect' + i);
-    if (panel) panel.classList.add('hidden');
+    if (panel) panel.classList.add('act-hidden');
   }
-  document.querySelectorAll('.progress-step').forEach(el => {
+  document.querySelectorAll('.act-progress-step').forEach(el => {
     const s = parseInt(el.dataset.step);
     el.classList.remove('active', 'done');
     if (s < n) el.classList.add('done');
@@ -1127,8 +704,8 @@ function addNoneFitToStep(stepNum) {
   if (document.getElementById(linkId)) return;
   const link = document.createElement('button');
   link.id = linkId;
-  link.className = 'none-fit-link';
-  link.innerHTML = '<span class="arrow">›</span> None of these quite fit';
+  link.className = 'act-none-fit-btn';
+  link.innerHTML = '<span class="act-arrow">›</span> None of these quite fit';
   link.onclick = () => toggleRedirect(stepNum);
   const redirectPanel = document.getElementById('redirect' + stepNum);
   redirectPanel.parentNode.insertBefore(link, redirectPanel);
