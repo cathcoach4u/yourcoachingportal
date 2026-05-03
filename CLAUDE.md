@@ -5,7 +5,7 @@ Single-page hub that signs a Coach4U client in and shows the coaching tools (sub
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.13` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.14` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
@@ -137,7 +137,8 @@ The portal content area (`#portalWrap`) renders these in order after the welcome
    - **Feelings Chart** → `resources/feelings-chart.html` (💗)
    - **SMART Goal Builder** → `resources/smart-goal.html` (🎯)
    - **Issue Clarifier** → `resources/issue-clarifier.html` (🧭)
-2. **Your Tools** (`#activeSection`) — collapsible toggle, **expanded by default** (chevron starts `.open`). Sub-label shows active portal count, e.g. "3 active portals". Content: active portal cards (`#activePortals`) then a tucked "Also Available" sub-section (`#lockedSection`) for locked portals. The Strengths Hub appears here as the gated `coach4u-tools` tile (`name`: "Your Coach4U Tools", `url`: `strengths.html`) for clients with a matching `client_access` row.
+2. **Your Coach4U Tools** (`#coach4uSection`) — collapsible toggle, hidden entirely for clients with no active Coach4U-built tools. Content: active tiles only (`#coach4uPortals`), no locked variant. Slugs that route here are listed in `COACH4U_SLUGS` (`new Set(['coach4u-tools'])`). The Strengths Hub renders here for clients with `client_access` to `coach4u-tools`.
+3. **Your Tools** (`#activeSection`) — collapsible toggle, **expanded by default** (chevron starts `.open`). Sub-label shows active portal count, e.g. "3 active portals". Content: active portal cards (`#activePortals`) then a tucked "Also Available" sub-section (`#lockedSection`) for locked portals. Coach4U-tool slugs are filtered OUT of this section — they render in `#coach4uSection` above.
 
 Toggle function: `toggleSection(bodyId, chevronId)` — flips `display` and toggles the `.open` class on the chevron.
 
