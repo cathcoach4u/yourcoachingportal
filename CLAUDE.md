@@ -7,7 +7,7 @@ Sub-portals (business, team, marketing, etc.) live in their own GitHub Pages rep
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.22` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.23` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
@@ -20,13 +20,13 @@ Sub-portals (business, team, marketing, etc.) live in their own GitHub Pages rep
 - All **free resources** under `resources/` (Feelings Chart, SMART Goal Builder, Issue Clarifier) and the directory page `resources.html`.
 - PWA assets (`manifest.json`, `sw.js`, `icon.svg`).
 - All Supabase **migrations** under `migrations/`. SQL is run manually in the Supabase SQL editor; this folder is the audit trail.
-- The **contract** for the `get-strengths` Edge Function (endpoint, request/response shape) is documented here even though the function itself is deployed in the admin Supabase project.
+- The **contract** for the `get-strengths` and `get-coaching-relationship` Edge Functions (endpoint, request/response shape) is documented here even though the function code itself is deployed inside Supabase.
 
 **Lives elsewhere — do NOT change here:**
 
 - Sub-portals (business, team, marketing, life, relationship, thrivehq, strengths). Each is its own GitHub Pages repo. The dashboard links to them via the `portals.url` column.
 - Coach-side admin UI for granting `client_access` and populating `client_strengths`. Separate repo writing to the same Supabase project.
-- The deployed `get-strengths` Edge Function code (lives in the admin Supabase project).
+- The deployed `get-strengths` and `get-coaching-relationship` Edge Function code (both live in this Supabase project as functions; the secret env-vars they need stay there too).
 
 **"Coach4U Tools" specifically:** the Strengths Hub, and any future Coach4U-built tools, are surfaced on the dashboard as gated tiles in the **Your Coach4U Tools** section. Routing is controlled by the `COACH4U_SLUGS` set in `index.html` plus a row in the `portals` table whose `url` points at an in-repo HTML file (e.g. `coach4u-tools.html`). Access is gated by `client_access` like every other portal.
 
@@ -47,7 +47,7 @@ Sub-portals (business, team, marketing, etc.) live in their own GitHub Pages rep
 
 - Static `index.html` hosted on GitHub Pages
 - Supabase for auth and the `portals` / `client_access` / `client_strengths` tables
-- Supabase Edge Function (`get-strengths`) for fetching CliftonStrengths data cross-project
+- Supabase Edge Functions (`get-strengths`, `get-coaching-relationship`) for fetching client data cross-project
 - Supabase JS UMD build loaded from jsDelivr (no ES modules, no bundler)
 
 ---
@@ -67,7 +67,9 @@ Sub-portals (business, team, marketing, etc.) live in their own GitHub Pages rep
 
 A portal is **active** if its slug is in `client_access` for the user. Otherwise it renders as **locked**.
 
-### Edge Function: `get-strengths`
+### Edge Functions
+
+#### `get-strengths`
 
 - **Endpoint:** `${SUPABASE_URL}/functions/v1/get-strengths`
 - Called with `Authorization: Bearer <access_token>` (the session token, not the anon key).
@@ -75,6 +77,14 @@ A portal is **active** if its slug is in `client_access` for the user. Otherwise
 - Lives in the **admin Supabase project** (separate from this hub's project); it does a cross-project lookup using `hub_profile_id`.
 - Fetched async and decoupled from portal render — a failing edge function never blocks the tile grid. Uses an 8-second AbortController timeout; returns `[]` on any failure.
 - If a client has no strengths data the `strengthsSection` div stays hidden entirely.
+
+#### `get-coaching-relationship`
+
+- **Endpoint:** `${SUPABASE_URL}/functions/v1/get-coaching-relationship`
+- Called with `Authorization: Bearer <access_token>` (the session token).
+- Returns `{ groups: [{ role, relationship_name, members: [...] }, ...] }`. The logged-in user is filtered out of each `members` array server-side.
+- **Secrets stay server-side.** The function holds the Internal Hub `service_role` key as a Supabase env-var; do NOT bring that key into this repo. The client only ever sends its session JWT.
+- Used by `coach4u-tools/coaching-admin.html`. Same 8-second AbortController + graceful fallback pattern as `get-strengths` — a failing function shows a friendly error state, not a broken page.
 
 ### Confirmed portal URLs (as at 2026-05-02)
 
@@ -153,7 +163,7 @@ These have been deliberately removed or set. Don't change unless asked.
 
 ### Security invariants (don't regress)
 
-- **Supabase JS is loaded with a pinned version + SRI hash**. The `<script>` tag in `index.html`, `coach4u-tools.html`, `coach4u-tools/strengths-clifton.html`, and `resources.html` looks like `<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@<version>/dist/umd/supabase.min.js" integrity="sha384-..." crossorigin="anonymous"></script>`. When bumping the version, recompute the integrity hash in **all four files**:
+- **Supabase JS is loaded with a pinned version + SRI hash**. The `<script>` tag in `index.html`, `coach4u-tools.html`, `coach4u-tools/strengths-clifton.html`, `coach4u-tools/coaching-admin.html`, and `resources.html` looks like `<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@<version>/dist/umd/supabase.min.js" integrity="sha384-..." crossorigin="anonymous"></script>`. When bumping the version, recompute the integrity hash in **all five files**:
 
   ```bash
   V=2.105.1 && curl -sL "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@${V}/dist/umd/supabase.min.js" \
@@ -185,13 +195,14 @@ Each is a self-contained HTML file with its own `<style>` and `<script>` — `co
 
 - **`coach4u-tools.html`** — Strengths Hub landing. Page banner + a grid of `<a class="hub-tile">` boxes, one per Coach4U-built strengths tool. Currently holds a single tile that navigates to `coach4u-tools/strengths-clifton.html`. Auth-gated; redirects to `./` if no session. Future strengths tools sit alongside as more `.hub-tile` boxes — no DB changes needed.
 - **`coach4u-tools/strengths-clifton.html`** — CliftonStrengths page. Page banner followed by four collapsible toggles: **Your Domain Mix** (default open), **Your Top 10** (default closed), **What each theme means** (default closed), **What you bring** (default closed). Owns `DOMAIN_BY_THEME`, `DOMAIN_LABEL`, `STRENGTHS_ENDPOINT`, `fetchStrengths`, `renderStrengths`, `renderDomainMix`, `renderReports`, and the `THEME_INFO` object covering all 34 themes (description + brings per theme). Back arrow returns to `coach4u-tools.html`.
+- **`coach4u-tools/coaching-admin.html`** — "Existing Coaching Admin" page. Page banner reads "🔗 Your Coaching Relationship". Calls the `get-coaching-relationship` Edge Function with the user's session token, then renders one card per coaching group: a green role pill (Individual / Couple / Organisation), a blue relationship-name pill, and an unstyled list of any other members. Loading / empty / error states are handled in-page. No secrets in the file — the Edge Function is the only thing that holds the Internal Hub service-role key.
 - **`resources.html`** — listing page for client-facing tools. Each tool is an `<a class="resource-card">` linking into the `resources/` subdirectory. Auth-gated.
 - **`resources/<tool>.html`** — individual tool pages. Three currently:
   - **`feelings-chart.html`** — 4-step (Core → Layer → Nuance → Reflect) feelings naming wizard with multi-select at every step.
   - **`smart-goal.html`** — 5-step SMART goal builder. Final card stitches inputs into one paragraph (`I will [S] by [T]. This is achievable because [A]. I will measure progress by [M]. This matters to me because [R].`) with a Copy button, plus a five-letter breakdown and three reflect prompts.
   - **`issue-clarifier.html`** — 5-step issue clarifier (Scope pills → Facts → Impact → Underneath → Real issue with two template hints). Summary shows the journey from scope to core in a 5-row card with the real issue highlighted in the navy gradient banner. Includes 3 reflect prompts and a 1–10 confidence rating against the first small step.
 
-`coach4u-tools.html`, `coach4u-tools/strengths-clifton.html`, and `resources.html` auth-gate via `sb.auth.getSession()` and redirect to `./` if no session. Tools under `resources/` are self-contained content (no Supabase calls) and don't auth-gate — public access via direct URL is fine. Shared session via `localStorage` (same Supabase project) means the user does not re-login when navigating between gated pages.
+`coach4u-tools.html`, `coach4u-tools/strengths-clifton.html`, `coach4u-tools/coaching-admin.html`, and `resources.html` auth-gate via `sb.auth.getSession()` and redirect to `./` (or `../` for files in the `coach4u-tools/` subdir) if no session. Tools under `resources/` are self-contained content (no Supabase calls) and don't auth-gate — public access via direct URL is fine. Shared session via `localStorage` (same Supabase project) means the user does not re-login when navigating between gated pages.
 
 ### Adding a new resource
 
@@ -221,7 +232,8 @@ yourcoachingportal/
 ├── index.html                login + dashboard (free resources row + Coach4U Tools + Your Tools)
 ├── coach4u-tools.html        Coach4U Tools landing — boxes for each Coach4U-built tool
 ├── coach4u-tools/            deep pages for each Coach4U-built tool
-│   └── strengths-clifton.html  CliftonStrengths content (Domain Mix + Top 10 + 2 reports)
+│   ├── strengths-clifton.html  CliftonStrengths content (Domain Mix + Top 10 + 2 reports)
+│   └── coaching-admin.html     "Your Coaching Relationship" — calls get-coaching-relationship
 ├── resources.html            Global Resources hub — lists client-facing tools
 ├── resources/
 │   ├── feelings-chart.html   4-step feelings chart

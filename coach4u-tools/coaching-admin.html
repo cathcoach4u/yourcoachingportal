@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coaching Admin | Your Coaching Portal</title>
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#003366">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Coach Portal">
+  <link rel="apple-touch-icon" href="../icon.svg">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.1/dist/umd/supabase.min.js"
+    integrity="sha384-sfbOag7cEcqn2DK53T/iBNAH/2cMCf7bSzJDwBhV117A0z/NIj9Usei1jKIBY1Ae"
+    crossorigin="anonymous"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Aptos', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f7fa; color: #333; min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+    header {
+      background: #003366; color: white; padding: 14px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15); gap: 12px;
+    }
+    .header-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .header-title { font-size: 18px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .back-arrow {
+      color: rgba(255,255,255,0.85); text-decoration: none; font-size: 13px;
+      padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.25);
+      white-space: nowrap;
+    }
+    .back-arrow:hover { background: rgba(255,255,255,0.12); color: white; }
+    .logout-btn {
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+      color: white; padding: 6px 14px; border-radius: 6px; cursor: pointer;
+      font-size: 13px; font-family: inherit; font-weight: 500; white-space: nowrap;
+    }
+    .logout-btn:hover { background: rgba(255,255,255,0.25); }
+    .content {
+      flex: 1; padding: 24px 16px; max-width: 800px; margin: 0 auto; width: 100%;
+    }
+    .page-banner {
+      background: linear-gradient(135deg, #003366 0%, #005599 100%);
+      color: white; border-radius: 12px; padding: 24px 20px; margin-bottom: 24px;
+    }
+    .page-banner h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .page-banner p { font-size: 13px; opacity: 0.9; line-height: 1.55; }
+    .group-list { display: flex; flex-direction: column; gap: 14px; }
+    .group-card {
+      background: white; border-radius: 10px; padding: 18px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .group-pills { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .pill {
+      display: inline-block; border-radius: 20px; padding: 3px 10px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
+    }
+    .pill-role { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
+    .pill-name { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
+    .group-members {
+      list-style: none; margin-top: 10px; padding-left: 2px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .group-members li { font-size: 13px; color: #888; line-height: 1.4; }
+    .group-members li::before { content: '·  '; color: #ccc; }
+    .empty-state, .error-state {
+      background: white; border-radius: 10px; padding: 28px 20px;
+      text-align: center; color: #888; font-size: 14px; line-height: 1.55;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .error-state { color: #c62828; }
+    footer {
+      text-align: center; padding: 20px 16px; font-size: 12px; color: #bbb;
+      border-top: 1px solid #eee; background: white;
+    }
+    footer a { color: #0D9488; text-decoration: none; }
+    @media (max-width: 480px) {
+      .header-title { font-size: 15px; }
+      .page-banner h1 { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <a class="back-arrow" href="../coach4u-tools.html">← Back</a>
+      <div class="header-title">Coaching Admin</div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Sign Out</button>
+  </header>
+  <div class="content">
+    <div class="page-banner">
+      <h1>🔗 Your Coaching Relationship</h1>
+      <p>Your role, relationship name, and the other members in each of your coaching groups.</p>
+    </div>
+    <div id="loadingState" class="empty-state">Loading your coaching relationships&hellip;</div>
+    <div id="groupList" class="group-list" style="display:none"></div>
+    <div id="emptyState" class="empty-state" style="display:none">No coaching relationships found yet. Reach out to Coach4U if this looks wrong.</div>
+    <div id="errorState" class="error-state" style="display:none">Could not load coaching relationships right now. Please try again later.</div>
+  </div>
+  <footer>
+    <a href="https://coach4u.com.au" target="_blank" rel="noopener noreferrer">coach4u.com.au</a> &nbsp;|&nbsp; Strengths-Based Coaching and Counselling
+  </footer>
+  <script>
+    const SUPABASE_URL = 'https://eekefsuaefgpqmjdyniy.supabase.co'
+    const SUPABASE_ANON = 'sb_publishable_pcXHwQVMpvEojb4K3afEMw_RMvgZM-Y'
+    const RELATIONSHIP_ENDPOINT = `${SUPABASE_URL}/functions/v1/get-coaching-relationship`
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
+
+    function escapeHtml(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]))
+    }
+
+    async function logout() {
+      await sb.auth.signOut()
+      location.href = '../'
+    }
+
+    async function fetchRelationships(session) {
+      const ctrl = new AbortController()
+      const timer = setTimeout(() => ctrl.abort(), 8000)
+      try {
+        const res = await fetch(RELATIONSHIP_ENDPOINT, {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+          signal: ctrl.signal
+        })
+        clearTimeout(timer)
+        if (!res.ok) return { ok: false }
+        const data = await res.json()
+        return { ok: true, groups: Array.isArray(data.groups) ? data.groups : [] }
+      } catch {
+        return { ok: false }
+      }
+    }
+
+    function render(result) {
+      document.getElementById('loadingState').style.display = 'none'
+      if (!result.ok) {
+        document.getElementById('errorState').style.display = 'block'
+        return
+      }
+      if (!result.groups.length) {
+        document.getElementById('emptyState').style.display = 'block'
+        return
+      }
+      const list = document.getElementById('groupList')
+      list.innerHTML = result.groups.map(g => {
+        const role = escapeHtml(g.role || '')
+        const name = escapeHtml(g.relationship_name || '')
+        const members = Array.isArray(g.members) ? g.members : []
+        const membersHtml = members.length
+          ? `<ul class="group-members">${members.map(m => `<li>${escapeHtml(m)}</li>`).join('')}</ul>`
+          : ''
+        return `
+          <div class="group-card">
+            <div class="group-pills">
+              <span class="pill pill-role">${role}</span>
+              <span class="pill pill-name">${name}</span>
+            </div>
+            ${membersHtml}
+          </div>`
+      }).join('')
+      list.style.display = 'flex'
+    }
+
+    sb.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) { location.href = '../'; return }
+      const result = await fetchRelationships(session)
+      render(result)
+    })
+
+    sb.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') location.href = '../'
+    })
+
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js')
+  </script>
+</body>
+</html>
