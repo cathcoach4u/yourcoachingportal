@@ -5,15 +5,16 @@ Single-page hub that signs a Coach4U client in and shows the coaching tools (sub
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.10` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-02.12` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
 ## Purpose
 
-- **One front door for Coach4U clients.** After sign-in, the dashboard shows two side-by-side hub cards (**Your Strengths Hub**, **Your Access to Global Resources**) and the **Your Tools** panel. Active portals have an Open button; locked ones say "Contact your coach to unlock".
+- **One front door for Coach4U clients.** After sign-in, the dashboard shows three free-resource tiles (Feelings Chart, SMART Goal Builder, Issue Clarifier) at the top, then the **Your Tools** panel. Active portals have an Open button; locked ones say "Contact your coach to unlock".
 - **Sub-portals** live in their own repos and open in a new tab.
-- **Strengths Hub and Global Resources** are dedicated pages within this repo (`strengths.html`, `resources.html`) — built to grow over time.
+- **Strengths Hub** is a dedicated page in this repo (`strengths.html`), surfaced via a gated `coach4u-tools` portal tile inside the Your Tools grid (existing-client only).
+- **Global Resources** (`resources.html`) is still in the repo as a directory page for the free tools, but the dashboard links to each tool directly now.
 - **No app data lives here.** Auth + portal lookup happen here; everything else lives in the sub-portal apps.
 - Installable as a PWA (manifest, service worker, apple-touch icon).
 
@@ -63,6 +64,7 @@ A portal is **active** if its slug is in `client_access` for the user. Otherwise
 | `relationship` | https://cathcoach4u.github.io/yourrelationshipcoach/ |
 | `thrivehq` | https://cathcoach4u.github.io/yourthrivehqcoach/ |
 | `strengths` | https://cathcoach4u.github.io/yourstrengthscoach/ |
+| `coach4u-tools` | `strengths.html` (relative — opens the in-repo Strengths Hub) |
 | `career` | null (not built yet) |
 | `it` | null (not built yet) |
 
@@ -88,6 +90,7 @@ Only icons live in code (the `ICONS` object in `index.html`). The Open URL comes
 | `thrivehq` | ⚡ |
 | `career` | 🎯 |
 | `strengths` | 💪 |
+| `coach4u-tools` | 💪 |
 | `it` | 💻 |
 
 ---
@@ -130,10 +133,11 @@ These have been deliberately removed or set. Don't change unless asked.
 
 The portal content area (`#portalWrap`) renders these in order after the welcome banner:
 
-1. **Hub cards row** (`.hub-cards-row`) — two side-by-side anchor links (`<a class="hub-card">`):
-   - **Your Strengths Hub** → `strengths.html` (💪)
-   - **Your Access to Global Resources** → `resources.html` (🌐)
-2. **Your Tools** (`#activeSection`) — collapsible toggle, **expanded by default** (chevron starts `.open`). Sub-label shows active portal count, e.g. "3 active portals". Content: active portal cards (`#activePortals`) then a tucked "Also Available" sub-section (`#lockedSection`) for locked portals.
+1. **Free resources row** (`.free-resources-row`) — three anchor links (`<a class="free-resource-card">`), no heading. Visible to every signed-in user:
+   - **Feelings Chart** → `resources/feelings-chart.html` (💗)
+   - **SMART Goal Builder** → `resources/smart-goal.html` (🎯)
+   - **Issue Clarifier** → `resources/issue-clarifier.html` (🧭)
+2. **Your Tools** (`#activeSection`) — collapsible toggle, **expanded by default** (chevron starts `.open`). Sub-label shows active portal count, e.g. "3 active portals". Content: active portal cards (`#activePortals`) then a tucked "Also Available" sub-section (`#lockedSection`) for locked portals. The Strengths Hub appears here as the gated `coach4u-tools` tile (`name`: "Your Coach4U Tools", `url`: `strengths.html`) for clients with a matching `client_access` row.
 
 Toggle function: `toggleSection(bodyId, chevronId)` — flips `display` and toggles the `.open` class on the chevron.
 
@@ -201,6 +205,7 @@ Run in numerical order in the Supabase **SQL Editor** (Dashboard → project `ee
 | `003_create_client_strengths.sql` | Creates `client_strengths` (user_id, rank, theme) with RLS so each client reads only their own rows. |
 | `004_set_strengths_url.sql` | Points the `strengths` portal at `https://cathcoach4u.github.io/yourstrengthscoach/`. |
 | `005_update_portal_urls_v2.sql` | Repoints business, team, marketing, relationship, thrivehq at renamed repos (`yourbusinesscoach`, `yourteamcoach`, etc.). |
+| `006_add_coach4u_tools_portal.sql` | Adds the `coach4u-tools` portal row pointing at `strengths.html` so the Strengths Hub renders as a gated tile in the Your Tools grid. |
 
 Add new migrations as `NNN_what_it_does.sql`, numbered next, idempotent.
 
