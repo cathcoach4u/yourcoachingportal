@@ -125,7 +125,7 @@ Note: the `coaching-portal` row was deleted from the `portals` table — it was 
 
 ### Reset password redirect
 
-`RESET_REDIRECT` in `index.html` points at the dashboard repo's `auth.html`. Update it there if the auth handler ever moves.
+`RESET_REDIRECT` in `index.html` points at `https://cathcoach4u.github.io/yourcoachingportal/index.html`. This explicit override is kept in code because the Supabase project is shared across multiple apps — without it, Supabase would use the project-level Site URL which may point elsewhere. Ensure this URL is also listed in Supabase → **Authentication → URL Configuration → Redirect URLs**; Supabase will reject the redirect if it isn't. Update the constant if the post-reset landing page ever changes.
 
 ---
 
@@ -180,6 +180,13 @@ These have been deliberately removed or set. Don't change unless asked.
 - The header has no signed-in user name on the right — just the Sign Out button. The welcome banner is the sole greeting.
 - All PWA references (`manifest.json`, `icon.svg`, `sw.js`) use **relative** paths — no `/yourcoachingportal/...` prefix.
 - Dashboard layout uses **collapsible panels** (see below) — do not revert to a flat always-visible card dump.
+- **`body` has no `display: flex` / `flex-direction: column`**. Sticky footer is achieved via `footer { position: sticky; top: 100vh }`. Login and loading panels use `min-height: calc(100vh - 120px)` for vertical centering.
+- **Welcome banner gradient is navy → teal**: `linear-gradient(135deg, #003366 0%, #0D9488 100%)`. Do not revert to all-navy (`#005599` as the end stop).
+- **Free resource card borders are teal `#0D9488` at rest** — do not revert to grey `#eee`.
+- **Card icon background is `rgba(13,148,136,0.1)`** — do not hardcode `#e6f4f1`.
+- **Sign-out button class is `.sign-out-btn`** (not `.logout-btn`).
+- **Portal card grid class is `.app-grid`** (not `.cards-grid`).
+- **Section toggle icons use `.section-toggle-icon`** class — no inline `style="font-size:20px"` on the emoji spans.
 
 ### Security invariants (don't regress)
 
@@ -356,6 +363,14 @@ I sometimes paste a full `index.html` from a base draft that doesn't include rec
 - Collapsible section toggle structure (`.section-toggle`, `.section-body`, `toggleSection()`).
 - Strengths fetched async and decoupled from portal render.
 - `VERSION` const and `hardRefresh()` in footer.
+- No `display: flex; flex-direction: column` on `body` — footer uses `position: sticky; top: 100vh`.
+- Welcome banner gradient ends in `#0D9488` teal, not `#005599`.
+- Free resource card border is `#0D9488` at rest, not `#eee`.
+- Card icon background is `rgba(13,148,136,0.1)`, not `#e6f4f1`.
+- Sign-out button class is `.sign-out-btn`, not `.logout-btn`.
+- Portal card grid class is `.app-grid`, not `.cards-grid`.
+- Section toggle icons use class `.section-toggle-icon`, not inline `style="font-size:20px"`.
+- `RESET_REDIRECT` points at `https://cathcoach4u.github.io/yourcoachingportal/index.html`.
 
 If the new paste's only differences are regressions, say so — don't apply it.
 
