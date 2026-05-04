@@ -106,7 +106,7 @@ A portal is **active** if its slug is in `client_access` for the user. Otherwise
 - Function-side env vars are configured in the Supabase Dashboard (Project Settings → Edge Functions → Secrets). The function source must reference the secrets by their **exact** names. Mismatched names make the outbound call to the Internal Hub silently hang (no error, just times out). If a future invocation hangs, check Supabase logs for `reason: EarlyDrop` with very low `cpu_time_used` (e.g. 11ms) — that's the signature.
 - Used by `coach4u-tools/coaching-admin.html`. 10-second AbortController + graceful fallback pattern — a failing function shows a friendly error state, not a broken page.
 
-### Confirmed portal URLs (as at 2026-05-02)
+### Confirmed portal URLs (as at 2026-05-04)
 
 | Slug | URL |
 |---|---|
@@ -119,7 +119,7 @@ A portal is **active** if its slug is in `client_access` for the user. Otherwise
 | `strengths` | https://cathcoach4u.github.io/yourstrengthscoach/ |
 | `coach4u-tools` | `coach4u-tools.html` (relative — opens the in-repo Coach4U Tools landing) |
 | `career` | null (not built yet) |
-| `it` | null (not built yet) |
+| `it` | https://cathcoach4u.github.io/YourITEfficiencyCoach/ |
 
 Note: the `coaching-portal` row was deleted from the `portals` table — it was appearing as its own tile.
 
@@ -299,6 +299,7 @@ Run in numerical order in the Supabase **SQL Editor** (Dashboard → project `ee
 | `005_update_portal_urls_v2.sql` | Repoints business, team, marketing, relationship, thrivehq at renamed repos (`yourbusinesscoach`, `yourteamcoach`, etc.). |
 | `006_add_coach4u_tools_portal.sql` | Adds the `coach4u-tools` portal row (originally pointing at `strengths.html`, now `coach4u-tools.html` via 007). |
 | `007_rename_coach4u_tools_url.sql` | Repoints the `coach4u-tools` portal `url` from `strengths.html` to `coach4u-tools.html` after the file was renamed. |
+| `008_set_it_portal_url.sql` | Sets the `it` portal URL to `https://cathcoach4u.github.io/YourITEfficiencyCoach/`. |
 
 Add new migrations as `NNN_what_it_does.sql`, numbered next, idempotent.
 
