@@ -53,6 +53,13 @@
       border-radius: 8px; font-size: 16px; font-family: inherit; transition: border-color 0.2s;
     }
     .form-group input:focus { outline: none; border-color: #0D9488; }
+    .password-wrapper { position: relative; }
+    .toggle-password {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: #999;
+      font-size: 13px; padding: 4px; font-family: inherit;
+    }
+    .toggle-password:hover { color: #0D9488; }
     .btn-primary {
       background: #003366; color: white; padding: 13px; border: none;
       border-radius: 8px; font-size: 15px; font-weight: 700; font-family: inherit;
@@ -183,20 +190,22 @@
     <div class="login-box">
       <div class="login-logo">4U</div>
       <p class="login-sub">Sign in to access your coaching tools</p>
-      <div id="loginForm">
+      <form id="loginForm" onsubmit="handleLogin(event)">
         <div class="form-group">
           <label>Email</label>
           <input type="email" id="loginEmail" placeholder="you@email.com" autocomplete="email">
         </div>
         <div class="form-group">
           <label>Password</label>
-          <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"
-            onkeydown="if(event.key==='Enter')login()">
+          <div class="password-wrapper">
+            <input type="password" id="loginPassword" placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;" autocomplete="current-password">
+            <button type="button" class="toggle-password" id="toggleLoginPw">Show</button>
+          </div>
         </div>
         <a class="forgot-link" onclick="showForgot()">Forgot password?</a>
-        <button class="btn-primary" id="loginBtn" onclick="login()">Sign In</button>
+        <button type="submit" class="btn-primary" id="loginBtn">Sign In</button>
         <div class="msg error" id="loginError" style="display:none"></div>
-      </div>
+      </form>
       <div id="forgotForm" style="display:none">
         <div class="form-group">
           <label>Your email address</label>
@@ -205,7 +214,7 @@
         </div>
         <button class="btn-primary" id="resetBtn" onclick="sendReset()">Send Reset Link</button>
         <div class="msg" id="forgotMsg" style="display:none"></div>
-        <a class="back-link" onclick="showLogin()">← Back to sign in</a>
+        <a class="back-link" onclick="showLogin()">&#8592; Back to sign in</a>
       </div>
     </div>
   </div>
@@ -218,17 +227,17 @@
       </div>
       <div class="free-resources-row">
         <a class="free-resource-card" href="resources/feelings-chart.html">
-          <span class="free-resource-icon">💗</span>
+          <span class="free-resource-icon">&#x1F497;</span>
           <span class="free-resource-label">Feelings Chart</span>
           <span class="free-resource-sub">Name what you feel, step by step</span>
         </a>
         <a class="free-resource-card" href="resources/smart-goal.html">
-          <span class="free-resource-icon">🎯</span>
+          <span class="free-resource-icon">&#x1F3AF;</span>
           <span class="free-resource-label">SMART Goal Builder</span>
           <span class="free-resource-sub">Shape a goal you can act on</span>
         </a>
         <a class="free-resource-card" href="resources/issue-clarifier.html">
-          <span class="free-resource-icon">🧭</span>
+          <span class="free-resource-icon">&#x1F9ED;</span>
           <span class="free-resource-label">Issue Clarifier</span>
           <span class="free-resource-sub">Find the core issue and a next step</span>
         </a>
@@ -237,13 +246,13 @@
       <div class="section-wrap" id="coach4uSection" style="display:none">
         <button class="section-toggle" onclick="toggleSection('coach4uBody','coach4uChevron')">
           <div class="section-toggle-inner">
-            <span class="section-toggle-icon">⭐</span>
+            <span class="section-toggle-icon">&#x2B50;</span>
             <div>
               <div class="section-toggle-label">Your Coach4U Tools</div>
               <div class="section-toggle-sub">Your curated coaching content</div>
             </div>
           </div>
-          <span class="toggle-chevron open" id="coach4uChevron">▼</span>
+          <span class="toggle-chevron open" id="coach4uChevron">&#x25BC;</span>
         </button>
         <div class="section-body" id="coach4uBody">
           <div class="app-grid" id="coach4uPortals"></div>
@@ -253,13 +262,13 @@
       <div class="section-wrap" id="activeSection">
         <button class="section-toggle" onclick="toggleSection('toolsBody','toolsChevron')">
           <div class="section-toggle-inner">
-            <span class="section-toggle-icon">🔧</span>
+            <span class="section-toggle-icon">&#x1F527;</span>
             <div>
               <div class="section-toggle-label">Your Tools</div>
               <div class="section-toggle-sub" id="toolsSubLabel">Your active coaching portals</div>
             </div>
           </div>
-          <span class="toggle-chevron open" id="toolsChevron">▼</span>
+          <span class="toggle-chevron open" id="toolsChevron">&#x25BC;</span>
         </button>
         <div class="section-body" id="toolsBody">
           <div class="app-grid" id="activePortals"></div>
@@ -280,13 +289,13 @@
     <a href="https://coach4u.com.au" target="_blank">coach4u.com.au</a> &nbsp;|&nbsp; Strengths-Based Coaching and Counselling
     <div class="version-row">
       <span>v<span id="versionText"></span></span>
-      <span>·</span>
+      <span>&middot;</span>
       <a class="hard-refresh" onclick="hardRefresh()">Hard refresh</a>
     </div>
   </footer>
 
   <script>
-    const VERSION = '2026-05-04.29'
+    const VERSION = '2026-05-05.30'
     document.getElementById('versionText').textContent = VERSION
 
     async function hardRefresh() {
@@ -306,7 +315,7 @@
 
     const SUPABASE_URL  = 'https://eekefsuaefgpqmjdyniy.supabase.co'
     const SUPABASE_ANON = 'sb_publishable_pcXHwQVMpvEojb4K3afEMw_RMvgZM-Y'
-    const RESET_REDIRECT = 'https://cathcoach4u.github.io/yourcoachingportal/index.html'
+    const RESET_REDIRECT = 'https://cathcoach4u.github.io/yourcoachingportal/reset-password.html'
 
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
 
@@ -330,7 +339,15 @@
       if (chevron) chevron.classList.toggle('open', !isOpen)
     }
 
-    async function login() {
+    document.getElementById('toggleLoginPw').addEventListener('click', () => {
+      const pw  = document.getElementById('loginPassword')
+      const btn = document.getElementById('toggleLoginPw')
+      if (pw.type === 'password') { pw.type = 'text'; btn.textContent = 'Hide' }
+      else { pw.type = 'password'; btn.textContent = 'Show' }
+    })
+
+    async function handleLogin(event) {
+      event.preventDefault()
       const email    = document.getElementById('loginEmail').value.trim()
       const password = document.getElementById('loginPassword').value
       const errEl    = document.getElementById('loginError')
