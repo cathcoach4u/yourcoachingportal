@@ -33,20 +33,30 @@
     }
     .sign-out-btn:hover { background: rgba(255,255,255,0.25); }
     .login-wrap {
-      min-height: calc(100vh - 120px); display: flex; align-items: center; justify-content: center; padding: 24px 16px;
+      background: linear-gradient(135deg, #003366 0%, #0D9488 100%);
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 20px;
     }
     .login-box {
-      background: white; border-radius: 14px; padding: 36px 28px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.1); width: 100%; max-width: 400px;
+      background: white; border-radius: 12px; padding: 32px 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 380px;
     }
     .login-logo { text-align: center; margin-bottom: 20px; }
-    .login-logo h1 { font-size: 24px; font-weight: 700; color: #003366; letter-spacing: -0.5px; }
-    .login-sub { font-size: 13px; color: #999; margin-bottom: 28px; }
+    .login-logo img { height: 48px; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
+    .login-logo h1 { font-size: 22px; font-weight: 700; color: #003366; letter-spacing: -0.5px; }
+    .login-sub { font-size: 13px; color: #999; margin-bottom: 24px; text-align: center; line-height: 1.5; }
+    .login-contact {
+      margin-top: 20px; font-size: 9pt; color: rgba(255,255,255,0.75);
+      text-align: center; line-height: 1.6;
+    }
+    .login-contact a { color: rgba(255,255,255,0.75); text-decoration: none; }
+    .login-contact a:hover { text-decoration: underline; }
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; }
     .form-group input {
-      width: 100%; padding: 11px 13px; border: 1.5px solid #e0e0e0;
-      border-radius: 8px; font-size: 16px; font-family: inherit; transition: border-color 0.2s;
+      width: 100%; padding: 10px 12px; border: 1px solid #ddd;
+      border-radius: 6px; font-size: 16px; font-family: inherit; transition: border-color 0.2s;
     }
     .form-group input:focus { outline: none; border-color: #0D9488; }
     .password-wrapper { position: relative; }
@@ -57,21 +67,21 @@
     }
     .toggle-password:hover { color: #0D9488; }
     .btn-primary {
-      background: #003366; color: white; padding: 13px; border: none;
-      border-radius: 8px; font-size: 15px; font-weight: 700; font-family: inherit;
+      background: #003366; color: white; padding: 12px 20px; border: none;
+      border-radius: 6px; font-size: 15px; font-weight: 600; font-family: inherit;
       cursor: pointer; width: 100%; transition: background 0.2s; margin-top: 4px;
     }
     .btn-primary:hover { background: #002244; }
-    .btn-primary:disabled { background: #aaa; cursor: not-allowed; }
+    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
     .forgot-link {
-      display: block; text-align: right; font-size: 12px; color: #0D9488;
-      margin-top: -8px; margin-bottom: 16px; cursor: pointer;
+      display: block; text-align: center; font-size: 13px; color: #0D9488;
+      margin-top: 14px; cursor: pointer; font-weight: 500;
     }
     .forgot-link:hover { text-decoration: underline; }
-    .msg { font-size: 13px; margin-top: 14px; text-align: center; line-height: 1.5; padding: 10px; border-radius: 6px; }
-    .msg.error { color: #c62828; background: #fff0f0; }
-    .msg.success { color: #0D9488; background: #e6f4f1; }
-    .back-link { display: block; text-align: center; margin-top: 16px; font-size: 13px; color: #0D9488; cursor: pointer; }
+    .msg { font-size: 13px; margin-top: 12px; padding: 10px 14px; border-radius: 6px; line-height: 1.5; }
+    .msg.error { color: #721c24; background: #f8d7da; }
+    .msg.success { color: #155724; background: #d4edda; }
+    .back-link { display: block; text-align: center; margin-top: 14px; font-size: 13px; color: #0D9488; cursor: pointer; font-weight: 500; }
     .back-link:hover { text-decoration: underline; }
     .portal-content { padding: 24px 16px; max-width: 1100px; margin: 0 auto; width: 100%; }
     .welcome-banner {
@@ -156,12 +166,10 @@
       margin-top: 6px; font-size: 11px; color: #ccc;
       display: flex; justify-content: center; gap: 10px; align-items: center;
     }
-    .hard-refresh {
-      cursor: pointer; color: #0D9488; text-decoration: none;
-    }
+    .hard-refresh { cursor: pointer; color: #0D9488; text-decoration: none; }
     .hard-refresh:hover { text-decoration: underline; }
     @media (max-width: 480px) {
-      .login-box { padding: 28px 20px; }
+      .login-box { padding: 28px 18px; }
       .welcome-banner h1 { font-size: 18px; }
       .app-grid { grid-template-columns: 1fr 1fr; }
       .free-resources-row { grid-template-columns: 1fr; gap: 10px; }
@@ -173,18 +181,21 @@
   </style>
 </head>
 <body>
-  <header>
+  <header id="siteHeader">
     <div>
       <div class="header-title">Your Coaching Portal</div>
     </div>
     <div class="header-right">
-      <button class="sign-out-btn" id="logoutBtn" style="display:none" onclick="logout()">Sign Out</button>
+      <button class="sign-out-btn" id="logoutBtn" onclick="logout()">Sign Out</button>
     </div>
   </header>
 
   <div id="loginWrap" class="login-wrap" style="display:none">
     <div class="login-box">
-      <div class="login-logo"><h1>Your Coaching Portal</h1></div>
+      <div class="login-logo">
+        <img src="Assets/COACH4U%20(Final).jpg" alt="Coach4U">
+        <h1>Your Coaching Portal</h1>
+      </div>
       <p class="login-sub">Sign in to access your coaching tools</p>
       <form id="loginForm" onsubmit="handleLogin(event)">
         <div class="form-group">
@@ -198,12 +209,12 @@
             <button type="button" class="toggle-password" id="toggleLoginPw">Show</button>
           </div>
         </div>
-        <a class="forgot-link" onclick="showForgot()">Forgot password?</a>
         <button type="submit" class="btn-primary" id="loginBtn">Sign In</button>
         <div class="msg error" id="loginError" style="display:none"></div>
       </form>
+      <a class="forgot-link" onclick="showForgot()">Forgot password?</a>
       <div id="forgotForm" style="display:none">
-        <div class="form-group">
+        <div class="form-group" style="margin-top:16px">
           <label>Your email address</label>
           <input type="email" id="forgotEmail" placeholder="you@email.com" autocomplete="email"
             onkeydown="if(event.key==='Enter')sendReset()">
@@ -213,6 +224,12 @@
         <a class="back-link" onclick="showLogin()">&#8592; Back to sign in</a>
       </div>
     </div>
+    <p class="login-contact">
+      Strengths-Based Coaching and Counselling<br>
+      <a href="http://www.coach4u.com.au">www.coach4u.com.au</a> &nbsp;|&nbsp;
+      <a href="mailto:cath@coach4u.com.au">cath@coach4u.com.au</a> &nbsp;|&nbsp;
+      0402 313 337
+    </p>
   </div>
 
   <div id="portalWrap" style="display:none">
@@ -277,11 +294,11 @@
     </div>
   </div>
 
-  <div id="loadingWrap" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 120px);color:#aaa;font-size:15px">
+  <div id="loadingWrap" style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#aaa;font-size:15px">
     Loading&hellip;
   </div>
 
-  <footer>
+  <footer id="siteFooter">
     <a href="https://coach4u.com.au" target="_blank">coach4u.com.au</a> &nbsp;|&nbsp; Strengths-Based Coaching and Counselling
     <div class="version-row">
       <span>v<span id="versionText"></span></span>
@@ -291,8 +308,12 @@
   </footer>
 
   <script>
-    const VERSION = '2026-05-05.31'
+    const VERSION = '2026-05-05.33'
     document.getElementById('versionText').textContent = VERSION
+
+    // Hide chrome until auth state is known
+    document.getElementById('siteHeader').style.display = 'none'
+    document.getElementById('siteFooter').style.display = 'none'
 
     async function hardRefresh() {
       try {
@@ -323,8 +344,6 @@
       'coach4u-tools': '💪',
     }
 
-    // Slugs that render in the "Your Coach4U Tools" section above Your Tools
-    // instead of in the regular sub-portal grid.
     const COACH4U_SLUGS = new Set(['coach4u-tools'])
 
     function toggleSection(bodyId, chevronId) {
@@ -372,6 +391,7 @@
 
     function showForgot() {
       document.getElementById('loginForm').style.display = 'none'
+      document.getElementById('loginWrap').querySelector('.forgot-link').style.display = 'none'
       document.getElementById('forgotForm').style.display = 'block'
       const email = document.getElementById('loginEmail').value
       if (email) document.getElementById('forgotEmail').value = email
@@ -380,6 +400,7 @@
     function showLogin() {
       document.getElementById('forgotForm').style.display = 'none'
       document.getElementById('loginForm').style.display = 'block'
+      document.getElementById('loginWrap').querySelector('.forgot-link').style.display = 'block'
     }
 
     function showMsg(el, text, type) {
@@ -391,7 +412,8 @@
       document.getElementById('loadingWrap').style.display = 'none'
       document.getElementById('loginWrap').style.display   = 'none'
       document.getElementById('portalWrap').style.display  = 'block'
-      document.getElementById('logoutBtn').style.display   = 'block'
+      document.getElementById('siteHeader').style.display  = ''
+      document.getElementById('siteFooter').style.display  = ''
       const displayName = user.user_metadata?.name || user.email.split('@')[0]
       document.getElementById('welcomeHeading').textContent = `Welcome, ${displayName}`
 
@@ -467,7 +489,8 @@
       } else if (event === 'SIGNED_OUT') {
         document.getElementById('loadingWrap').style.display = 'none'
         document.getElementById('portalWrap').style.display  = 'none'
-        document.getElementById('logoutBtn').style.display   = 'none'
+        document.getElementById('siteHeader').style.display  = 'none'
+        document.getElementById('siteFooter').style.display  = 'none'
         document.getElementById('loginWrap').style.display   = 'flex'
       }
     })
