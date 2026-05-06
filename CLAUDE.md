@@ -7,7 +7,7 @@ Sub-portals (business, team, marketing, etc.) live in their own GitHub Pages rep
 - **Live site:** https://cathcoach4u.github.io/yourcoachingportal/
 - **Repo:** `cathcoach4u/yourcoachingportal`
 - **Long-lived branch:** `main` (push triggers GitHub Pages deploy)
-- **Current version stamp:** `2026-05-02.28` (bump `VERSION` const in `index.html` on every push)
+- **Current version stamp:** `2026-05-05.33` (bump `VERSION` const in `index.html` on every push)
 
 ---
 
@@ -34,7 +34,7 @@ Both stylesheets are copied from `coach4u-shared`. Each app owns its own local c
 
 **Owned here (change in this repo):**
 
-- Login flow, password reset, dashboard layout (`index.html`).
+- Login flow, password reset, dashboard layout (`index.html`, `reset-password.html`).
 - **Strengths Hub** landing (`coach4u-tools.html`) and the **CliftonStrengths** sub-page (`coach4u-tools/strengths-clifton.html`) — including the `THEME_INFO` content for all 34 themes, domain mapping, and Edge Function call.
 - All **free resources** under `resources/` (Feelings Chart, SMART Goal Builder, Issue Clarifier) and the directory page `resources.html`.
 - PWA assets (`manifest.json`, `sw.js`, `icon.svg`).
@@ -106,7 +106,7 @@ A portal is **active** if its slug is in `client_access` for the user. Otherwise
 - Function-side env vars are configured in the Supabase Dashboard (Project Settings → Edge Functions → Secrets). The function source must reference the secrets by their **exact** names. Mismatched names make the outbound call to the Internal Hub silently hang (no error, just times out). If a future invocation hangs, check Supabase logs for `reason: EarlyDrop` with very low `cpu_time_used` (e.g. 11ms) — that's the signature.
 - Used by `coach4u-tools/coaching-admin.html`. 10-second AbortController + graceful fallback pattern — a failing function shows a friendly error state, not a broken page.
 
-### Confirmed portal URLs (as at 2026-05-04)
+### Confirmed portal URLs (as at 2026-05-05)
 
 | Slug | URL |
 |---|---|
@@ -125,7 +125,17 @@ Note: the `coaching-portal` row was deleted from the `portals` table — it was 
 
 ### Reset password redirect
 
-`RESET_REDIRECT` in `index.html` points at `https://cathcoach4u.github.io/yourcoachingportal/index.html`. This explicit override is kept in code because the Supabase project is shared across multiple apps — without it, Supabase would use the project-level Site URL which may point elsewhere. Ensure this URL is also listed in Supabase → **Authentication → URL Configuration → Redirect URLs**; Supabase will reject the redirect if it isn't. Update the constant if the post-reset landing page ever changes.
+`RESET_REDIRECT` in `index.html` points at `https://cathcoach4u.github.io/yourcoachingportal/reset-password.html`. Password reset emails send the user to the dedicated `reset-password.html` page, which handles the `PASSWORD_RECOVERY` auth event and calls `sb.auth.updateUser({ password })` before redirecting back to `index.html`. This explicit override is kept in code because the Supabase project is shared across multiple apps — without it, Supabase would use the project-level Site URL which may point elsewhere. Ensure this URL is also listed in Supabase → **Authentication → URL Configuration → Redirect URLs**; Supabase will reject the redirect if it isn't. Update the constant if the post-reset landing page ever changes.
+
+---
+
+## Brand assets
+
+| Asset | Use |
+|-------|-----|
+| `Assets/COACH4U (Final).jpg` | Login logo — displayed on `index.html` login view and `reset-password.html` |
+
+Reference as `Assets/COACH4U%20(Final).jpg` in HTML `src` attributes (URL-encoded space). Display at `height: 48px`, centred, with `margin-bottom: 10px`, above the `<h1>` heading inside `.login-logo`.
 
 ---
 
@@ -180,7 +190,11 @@ These have been deliberately removed or set. Don't change unless asked.
 - The header has no signed-in user name on the right — just the Sign Out button. The welcome banner is the sole greeting.
 - All PWA references (`manifest.json`, `icon.svg`, `sw.js`) use **relative** paths — no `/yourcoachingportal/...` prefix.
 - Dashboard layout uses **collapsible panels** (see below) — do not revert to a flat always-visible card dump.
-- **`body` has no `display: flex` / `flex-direction: column`**. Sticky footer is achieved via `footer { position: sticky; top: 100vh }`. Login and loading panels use `min-height: calc(100vh - 120px)` for vertical centering.
+- **`body` has no `display: flex` / `flex-direction: column`**. Sticky footer is achieved via `footer { position: sticky; top: 100vh }`. Login and loading panels use `min-height: 100vh` for vertical centering.
+- **Login page uses full-page gradient.** `.login-wrap` has `background: linear-gradient(135deg, #003366 0%, #0D9488 100%); min-height: 100vh; display: flex; flex-direction: column`. Do not revert to `min-height: calc(100vh - 120px)` or remove the gradient.
+- **Header and footer are hidden on load** (`siteHeader` and `siteFooter` set to `display:none` immediately on script execution) and restored inside `loadPortal()`. Do not make them always-visible or rely on `logoutBtn` visibility toggling instead.
+- **Login logo is `Assets/COACH4U%20(Final).jpg`** (`height: 48px`, centred, `margin-bottom: 10px`) above the `<h1>` inside `.login-logo`. Do not revert to the `4U` CSS box or `C4U.png`.
+- **Contact info (`.login-contact`) sits below `.login-box`** inside `.login-wrap`, on the gradient — not inside the card.
 - **Welcome banner gradient is navy → teal**: `linear-gradient(135deg, #003366 0%, #0D9488 100%)`. Do not revert to all-navy (`#005599` as the end stop).
 - **Free resource card borders are teal `#0D9488` at rest** — do not revert to grey `#eee`.
 - **Card icon background is `rgba(13,148,136,0.1)`** — do not hardcode `#e6f4f1`.
@@ -238,7 +252,7 @@ Tools under `resources/` use the **activity design system** — `css/activity.cs
 1. Create `resources/<slug>.html`. Use the **activity design system**: `<body class="activity-page">`, link Google Fonts + `../css/activity.css`, use `act-*` CSS classes. Add a small page-specific `<style>` block only for components not covered by `activity.css`. Add a `← Back to Coaching Portal` link using `.act-back-link` at the top.
 2. Add a matching `<a class="resource-card">` to `resources.html` (icon, title, description, link arrow).
 3. Update `sw.js` `ASSETS` list to include the new file path.
-4. Bump `sw.js` `CACHE` version (e.g. `coaching-portal-v5`) so old caches clear on next visit.
+4. Bump `sw.js` `CACHE` version (currently `coaching-portal-v17`) so old caches clear on next visit.
 5. Bump `VERSION` in `index.html` and push to `main`.
 
 ### Adding a new Coach4U Tool (deep page under the Coach4U Tools landing)
@@ -259,6 +273,7 @@ Convention: every Coach4U-built deep page lives at `coach4u-tools/<slug>.html` s
 ```
 yourcoachingportal/
 ├── index.html                login + dashboard (free resources row + Coach4U Tools + Your Tools)
+├── reset-password.html       standalone password-reset page (handles PASSWORD_RECOVERY auth event)
 ├── coach4u-tools.html        Coach4U Tools landing — boxes for each Coach4U-built tool
 ├── coach4u-tools/            deep pages for each Coach4U-built tool
 │   ├── strengths-clifton.html  CliftonStrengths content (Domain Mix + Top 10 + 2 reports)
@@ -271,8 +286,10 @@ yourcoachingportal/
 │   ├── feelings-chart.html   4-step feelings chart (activity design system)
 │   ├── smart-goal.html       5-step SMART goal builder (activity design system)
 │   └── issue-clarifier.html  5-step issue clarifier (activity design system)
+├── Assets/
+│   └── COACH4U (Final).jpg   Login page logo (48px height, centred)
 ├── manifest.json             PWA manifest (start_url and scope are "./" — path-agnostic)
-├── sw.js                     service worker (caches all HTML pages, ignores Supabase calls)
+├── sw.js                     service worker (cache: coaching-portal-v17; caches all HTML pages, ignores Supabase calls)
 ├── icon.svg                  PWA / apple-touch icon (4U on teal #0D9488, 512×512)
 ├── migrations/               one-off SQL run in the Supabase SQL editor (numbered, idempotent)
 ├── CLAUDE.md                 this file
@@ -282,7 +299,7 @@ yourcoachingportal/
 
 Dashboard pages (`index.html`, `coach4u-tools.html`, etc.) have their own inline `<style>` and `<script>` — no shared CSS for these by design (no bundler, no ES modules — GitHub Pages serves ES modules unreliably for this account). Activity pages under `resources/` use the shared `css/activity.css` stylesheet.
 
-When adding new HTML pages, update `sw.js` ASSETS list and bump the `CACHE` version (e.g. `coaching-portal-v3`) so old caches clear on next visit.
+When adding new HTML pages, update `sw.js` ASSETS list and bump the `CACHE` version (currently `coaching-portal-v17`) so old caches clear on next visit.
 
 ---
 
@@ -371,7 +388,9 @@ I sometimes paste a full `index.html` from a base draft that doesn't include rec
 - Sign-out button class is `.sign-out-btn`, not `.logout-btn`.
 - Portal card grid class is `.app-grid`, not `.cards-grid`.
 - Section toggle icons use class `.section-toggle-icon`, not inline `style="font-size:20px"`.
-- `RESET_REDIRECT` points at `https://cathcoach4u.github.io/yourcoachingportal/index.html`.
+- `RESET_REDIRECT` points at `https://cathcoach4u.github.io/yourcoachingportal/reset-password.html`.
+- Login page has full-page gradient on `.login-wrap`, logo `Assets/COACH4U%20(Final).jpg`, header/footer hidden on load.
+- `siteHeader` and `siteFooter` IDs exist on the `<header>` and `<footer>` elements.
 
 If the new paste's only differences are regressions, say so — don't apply it.
 
