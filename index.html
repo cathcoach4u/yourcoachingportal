@@ -308,7 +308,7 @@
   </footer>
 
   <script>
-    const VERSION = '2026-05-05.33'
+    const VERSION = '2026-05-06.1'
     document.getElementById('versionText').textContent = VERSION
 
     // Hide chrome until auth state is known
@@ -484,7 +484,10 @@
     }
 
     sb.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
+      if (event === 'PASSWORD_RECOVERY') {
+        // Recovery token landed here — send to the dedicated reset page
+        window.location.replace('reset-password.html')
+      } else if (event === 'SIGNED_IN' && session) {
         loadPortal(session)
       } else if (event === 'SIGNED_OUT') {
         document.getElementById('loadingWrap').style.display = 'none'
