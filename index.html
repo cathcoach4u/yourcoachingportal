@@ -308,7 +308,7 @@
   </footer>
 
   <script>
-    const VERSION = '2026-05-05.33'
+    const VERSION = '2026-05-12.1'
     document.getElementById('versionText').textContent = VERSION
 
     // Hide chrome until auth state is known
@@ -336,7 +336,7 @@
 
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
 
-    // Icons by slug — only thing still in code
+    // Icons by slug
     const ICONS = {
       'business': '💼', 'team': '👥', 'marketing': '📈',
       'life': '🌱', 'relationship': '❤️', 'thrivehq': '⚡',
@@ -471,7 +471,7 @@
           </div>`
         const url = safePortalUrl(p.url)
         const open = url
-          ? `<a class="btn-open" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Open</a>`
+          ? `<a class="btn-open" href="${escapeHtml(url)}">Open</a>`
           : `<span class="btn-open" style="opacity:0.6;cursor:not-allowed" aria-disabled="true">Open</span>`
         return `
           <div class="portal-card">
