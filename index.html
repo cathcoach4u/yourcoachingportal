@@ -262,7 +262,6 @@
             <span class="section-toggle-icon">&#x1F527;</span>
             <div>
               <div class="section-toggle-label">Your Tools</div>
-              <div class="section-toggle-sub" id="toolsSubLabel">Your active coaching portals</div>
             </div>
           </div>
           <span class="toggle-chevron open" id="toolsChevron">&#x25BC;</span>
@@ -292,7 +291,7 @@
   </footer>
 
   <script>
-    const VERSION = '2026-05-14.1'
+    const VERSION = '2026-05-14.2'
     document.getElementById('versionText').textContent = VERSION
 
     // Hide chrome until auth state is known
@@ -418,10 +417,6 @@
       renderPortals(locked, 'lockedPortals', true)
       document.getElementById('activeSection').style.display = 'block'
       document.getElementById('lockedSection').style.display = locked.length ? 'block' : 'none'
-      const toolsLabel = document.getElementById('toolsSubLabel')
-      if (toolsLabel) toolsLabel.textContent = allActive.length
-        ? `${allActive.length} active portal${allActive.length !== 1 ? 's' : ''}`
-        : 'Your active coaching portals'
     }
 
     function escapeHtml(s) {
