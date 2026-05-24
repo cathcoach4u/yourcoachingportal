@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Strengths Hub | Your Coaching Portal</title>
+  <title>Coach4U Tools | Your Coaching Portal</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#003366">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -63,6 +63,11 @@
     .hub-tile-title { font-size: 17px; font-weight: 700; color: #003366; margin-bottom: 6px; }
     .hub-tile-desc { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 14px; flex-grow: 1; }
     .hub-tile-arrow { font-size: 13px; font-weight: 700; color: #0D9488; align-self: flex-start; margin-top: auto; }
+    .section-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px;
+      color: #0D9488; margin-bottom: 12px;
+    }
+    .section-group { margin-bottom: 28px; }
     footer {
       text-align: center; padding: 20px 16px; font-size: 12px; color: #bbb;
       border-top: 1px solid #eee; background: white;
@@ -83,19 +88,49 @@
     <button class="logout-btn" onclick="logout()">Sign Out</button>
   </header>
   <div class="content">
-    <div class="hub-grid">
-      <a class="hub-tile" href="coach4u-tools/strengths-clifton.html">
-        <span class="hub-tile-icon">💪</span>
-        <span class="hub-tile-title">CliftonStrengths</span>
-        <span class="hub-tile-desc">Your Top 10 themes, domain mix, and what each theme means and brings to a team.</span>
-        <span class="hub-tile-arrow">Open →</span>
-      </a>
-      <a class="hub-tile" href="coach4u-tools/coaching-admin.html">
-        <span class="hub-tile-icon">🔗</span>
-        <span class="hub-tile-title">Existing Coaching Admin</span>
-        <span class="hub-tile-desc">Your coaching role, relationship name, and the other members in each of your coaching groups.</span>
-        <span class="hub-tile-arrow">Open →</span>
-      </a>
+    <div class="page-banner">
+      <h1>Coach4U Tools</h1>
+      <p>Your personal coaching tools — built by Coach4U for your journey.</p>
+    </div>
+    <div class="section-group">
+      <div class="section-label">Reflection Tools</div>
+      <div class="hub-grid">
+        <a class="hub-tile" href="resources/feelings-chart.html">
+          <span class="hub-tile-icon">&#x1F497;</span>
+          <span class="hub-tile-title">Feelings Chart</span>
+          <span class="hub-tile-desc">Name what you feel, step by step.</span>
+          <span class="hub-tile-arrow">Open →</span>
+        </a>
+        <a class="hub-tile" href="resources/smart-goal.html">
+          <span class="hub-tile-icon">&#x1F3AF;</span>
+          <span class="hub-tile-title">SMART Goal Builder</span>
+          <span class="hub-tile-desc">Shape a goal you can act on.</span>
+          <span class="hub-tile-arrow">Open →</span>
+        </a>
+        <a class="hub-tile" href="resources/issue-clarifier.html">
+          <span class="hub-tile-icon">&#x1F9ED;</span>
+          <span class="hub-tile-title">Issue Clarifier</span>
+          <span class="hub-tile-desc">Find the core issue and a next step.</span>
+          <span class="hub-tile-arrow">Open →</span>
+        </a>
+      </div>
+    </div>
+    <div class="section-group">
+      <div class="section-label">Coaching Profile</div>
+      <div class="hub-grid">
+        <a class="hub-tile" href="coach4u-tools/strengths-clifton.html">
+          <span class="hub-tile-icon">💪</span>
+          <span class="hub-tile-title">CliftonStrengths</span>
+          <span class="hub-tile-desc">Your Top 10 themes, domain mix, and what each theme means and brings to a team.</span>
+          <span class="hub-tile-arrow">Open →</span>
+        </a>
+        <a class="hub-tile" href="coach4u-tools/coaching-admin.html">
+          <span class="hub-tile-icon">🔗</span>
+          <span class="hub-tile-title">Existing Coaching Admin</span>
+          <span class="hub-tile-desc">Your coaching role, relationship name, and the other members in each of your coaching groups.</span>
+          <span class="hub-tile-arrow">Open →</span>
+        </a>
+      </div>
     </div>
   </div>
   <footer>
