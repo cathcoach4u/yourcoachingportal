@@ -105,20 +105,6 @@
     .toggle-chevron { font-size: 14px; color: #0D9488; transition: transform 0.25s; display: inline-block; }
     .toggle-chevron.open { transform: rotate(180deg); }
     .section-body { padding-top: 16px; }
-    .free-resources-row {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px;
-    }
-    .free-resource-card {
-      background: white; border: 2px solid #0D9488; border-radius: 10px;
-      padding: 20px 18px; font-family: inherit; text-align: left;
-      display: flex; flex-direction: column; gap: 6px;
-      text-decoration: none; color: inherit;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-    }
-    .free-resource-card:hover { border-color: #0D9488; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(13,148,136,0.15); }
-    .free-resource-icon { font-size: 24px; line-height: 1; margin-bottom: 2px; }
-    .free-resource-label { font-size: 15px; font-weight: 700; color: #003366; }
-    .free-resource-sub { font-size: 11px; color: #999; line-height: 1.4; }
     .locked-subheading {
       font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
       color: #bbb; margin: 20px 0 12px; padding-top: 16px; border-top: 1px solid #eee;
@@ -172,8 +158,6 @@
       .login-box { padding: 28px 18px; }
       .welcome-banner h1 { font-size: 18px; }
       .app-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
-      .free-resources-row { grid-template-columns: 1fr; gap: 10px; }
-      .free-resource-card { padding: 16px 14px; }
     }
     @media (max-width: 360px) {
       .app-grid { grid-template-columns: 1fr 1fr; }
@@ -238,24 +222,6 @@
         <h1 id="welcomeHeading"></h1>
         <p>Your personalised coaching tools are ready below. Reach out to Coach4U to unlock additional portals.</p>
       </div>
-      <div class="free-resources-row">
-        <a class="free-resource-card" href="resources/feelings-chart.html">
-          <span class="free-resource-icon">&#x1F497;</span>
-          <span class="free-resource-label">Feelings Chart</span>
-          <span class="free-resource-sub">Name what you feel, step by step</span>
-        </a>
-        <a class="free-resource-card" href="resources/smart-goal.html">
-          <span class="free-resource-icon">&#x1F3AF;</span>
-          <span class="free-resource-label">SMART Goal Builder</span>
-          <span class="free-resource-sub">Shape a goal you can act on</span>
-        </a>
-        <a class="free-resource-card" href="resources/issue-clarifier.html">
-          <span class="free-resource-icon">&#x1F9ED;</span>
-          <span class="free-resource-label">Issue Clarifier</span>
-          <span class="free-resource-sub">Find the core issue and a next step</span>
-        </a>
-      </div>
-
       <div class="section-wrap" id="activeSection">
         <button class="section-toggle" onclick="toggleSection('toolsBody','toolsChevron')">
           <div class="section-toggle-inner">
@@ -291,7 +257,7 @@
   </footer>
 
   <script>
-    const VERSION = '2026-05-14.2'
+    const VERSION = '2026-05-24.1'
     document.getElementById('versionText').textContent = VERSION
 
     // Hide chrome until auth state is known
