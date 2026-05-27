@@ -222,6 +222,16 @@
         <h1 id="welcomeHeading"></h1>
         <p>Your personalised coaching tools are ready below. Reach out to Coach4U to unlock additional portals.</p>
       </div>
+      <div id="adminTile" style="display:none;background:linear-gradient(135deg,#003366 0%,#0D9488 100%);color:#fff;border-radius:12px;padding:16px 20px;margin:0 0 18px 0;display:none;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div style="flex:1;min-width:220px">
+          <div style="font-size:15px;font-weight:700;margin-bottom:4px">&#x1F6E1;&#xFE0F; Manage Account Access</div>
+          <div style="font-size:13px;opacity:0.92;line-height:1.4">You're an admin of <span id="adminSubCount">one or more</span> account<span id="adminSubPlural"></span>. Invite team members, set their app access, and manage your account from the dashboard admin.</div>
+        </div>
+        <a href="https://cathcoach4u.github.io/coach4Uapp-dashboard/admin.html"
+           style="background:#fff;color:#003366;font-weight:700;font-size:13px;text-decoration:none;padding:9px 18px;border-radius:6px;white-space:nowrap;border:1px solid #fff;display:inline-block">
+          Open Admin &rarr;
+        </a>
+      </div>
       <div class="section-wrap" id="activeSection">
         <button class="section-toggle" onclick="toggleSection('toolsBody','toolsChevron')">
           <div class="section-toggle-inner">
@@ -257,7 +267,7 @@
   </footer>
 
   <script>
-    const VERSION = '2026-05-24.1'
+    const VERSION = '2026-05-27.1'
     document.getElementById('versionText').textContent = VERSION
 
     // Hide chrome until auth state is known
@@ -366,9 +376,10 @@
       const displayName = user.user_metadata?.name || user.email.split('@')[0]
       document.getElementById('welcomeHeading').textContent = `Welcome, ${displayName}`
 
-      const [portalsRes, accessRes] = await Promise.all([
+      const [portalsRes, accessRes, adminSubsRes] = await Promise.all([
         sb.from('portals').select('*').eq('coming_soon', false).order('display_order'),
-        sb.from('client_access').select('portal_slug').eq('user_id', user.id)
+        sb.from('client_access').select('portal_slug').eq('user_id', user.id),
+        sb.from('my_admin_subscriptions').select('subscription_id')
       ])
       const portals = (portalsRes.data || []).filter(p => p.slug !== 'coaching-portal')
       const granted = new Set((accessRes.data || []).map(r => r.portal_slug))
@@ -383,6 +394,17 @@
       renderPortals(locked, 'lockedPortals', true)
       document.getElementById('activeSection').style.display = 'block'
       document.getElementById('lockedSection').style.display = locked.length ? 'block' : 'none'
+
+      // Admin tile — visible only if the user can administer at least one subscription
+      const adminSubs = adminSubsRes.data || []
+      const adminTile = document.getElementById('adminTile')
+      if (adminSubs.length > 0) {
+        document.getElementById('adminSubCount').textContent = adminSubs.length
+        document.getElementById('adminSubPlural').textContent = adminSubs.length === 1 ? '' : 's'
+        adminTile.style.display = 'flex'
+      } else {
+        adminTile.style.display = 'none'
+      }
     }
 
     function escapeHtml(s) {
