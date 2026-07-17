@@ -111,7 +111,6 @@ A portal is **active** if its slug is in `client_access` for the user. Otherwise
 | Slug | URL |
 |---|---|
 | `business` | https://cathcoach4u.github.io/yourbusinesscoach/ |
-| `marketing` | https://cathcoach4u.github.io/yourmarketingcoach/ |
 | `life` | https://cathcoach4u.github.io/coach4Uapp-dashboard/personal/ |
 | `relationship` | https://cathcoach4u.github.io/yourrelationshipcoach/ |
 | `thrivehq` | https://cathcoach4u.github.io/yourthrivehqcoach/ |
@@ -144,7 +143,6 @@ Only icons live in code (the `ICONS` object in `index.html`). The Open URL comes
 | Slug | Icon |
 |---|---|
 | `business` | 💼 |
-| `marketing` | 📈 |
 | `life` | 🌱 |
 | `relationship` | ❤️ |
 | `thrivehq` | ⚡ |
@@ -316,6 +314,7 @@ Run in numerical order in the Supabase **SQL Editor** (Dashboard → project `ee
 | `009`–`015` | Subscription admin model (see the files — this table wasn't updated when they landed). |
 | `016_remove_it_portal.sql` | Removes the `it` portal row + its `client_access` rows. The YourITEfficiencyCoach repo was never built out and was deleted (2026-07-17 repo audit). |
 | `017_remove_team_portal.sql` | Removes the `team` portal row + its `client_access` rows. The yourteamcoach repo's tools never worked (dead `/api` backend, tables never created) and the repo was deleted (2026-07-17 repo audit). |
+| `018_remove_marketing_portal.sql` | Removes the `marketing` portal row + its `client_access` rows. The yourmarketingcoach Growth Hub never worked on GitHub Pages (dead `/api` backend, undeployed `ai-proxy` fn) and the repo was deleted (2026-07-17 repo audit). |
 
 Add new migrations as `NNN_what_it_does.sql`, numbered next, idempotent.
 
