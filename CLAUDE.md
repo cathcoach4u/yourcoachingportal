@@ -111,7 +111,6 @@ A portal is **active** if its slug is in `client_access` for the user. Otherwise
 | Slug | URL |
 |---|---|
 | `business` | https://cathcoach4u.github.io/yourbusinesscoach/ |
-| `team` | https://cathcoach4u.github.io/yourteamcoach/ |
 | `marketing` | https://cathcoach4u.github.io/yourmarketingcoach/ |
 | `life` | https://cathcoach4u.github.io/coach4Uapp-dashboard/personal/ |
 | `relationship` | https://cathcoach4u.github.io/yourrelationshipcoach/ |
@@ -145,7 +144,6 @@ Only icons live in code (the `ICONS` object in `index.html`). The Open URL comes
 | Slug | Icon |
 |---|---|
 | `business` | 💼 |
-| `team` | 👥 |
 | `marketing` | 📈 |
 | `life` | 🌱 |
 | `relationship` | ❤️ |
@@ -317,6 +315,7 @@ Run in numerical order in the Supabase **SQL Editor** (Dashboard → project `ee
 | `008_set_it_portal_url.sql` | Sets the `it` portal URL to `https://cathcoach4u.github.io/YourITEfficiencyCoach/`. |
 | `009`–`015` | Subscription admin model (see the files — this table wasn't updated when they landed). |
 | `016_remove_it_portal.sql` | Removes the `it` portal row + its `client_access` rows. The YourITEfficiencyCoach repo was never built out and was deleted (2026-07-17 repo audit). |
+| `017_remove_team_portal.sql` | Removes the `team` portal row + its `client_access` rows. The yourteamcoach repo's tools never worked (dead `/api` backend, tables never created) and the repo was deleted (2026-07-17 repo audit). |
 
 Add new migrations as `NNN_what_it_does.sql`, numbered next, idempotent.
 
