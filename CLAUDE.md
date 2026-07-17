@@ -119,9 +119,8 @@ A portal is **active** if its slug is in `client_access` for the user. Otherwise
 | `strengths` | https://cathcoach4u.github.io/yourstrengthscoach/ |
 | `coach4u-tools` | `coach4u-tools.html` (relative — opens the in-repo Coach4U Tools landing) |
 | `career` | null (not built yet) |
-| `it` | https://cathcoach4u.github.io/YourITEfficiencyCoach/ |
 
-Note: the `coaching-portal` row was deleted from the `portals` table — it was appearing as its own tile.
+Note: the `coaching-portal` row was deleted from the `portals` table — it was appearing as its own tile. The `it` row (Your IT Efficiency Coach) was removed by migration 016 — the repo was never built out and has been deleted.
 
 ### Reset password redirect
 
@@ -154,7 +153,6 @@ Only icons live in code (the `ICONS` object in `index.html`). The Open URL comes
 | `career` | 🎯 |
 | `strengths` | 💪 |
 | `coach4u-tools` | 💪 |
-| `it` | 💻 |
 
 ---
 
@@ -317,6 +315,8 @@ Run in numerical order in the Supabase **SQL Editor** (Dashboard → project `ee
 | `006_add_coach4u_tools_portal.sql` | Adds the `coach4u-tools` portal row (originally pointing at `strengths.html`, now `coach4u-tools.html` via 007). |
 | `007_rename_coach4u_tools_url.sql` | Repoints the `coach4u-tools` portal `url` from `strengths.html` to `coach4u-tools.html` after the file was renamed. |
 | `008_set_it_portal_url.sql` | Sets the `it` portal URL to `https://cathcoach4u.github.io/YourITEfficiencyCoach/`. |
+| `009`–`015` | Subscription admin model (see the files — this table wasn't updated when they landed). |
+| `016_remove_it_portal.sql` | Removes the `it` portal row + its `client_access` rows. The YourITEfficiencyCoach repo was never built out and was deleted (2026-07-17 repo audit). |
 
 Add new migrations as `NNN_what_it_does.sql`, numbered next, idempotent.
 
